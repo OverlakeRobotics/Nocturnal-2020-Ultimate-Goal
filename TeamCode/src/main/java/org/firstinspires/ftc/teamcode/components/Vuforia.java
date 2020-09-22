@@ -61,6 +61,10 @@ public class Vuforia {
         vuforia.close();
     }
 
+    /**
+     * 
+     * @return
+     */
     public Orientation getRobotHeading() {
         return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
     }

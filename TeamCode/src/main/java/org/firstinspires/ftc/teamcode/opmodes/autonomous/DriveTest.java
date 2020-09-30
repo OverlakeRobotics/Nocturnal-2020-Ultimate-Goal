@@ -15,7 +15,6 @@ public class DriveTest extends LinearOpMode {
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .strafeRight(30)
                 .forward(10)
-                .splineToConstantHeading()
                 .build();
 
         waitForStart();

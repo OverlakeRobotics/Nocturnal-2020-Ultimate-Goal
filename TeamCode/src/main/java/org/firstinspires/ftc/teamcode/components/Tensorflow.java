@@ -31,6 +31,7 @@ public class Tensorflow {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia); //create objectDetector
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT, LABEL_THIRD_ELEMENT); //loading models
         tfod.activate(); //turnOn
+        //Hi, this is Anish, and I'm teaching Vincent and Ethan, how git works.
     }
 
     public List<Recognition> getInference() { //get "image" back, a bunch of Recognitions - check out instance variables

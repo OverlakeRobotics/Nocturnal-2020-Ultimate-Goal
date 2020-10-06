@@ -177,7 +177,7 @@ public class Vuforia {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
         for (VuforiaTrackable trackable : allTrackables) {
-            //((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.CameraDirection);
+            //((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, vuforia.parameters.cameraDirection);
         }
 
         targetsUltGoal.activate();

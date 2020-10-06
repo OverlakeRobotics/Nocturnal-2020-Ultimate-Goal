@@ -47,7 +47,6 @@ public class Vuforia {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
     public VuforiaTrackables targetsUltGoal;
-    public VuforiaTrackables targetsField;
     private List<VuforiaTrackable> allTrackables;
 
     public Vuforia(HardwareMap hardwareMap, CameraChoice choice) {
@@ -96,12 +95,10 @@ public class Vuforia {
 
     public void activate() {
         targetsUltGoal.activate();
-        targetsField.activate();
     }
 
     public void disable() {
         targetsUltGoal.deactivate();
-        targetsField.deactivate();
     }
 
     public VuforiaLocalizer setCamera(HardwareMap hardwareMap, CameraChoice cameraChoice) {
@@ -134,7 +131,6 @@ public class Vuforia {
 
     private void initializeTrackables(VuforiaLocalizer vuforia) {
         targetsUltGoal = vuforia.loadTrackablesFromAsset("UltimateGoal");
-        targetsField = vuforia.loadTrackablesFromAsset("Skystone");
 
         VuforiaTrackable blueTowerGoalTarget = targetsUltGoal.get(0);
         blueTowerGoalTarget.setName("Blue Tower Goal");
@@ -146,38 +142,11 @@ public class Vuforia {
         blueAllianceTarget.setName("Blue Alliance");
         VuforiaTrackable frontWallTarget = targetsUltGoal.get(4);
         frontWallTarget.setName("Front Wall");
-        VuforiaTrackable red1 = targetsField.get(5);
-        red1.setName("Red Perimeter 1");
-        VuforiaTrackable red2 = targetsField.get(6);
-        red2.setName("Red Perimeter 2");
-        VuforiaTrackable front1 = targetsField.get(7);
-        front1.setName("Front Perimeter 1");
-        VuforiaTrackable front2 = targetsField.get(8);
-        front2.setName("Front Perimeter 2");
-        VuforiaTrackable blue1 = targetsField.get(9);
-        blue1.setName("Blue Perimeter 1");
-        VuforiaTrackable blue2 = targetsField.get(10);
-        blue2.setName("Blue Perimeter 2");
-        VuforiaTrackable rear1 = targetsField.get(11);
-        rear1.setName("Rear Perimeter 1");
-        VuforiaTrackable rear2 = targetsField.get(12);
-        rear2.setName("Rear Perimeter 2");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
         allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsUltGoal);
 
-        // Set the position of the Stone Target.  Since it's not fixed in position, assume it's at the field origin.
-        // Rotated it to to face forward, and raised it to sit on the ground correctly.
-        // This can be used for generic target-centric approach algorithms
-
-        //TODO: Update these things.
-
-        /*
-        target.setLocation(OpenGLMatrix
-                .translation(X position, Y position, Z position) // Actual location on the field with coordinates
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, X rotation, Y rotation, Z rotation))); // Rotation
-        */
         redAllianceTarget.setLocation(OpenGLMatrix
                 .translation(0, -halfField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
@@ -197,54 +166,20 @@ public class Vuforia {
                 .translation(halfField, -quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
-        //Set the position of the perimeter targets with relation to origin (center of field)
-        red1.setLocation(OpenGLMatrix
-                .translation(quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-
-        red2.setLocation(OpenGLMatrix
-                .translation(-quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-
-        front1.setLocation(OpenGLMatrix
-                .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
-
-        front2.setLocation(OpenGLMatrix
-                .translation(-halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
-
-        blue1.setLocation(OpenGLMatrix
-                .translation(-quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-
-        blue2.setLocation(OpenGLMatrix
-                .translation(quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-
-        rear1.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-
-        rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-
         // TODO most likely will need to end up establishing precise positions in the future
         /**  Let all the trackable listeners know where the phone is.  */
         final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
-//        OpenGLMatrix robotFromCamera = OpenGLMatrix
-//                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-//
-//        for (VuforiaTrackable trackable : allTrackables) {
-//            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
-//        }
+        OpenGLMatrix robotFromCamera = OpenGLMatrix
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+
+        for (VuforiaTrackable trackable : allTrackables) {
+            //((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.CameraDirection);
+        }
 
         targetsUltGoal.activate();
-        targetsField.activate();
     }
 }

@@ -42,10 +42,15 @@ public class Tensorflow {
     }
 
     public void activate() {
-        tfod.activate();
+        if (tfod != null){
+            tfod.activate();
+        }
+
     } //activate
 
     public void shutdown() {
-        tfod.shutdown();
+        if (tfod != null){
+            tfod.shutdown();
+        }
     } //deactivate
 }

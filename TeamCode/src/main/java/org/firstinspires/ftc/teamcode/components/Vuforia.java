@@ -34,8 +34,7 @@ public class Vuforia {
         }
     }
 
-    private static final String VUFORIA_KEY =
-            "Ad0Srbr/////AAABmdpa0/j2K0DPhXQjE2Hyum9QUQXZO8uAVCNpwlogfxiVmEaSuqHoTMWcV9nLlQpEnh5bwTlQG+T35Vir8IpdrSdk7TctIqH3QBuJFdHsx5hlcn74xa7AiQSJgUD/n7JJ2zJ/Er5Hc+b+r616Jf1YU6RO63Ajk5+TFB9N3a85NjMD6eDm+C6f14647ELnmGC03poSOeczbX7hZpIEObtYdVyKZ2NQ/26xDfSwwJuyMgUHwWY6nl6mk0GMnIGvu0/HoGNgyR5EkUQWyx9XlmxSrldY7BIEVkiKmracvD7W9hEGZ2nPied6DTY5RFNuFX07io6+I59/d7291NXKVMDnFAqSt4a2JYsECv+j7b25S0mD";
+    private static final String VUFORIA_KEY = "Ad0Srbr/////AAABmdpa0/j2K0DPhXQjE2Hyum9QUQXZO8uAVCNpwlogfxiVmEaSuqHoTMWcV9nLlQpEnh5bwTlQG+T35Vir8IpdrSdk7TctIqH3QBuJFdHsx5hlcn74xa7AiQSJgUD/n7JJ2zJ/Er5Hc+b+r616Jf1YU6RO63Ajk5+TFB9N3a85NjMD6eDm+C6f14647ELnmGC03poSOeczbX7hZpIEObtYdVyKZ2NQ/26xDfSwwJuyMgUHwWY6nl6mk0GMnIGvu0/HoGNgyR5EkUQWyx9XlmxSrldY7BIEVkiKmracvD7W9hEGZ2nPied6DTY5RFNuFX07io6+I59/d7291NXKVMDnFAqSt4a2JYsECv+j7b25S0mD";
 
     private static final float mmPerInch        = 25.4f;                    // constant for converting measurements from inches to millimeters
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
@@ -51,14 +50,97 @@ public class Vuforia {
     public VuforiaTrackables targetsUltGoal;
     private List<VuforiaTrackable> allTrackables;
 
-    public Vuforia(HardwareMap hardwareMap, CameraChoice choice) {
-        vuforia = setCamera(hardwareMap, choice);
+    public Vuforia(HardwareMap hardwareMap, CameraChoice cameraChoice) {
+        vuforia = initVuforia(hardwareMap, cameraChoice);
+
+        targetsUltGoal = vuforia.loadTrackablesFromAsset("UltimateGoal");
+
+        VuforiaTrackable blueTowerGoalTarget = targetsUltGoal.get(0);
+        blueTowerGoalTarget.setName("Blue Tower Goal");
+        VuforiaTrackable redTowerGoalTarget = targetsUltGoal.get(1);
+        redTowerGoalTarget.setName("Red Tower Goal");
+        VuforiaTrackable redAllianceTarget = targetsUltGoal.get(2);
+        redAllianceTarget.setName("Red Alliance");
+        VuforiaTrackable blueAllianceTarget = targetsUltGoal.get(3);
+        blueAllianceTarget.setName("Blue Alliance");
+        VuforiaTrackable frontWallTarget = targetsUltGoal.get(4);
+        frontWallTarget.setName("Front Wall");
+
+        // For convenience, gather together all the trackable objects in one easily-iterable collection */
+        allTrackables = new ArrayList<VuforiaTrackable>();
+        allTrackables.addAll(targetsUltGoal);
+
+        redAllianceTarget.setLocation(OpenGLMatrix
+                .translation(0, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+
+        blueAllianceTarget.setLocation(OpenGLMatrix
+                .translation(0, halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+        frontWallTarget.setLocation(OpenGLMatrix
+                .translation(-halfField, 0, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+
+        // The tower goal targets are located a quarter field length from the ends of the back perimeter wall.
+        blueTowerGoalTarget.setLocation(OpenGLMatrix
+                .translation(halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+        redTowerGoalTarget.setLocation(OpenGLMatrix
+                .translation(halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+
+        targetsUltGoal.activate();
+    }
+
+    private VuforiaLocalizer initVuforia(HardwareMap hardwareMap, CameraChoice cameraChoice) {
+        if (vuforia != null)
+            vuforia.close();
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.useExtendedTracking = false;
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        switch (cameraChoice) {
+            case PHONE_FRONT:
+                parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+                break;
+            case PHONE_BACK:
+                parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+                break;
+            case WEBCAM1:
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+                break;
+            case WEBCAM2:
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 2");
+                break;
+        }
+        vuforia = new VuforiaLocalizer(parameters);
+
+        // TODO most likely will need to end up establishing precise positions in the future
+        // Next, translate the camera lens to where it is on the robot.
+        // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
+        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+
+        OpenGLMatrix robotFromCamera = OpenGLMatrix
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+
+        /**  Let all the trackable listeners know where the phone is.  */
+        for (VuforiaTrackable trackable : allTrackables) {
+            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+        }
+
+        return vuforia;
     }
 
     public void close() {
         vuforia.close();
     }
-    
+
     public Orientation getRobotHeading() {
         return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
     }
@@ -101,87 +183,5 @@ public class Vuforia {
 
     public void disable() {
         targetsUltGoal.deactivate();
-    }
-
-    public VuforiaLocalizer setCamera(HardwareMap hardwareMap, CameraChoice cameraChoice) {
-        if (vuforia != null)
-            vuforia.close();
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        parameters.useExtendedTracking = false;
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        switch (cameraChoice) {
-            case PHONE_FRONT:
-                parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-                break;
-            case PHONE_BACK:
-                parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-                break;
-            case WEBCAM1:
-                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-                break;
-            case WEBCAM2:
-                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 2");
-                break;
-        }
-        vuforia = new VuforiaLocalizer(parameters);
-        initializeTrackables(vuforia);
-        return vuforia;
-    }
-
-    private void initializeTrackables(VuforiaLocalizer vuforia) {
-        targetsUltGoal = vuforia.loadTrackablesFromAsset("UltimateGoal");
-
-        VuforiaTrackable blueTowerGoalTarget = targetsUltGoal.get(0);
-        blueTowerGoalTarget.setName("Blue Tower Goal");
-        VuforiaTrackable redTowerGoalTarget = targetsUltGoal.get(1);
-        redTowerGoalTarget.setName("Red Tower Goal");
-        VuforiaTrackable redAllianceTarget = targetsUltGoal.get(2);
-        redAllianceTarget.setName("Red Alliance");
-        VuforiaTrackable blueAllianceTarget = targetsUltGoal.get(3);
-        blueAllianceTarget.setName("Blue Alliance");
-        VuforiaTrackable frontWallTarget = targetsUltGoal.get(4);
-        frontWallTarget.setName("Front Wall");
-
-        // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        allTrackables = new ArrayList<VuforiaTrackable>();
-        allTrackables.addAll(targetsUltGoal);
-
-        redAllianceTarget.setLocation(OpenGLMatrix
-                .translation(0, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-
-        blueAllianceTarget.setLocation(OpenGLMatrix
-                .translation(0, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-        frontWallTarget.setLocation(OpenGLMatrix
-                .translation(-halfField, 0, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
-
-        // The tower goal targets are located a quarter field length from the ends of the back perimeter wall.
-        blueTowerGoalTarget.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-        redTowerGoalTarget.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-
-        // TODO most likely will need to end up establishing precise positions in the future
-        /**  Let all the trackable listeners know where the phone is.  */
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
-
-        OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-
-        for (VuforiaTrackable trackable : allTrackables) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, VuforiaLocalizer.CameraDirection.BACK);
-        }
-
-        targetsUltGoal.activate();
     }
 }

@@ -1,13 +1,23 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 public class Tensorflow {
+
+    public enum SquareState{
+        BOX_A, BOX_B, BOX_C
+    }
+
+    EnumMap<SquareState, Integer> boxCoordinates;
+
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Zero"; //ZeroRings
     private static final String LABEL_SECOND_ELEMENT = "One"; //OneRing
@@ -53,4 +63,44 @@ public class Tensorflow {
             tfod.shutdown();
         }
     } //deactivate
+
+    public Enum getTargetRegion(){
+
+        ArrayList<Float> heights = new ArrayList<Float>();
+        int length = getInference().size();
+        for (Recognition recognitions : getInference()){
+            if (recognitions.getConfidence() >= 0.4){
+                heights.add((recognitions.getTop() - recognitions.getBottom()) * Math.cos(recognitions.estimateAngleToObject()));
+            }
+        }
+        if (heights.size() == 1){
+            if (heights.get(0) > 0.4f && heights.get(0) < 0.5f){
+                return SquareState.BOX_A;
+            }
+            if (heights.get(0) > 0.5f && heights.get(0) < 0.8f){
+                return SquareState.BOX_B;
+            }
+            if (heights.get(0) > 1.0f){
+                return SquareState.BOX_C;
+            }
+        }
+        else{
+            if (length == 0){
+                return SquareState.BOX_A;
+            }
+            if (length == 1){
+                return SquareState.BOX_B;
+            }
+            if (length == 2){
+                return SquareState.BOX_B;
+            }
+            if (length == 3){
+                return SquareState.BOX_C;
+            }
+            if (length == 4){
+                return SquareState.BOX_C;
+            }
+        }
+    }
+
 }

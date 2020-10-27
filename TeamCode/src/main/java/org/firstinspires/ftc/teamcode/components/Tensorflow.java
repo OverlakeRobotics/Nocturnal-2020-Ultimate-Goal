@@ -70,7 +70,7 @@ public class Tensorflow {
         int length = getInference().size();
         for (Recognition recognitions : getInference()){
             if (recognitions.getConfidence() >= 0.4){
-                heights.add((recognitions.getTop() - recognitions.getBottom()) * Math.cos(recognitions.estimateAngleToObject()));
+                heights.add((recognitions.getTop() - recognitions.getBottom()));
             }
         }
         if (heights.size() == 1){
@@ -101,6 +101,7 @@ public class Tensorflow {
                 return SquareState.BOX_C;
             }
         }
+        return null;
     }
 
 }

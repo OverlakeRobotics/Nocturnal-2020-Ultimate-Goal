@@ -53,48 +53,14 @@ public class Vuforia {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
     public VuforiaTrackables targetsUltGoal;
-    private static List<VuforiaTrackable> allTrackables;
+    private static ArrayList<VuforiaTrackable> allTrackables;
 
     public Vuforia(HardwareMap hardwareMap, CameraChoice cameraChoice) {
-        vuforia = initVuforia(hardwareMap, cameraChoice);
-
-        targetsUltGoal = vuforia.loadTrackablesFromAsset("UltimateGoal");
-
-        VuforiaTrackable blueTowerGoalTarget = targetsUltGoal.get(0);
-        blueTowerGoalTarget.setName("Blue Tower Goal");
-        VuforiaTrackable redTowerGoalTarget = targetsUltGoal.get(1);
-        redTowerGoalTarget.setName("Red Tower Goal");
-        VuforiaTrackable redAllianceTarget = targetsUltGoal.get(2);
-        redAllianceTarget.setName("Red Alliance");
-        VuforiaTrackable blueAllianceTarget = targetsUltGoal.get(3);
-        blueAllianceTarget.setName("Blue Alliance");
-        VuforiaTrackable frontWallTarget = targetsUltGoal.get(4);
-        frontWallTarget.setName("Front Wall");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
         allTrackables = new ArrayList<VuforiaTrackable>();
-        allTrackables.addAll(targetsUltGoal);
 
-        redAllianceTarget.setLocation(OpenGLMatrix
-                .translation(0, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-
-        blueAllianceTarget.setLocation(OpenGLMatrix
-                .translation(0, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-        frontWallTarget.setLocation(OpenGLMatrix
-                .translation(-halfField, 0, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
-
-        // The tower goal targets are located a quarter field length from the ends of the back perimeter wall.
-        blueTowerGoalTarget.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-        redTowerGoalTarget.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-
-        targetsUltGoal.activate();
+        vuforia = initVuforia(hardwareMap, cameraChoice);
     }
 
     private VuforiaLocalizer initVuforia(HardwareMap hardwareMap, CameraChoice cameraChoice) {
@@ -134,10 +100,46 @@ public class Vuforia {
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
+        targetsUltGoal = vuforia.loadTrackablesFromAsset("UltimateGoal");
+
+        VuforiaTrackable blueTowerGoalTarget = targetsUltGoal.get(0);
+        blueTowerGoalTarget.setName("Blue Tower Goal");
+        VuforiaTrackable redTowerGoalTarget = targetsUltGoal.get(1);
+        redTowerGoalTarget.setName("Red Tower Goal");
+        VuforiaTrackable redAllianceTarget = targetsUltGoal.get(2);
+        redAllianceTarget.setName("Red Alliance");
+        VuforiaTrackable blueAllianceTarget = targetsUltGoal.get(3);
+        blueAllianceTarget.setName("Blue Alliance");
+        VuforiaTrackable frontWallTarget = targetsUltGoal.get(4);
+        frontWallTarget.setName("Front Wall");
+
+        allTrackables.addAll(targetsUltGoal);
+
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
+
+        redAllianceTarget.setLocation(OpenGLMatrix
+                .translation(0, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+
+        blueAllianceTarget.setLocation(OpenGLMatrix
+                .translation(0, halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+        frontWallTarget.setLocation(OpenGLMatrix
+                .translation(-halfField, 0, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+
+        // The tower goal targets are located a quarter field length from the ends of the back perimeter wall.
+        blueTowerGoalTarget.setLocation(OpenGLMatrix
+                .translation(halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+        redTowerGoalTarget.setLocation(OpenGLMatrix
+                .translation(halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+
+        targetsUltGoal.activate();
 
         return vuforia;
     }

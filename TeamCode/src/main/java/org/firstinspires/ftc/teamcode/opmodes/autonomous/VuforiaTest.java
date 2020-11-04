@@ -16,11 +16,23 @@ import java.util.List;
 @Autonomous
 public class VuforiaTest extends LinearOpMode {
 
+    private static final float mmPerInch        = 25.4f;                    // constant for converting measurements from inches to millimeters
+    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+
+    private static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
+    private static final float quadField  = 36 * mmPerInch;
+
+    private OpenGLMatrix redLocation;
+    private OpenGLMatrix blueLocation;
+
     @Override
     public void runOpMode() throws InterruptedException, NullPointerException {
 
         Vuforia vuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.PHONE_BACK);
         OpenGLMatrix lastLocation = new OpenGLMatrix();
+        redLocation = OpenGLMatrix.translation(halfField, -quadField, mmTargetHeight);
+        blueLocation = OpenGLMatrix.translation(halfField, quadField, mmTargetHeight);
+
         vuforia.activate();
 
         while (!isStopRequested()) {
@@ -45,5 +57,13 @@ public class VuforiaTest extends LinearOpMode {
 
     String format(OpenGLMatrix transformationMatrix) {
         return transformationMatrix.formatAsTransform();
+    }
+
+    OpenGLMatrix getOptimalPosition(BaseAutonomous.Team team) {
+        if (team == BaseStateMachine.Team.RED) {
+            return redLocation;
+        } else {
+            return blueLocation;
+        }
     }
 }

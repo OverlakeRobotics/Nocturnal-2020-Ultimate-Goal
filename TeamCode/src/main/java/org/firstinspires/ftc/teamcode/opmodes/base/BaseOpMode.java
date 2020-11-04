@@ -16,8 +16,6 @@ public abstract class BaseOpMode extends OpMode {
 
     protected DriveSystem driveSystem;
     protected Vuforia vuforia;
-    protected VuforiaTrackable skystone;
-    protected VuforiaTrackable rearPerimeter;
     private boolean stopRequested;
 
     public void init(){

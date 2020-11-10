@@ -66,6 +66,9 @@ public class Tensorflow {
     } //deactivate
 
     public Enum getTargetRegion(){
+        if (tfod == null){
+            return null;
+        }
         List<Recognition> toOperateOffOf = getInference();
         if (toOperateOffOf.size() == 1){
             int i = 0;

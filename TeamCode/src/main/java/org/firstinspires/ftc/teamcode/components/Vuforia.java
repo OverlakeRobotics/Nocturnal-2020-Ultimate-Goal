@@ -4,8 +4,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
@@ -16,6 +18,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Vuforia {
@@ -38,6 +41,15 @@ public class Vuforia {
         return allTrackables;
     }
 
+    public static List<VuforiaTrackable> getVisibleTrackables() {
+        ArrayList<VuforiaTrackable> visibleTrackables = new ArrayList<VuforiaTrackable>();
+        for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                visibleTrackables.add(trackable);
+            }
+        }
+        return visibleTrackables;
+    }
 
     private static final String VUFORIA_KEY = "Ad0Srbr/////AAABmdpa0/j2K0DPhXQjE2Hyum9QUQXZO8uAVCNpwlogfxiVmEaSuqHoTMWcV9nLlQpEnh5bwTlQG+T35Vir8IpdrSdk7TctIqH3QBuJFdHsx5hlcn74xa7AiQSJgUD/n7JJ2zJ/Er5Hc+b+r616Jf1YU6RO63Ajk5+TFB9N3a85NjMD6eDm+C6f14647ELnmGC03poSOeczbX7hZpIEObtYdVyKZ2NQ/26xDfSwwJuyMgUHwWY6nl6mk0GMnIGvu0/HoGNgyR5EkUQWyx9XlmxSrldY7BIEVkiKmracvD7W9hEGZ2nPied6DTY5RFNuFX07io6+I59/d7291NXKVMDnFAqSt4a2JYsECv+j7b25S0mD";
 
@@ -83,9 +95,11 @@ public class Vuforia {
             case WEBCAM1:
                 parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
                 break;
+            /*
             case WEBCAM2:
                 parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 2");
                 break;
+            */
         }
         vuforia = new VuforiaLocalizer(parameters);
 
@@ -190,5 +204,26 @@ public class Vuforia {
 
     public void disable() {
         targetsUltGoal.deactivate();
+    }
+
+    public double[] getOffset(VuforiaTrackable trackable) {
+        OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)trackable.getListener()).getPose();
+        if (pose != null) {
+            VectorF trans = pose.getTranslation();
+            Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+
+            // Extract the X, Y, and Z components of the offset of the target relative to the robot
+            double tX = trans.get(0);
+            double tY = trans.get(1);
+            double tZ = trans.get(2);
+
+            // Extract the rotational components of the target relative to the robot
+            double rX = rot.firstAngle;
+            double rY = rot.secondAngle;
+            double rZ = rot.thirdAngle;
+
+            return new double[] {tX, tY, tZ, rX, rY, rZ};
+        }
+        return null;
     }
 }

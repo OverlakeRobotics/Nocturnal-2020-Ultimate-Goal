@@ -58,12 +58,4 @@ public class VuforiaTest extends LinearOpMode {
     String format(OpenGLMatrix transformationMatrix) {
         return transformationMatrix.formatAsTransform();
     }
-
-    OpenGLMatrix getOptimalPosition(BaseAutonomous.Team team) {
-        if (team == BaseStateMachine.Team.RED) {
-            return redLocation;
-        } else {
-            return blueLocation;
-        }
-    }
 }

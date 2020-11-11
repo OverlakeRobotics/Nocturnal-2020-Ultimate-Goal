@@ -17,6 +17,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import java.util.ArrayList;
 import java.util.List;
 
+/** Teddy, trust my code, you blasphemer. */
 public class Vuforia {
 
     public enum CameraChoice {
@@ -202,6 +203,10 @@ public class Vuforia {
         targetsUltGoal.deactivate();
     }
 
+    /**
+     * Index 0: Rotation of the target relative to the robot
+     * Index 1: Vertical distance from target relative to the robot]
+     */
     public float[] getOffset(VuforiaTrackable trackable) {
         OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)trackable.getListener()).getPose();
         if (pose != null) {

@@ -4,9 +4,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
@@ -18,7 +15,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Vuforia {
@@ -206,24 +202,12 @@ public class Vuforia {
         targetsUltGoal.deactivate();
     }
 
-    public double[] getOffset(VuforiaTrackable trackable) {
+    public float getOffset(VuforiaTrackable trackable) {
         OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)trackable.getListener()).getPose();
         if (pose != null) {
             VectorF trans = pose.getTranslation();
-            Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-
-            // Extract the X, Y, and Z components of the offset of the target relative to the robot
-            double tX = trans.get(0);
-            double tY = trans.get(1);
-            double tZ = trans.get(2);
-
-            // Extract the rotational components of the target relative to the robot
-            double rX = rot.firstAngle;
-            double rY = rot.secondAngle;
-            double rZ = rot.thirdAngle;
-
-            return new double[] {tX, tY, tZ, rX, rY, rZ};
+            return Orientation.getOrientation(pose, EXTRINSIC, XYZ, DEGREES).thirdAngle;
         }
-        return null;
+        return Float.POSITIVE_INFINITY;
     }
 }

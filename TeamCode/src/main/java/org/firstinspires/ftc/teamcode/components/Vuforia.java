@@ -202,12 +202,11 @@ public class Vuforia {
         targetsUltGoal.deactivate();
     }
 
-    public float getOffset(VuforiaTrackable trackable) {
+    public float[] getOffset(VuforiaTrackable trackable) {
         OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)trackable.getListener()).getPose();
         if (pose != null) {
-            VectorF trans = pose.getTranslation();
-            return Orientation.getOrientation(pose, EXTRINSIC, XYZ, DEGREES).thirdAngle;
+            return new float[] {Orientation.getOrientation(pose, EXTRINSIC, XYZ, DEGREES).thirdAngle, pose.getTranslation().get(0)};
         }
-        return Float.POSITIVE_INFINITY;
+        return new float[]{};
     }
 }

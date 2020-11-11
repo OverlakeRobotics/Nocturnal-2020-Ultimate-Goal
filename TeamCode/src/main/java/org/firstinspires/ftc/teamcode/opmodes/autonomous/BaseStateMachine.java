@@ -12,7 +12,11 @@ import java.util.List;
 public abstract class BaseStateMachine extends BaseAutonomous {
     public enum State {
         STATE_INITIAL,
+        STATE_PARK,
         STATE_DRIVE,
+        STATE_WOBBLE_GOAL,
+        STATE_SHOOT,
+        STATE_SEARCH,
         STATE_COMPLETE,
         LOGGING,
     }
@@ -48,11 +52,32 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                 newState(State.STATE_DRIVE);
                 break;
             case STATE_DRIVE:
-                if (driveSystem.driveToPosition(975, centerDirection, 0.7)) {
-                    newState(State.STATE_COMPLETE);
-                }
+//                if (driveSystem.driveToPosition(975, centerDirection, 0.7)) {
+//                    newState(State.STATE_COMPLETE);
+//                }
+                //TODO Add drive after confirmed the targets / target actions using search. Use roadrunner
+                /*
+                some variation of roadrunner.drive to be implemented and calibrated later. Probably with hardware help
+                 */
                 break;
-
+            case STATE_PARK:
+                break;
+            case STATE_WOBBLE_GOAL:
+                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
+                break;
+            case STATE_SHOOT:
+                //TODO Shoot the ring after target.
+                // Shooter.shoot()
+                /*
+                shooter will either receive the information to set power or this state is only called if the robot is parked in position to shoot
+                 */
+                break;
+            case STATE_SEARCH:
+                //TODO Add tensorflow / vuforia to search for targets.
+                /*
+                Need to identify either parking space, wobble goal dropoff space, goals, powershots, etc.
+                 */
+                break;
             case STATE_COMPLETE:
 
                 break;

@@ -2,10 +2,15 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import android.util.Log;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
+import org.firstinspires.ftc.teamcode.components.Tensorflow;
+import org.firstinspires.ftc.teamcode.components.Vuforia;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +19,8 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         STATE_INITIAL,
         STATE_PARK,
         STATE_DRIVE,
-        STATE_WOBBLE_GOAL,
+        STATE_DELIVER_WOBBLE,
+        STATE_YEET_WOBBLE,
         STATE_SHOOT,
         STATE_SEARCH,
         STATE_COMPLETE,
@@ -62,8 +68,23 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                 break;
             case STATE_PARK:
                 break;
-            case STATE_WOBBLE_GOAL:
+            case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
+                Tensorflow tensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), 0);
+
+                switch (tensorflow.getTargetRegion()){
+                    case BOX_A:
+                        //move to box a
+                        break;
+                    case BOX_B:
+                        //move to box b
+                        break;
+                    case BOX_C:
+                        //move to box c
+                        break;
+                }
+                break;
+            case STATE_YEET_WOBBLE:
                 break;
             case STATE_SHOOT:
                 //TODO Shoot the ring after target.

@@ -20,21 +20,26 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         STATE_PARK,
         STATE_DRIVE,
         STATE_DELIVER_WOBBLE,
-        STATE_YEET_WOBBLE,
         STATE_SHOOT,
-        STATE_SEARCH,
         STATE_COMPLETE,
         LOGGING,
     }
 
+    private Tensorflow tensorflow;
+    private Vuforia vuforia;
     private final static String TAG = "BaseStateMachine";
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
+    Tensorflow.SquareState targetRegion;
 
     public void init(Team team) {
         super.init(team);
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
+        int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        tensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraId);
+        targetRegion = tensorflow.getTargetRegion();
+        vuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.WEBCAM1);
         newState(State.STATE_INITIAL);
     }
 
@@ -55,7 +60,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
             case STATE_INITIAL:
                 // Initialize
                 // Drive 0.5m (1 tile) to the left
-                newState(State.STATE_DRIVE);
+                newState(State.STATE_DELIVER_WOBBLE);
                 break;
             case STATE_DRIVE:
 //                if (driveSystem.driveToPosition(975, centerDirection, 0.7)) {
@@ -67,24 +72,19 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                  */
                 break;
             case STATE_PARK:
+                //TODO park on the white line at the end of autonomous
                 break;
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
-                Tensorflow tensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), 0);
 
-                switch (tensorflow.getTargetRegion()){
+                switch (targetRegion){
                     case BOX_A:
                         //move to box a
-                        break;
                     case BOX_B:
                         //move to box b
-                        break;
                     case BOX_C:
                         //move to box c
-                        break;
                 }
-                break;
-            case STATE_YEET_WOBBLE:
                 break;
             case STATE_SHOOT:
                 //TODO Shoot the ring after target.
@@ -93,14 +93,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                 shooter will either receive the information to set power or this state is only called if the robot is parked in position to shoot
                  */
                 break;
-            case STATE_SEARCH:
-                //TODO Add tensorflow / vuforia to search for targets.
-                /*
-                Need to identify either parking space, wobble goal dropoff space, goals, powershots, etc.
-                 */
-                break;
             case STATE_COMPLETE:
-
                 break;
         }
     }

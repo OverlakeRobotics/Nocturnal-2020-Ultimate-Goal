@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import android.util.Log;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -31,6 +33,9 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     Tensorflow.SquareState targetRegion;
+    DcMotor firstShooterMotor;
+    DcMotor secondShooterMotor;
+
 
     public void init(Team team) {
         super.init(team);
@@ -72,23 +77,23 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                  */
                 break;
             case STATE_PARK:
-                //TODO park on the white line at the end of autonomous
+                driveSystem.setMotorPower(0);
                 break;
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
 
                 switch (targetRegion){
                     case BOX_A:
-                        //move to box a
+                        //driveSystem.driveToPosition()
                     case BOX_B:
-                        //move to box b
+                        //driveSystem.driveToPosition()
                     case BOX_C:
-                        //move to box c
+                        //driveSystem.driveToPosition()
                 }
                 break;
             case STATE_SHOOT:
                 //TODO Shoot the ring after target.
-                // Shooter.shoot()
+                //Shooter.shoot()
                 /*
                 shooter will either receive the information to set power or this state is only called if the robot is parked in position to shoot
                  */

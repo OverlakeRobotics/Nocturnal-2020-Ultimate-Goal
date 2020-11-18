@@ -14,7 +14,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.tel
 
 public class Tensorflow {
 
-    public enum SquareState{
+    public enum SquareState {
         BOX_A, BOX_B, BOX_C,
     }
 
@@ -65,7 +65,7 @@ public class Tensorflow {
         }
     } //deactivate
 
-    public Enum getTargetRegion(){
+    public SquareState getTargetRegion(){
         if (tfod == null){
             return null;
         }

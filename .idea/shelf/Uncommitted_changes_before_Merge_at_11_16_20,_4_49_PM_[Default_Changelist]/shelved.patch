@@ -1,0 +1,50 @@
+Index: TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmodes/autonomous/BaseStateMachine.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.firstinspires.ftc.teamcode.opmodes.autonomous;\n\nimport android.util.Log;\nimport com.qualcomm.robotcore.util.ElapsedTime;\n\nimport org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;\nimport org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;\nimport org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;\nimport org.firstinspires.ftc.robotcore.external.tfod.Recognition;\nimport org.firstinspires.ftc.teamcode.components.DriveSystem;\nimport org.firstinspires.ftc.teamcode.components.Tensorflow;\nimport org.firstinspires.ftc.teamcode.components.Vuforia;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic abstract class BaseStateMachine extends BaseAutonomous {\n    public enum State {\n        STATE_INITIAL,\n        STATE_PARK,\n        STATE_DRIVE,\n        STATE_DELIVER_WOBBLE,\n        STATE_YEET_WOBBLE,\n        STATE_SHOOT,\n        STATE_SEARCH,\n        STATE_COMPLETE,\n        LOGGING,\n    }\n\n    private final static String TAG = \"BaseStateMachine\";\n    private State mCurrentState;                         // Current State Machine State.\n    private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state\n\n    public void init(Team team) {\n        super.init(team);\n        this.msStuckDetectInit = 15000;\n        this.msStuckDetectInitLoop = 15000;\n        newState(State.STATE_INITIAL);\n    }\n\n    @Override\n    public void loop() {\n        telemetry.addData(\"State\", mCurrentState);\n        telemetry.update();\n        switch (mCurrentState) {\n            case LOGGING:\n                // telemetry.addData(\"DistanceFront\", distanceCenter.getDistance(DistanceUnit.MM));\n                telemetry.addData(\"Color Blue\", colorSensor.blue());\n                telemetry.addData(\"Color Red\", colorSensor.red());\n                telemetry.addData(\"Color Green\", colorSensor.green());\n                telemetry.addData(\"Color Alpha\", colorSensor.alpha());\n                telemetry.addData(\"Color Hue\", colorSensor.argb());\n                telemetry.update();\n                break;\n            case STATE_INITIAL:\n                // Initialize\n                // Drive 0.5m (1 tile) to the left\n                newState(State.STATE_DRIVE);\n                break;\n            case STATE_DRIVE:\n//                if (driveSystem.driveToPosition(975, centerDirection, 0.7)) {\n//                    newState(State.STATE_COMPLETE);\n//                }\n                //TODO Add drive after confirmed the targets / target actions using search. Use roadrunner\n                /*\n                some variation of roadrunner.drive to be implemented and calibrated later. Probably with hardware help\n                 */\n                break;\n            case STATE_PARK:\n                break;\n            case STATE_DELIVER_WOBBLE:\n                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal\n                Tensorflow tensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, \"Webcam 1\"), 0);\n\n                switch (tensorflow.getTargetRegion()){\n                    case BOX_A:\n                        //move to box a\n                        break;\n                    case BOX_B:\n                        //move to box b\n                        break;\n                    case BOX_C:\n                        //move to box c\n                        break;\n                }\n                break;\n            case STATE_YEET_WOBBLE:\n                break;\n            case STATE_SHOOT:\n                //TODO Shoot the ring after target.\n                // Shooter.shoot()\n                /*\n                shooter will either receive the information to set power or this state is only called if the robot is parked in position to shoot\n                 */\n                break;\n            case STATE_SEARCH:\n                //TODO Add tensorflow / vuforia to search for targets.\n                /*\n                Need to identify either parking space, wobble goal dropoff space, goals, powershots, etc.\n                 */\n                break;\n            case STATE_COMPLETE:\n\n                break;\n        }\n    }\n\n    private void newState(State newState) {\n        // Restarts the state clock as well as the state\n        mStateTime.reset();\n        mCurrentState = newState;\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmodes/autonomous/BaseStateMachine.java	(revision f341dff2071f2e74d53345c7236ca9f76e8cbae1)
++++ TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmodes/autonomous/BaseStateMachine.java	(date 1605573143000)
+@@ -20,7 +20,6 @@
+         STATE_PARK,
+         STATE_DRIVE,
+         STATE_DELIVER_WOBBLE,
+-        STATE_YEET_WOBBLE,
+         STATE_SHOOT,
+         STATE_SEARCH,
+         STATE_COMPLETE,
+@@ -72,20 +71,18 @@
+                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
+                 Tensorflow tensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), 0);
+ 
+-                switch (tensorflow.getTargetRegion()){
+-                    case BOX_A:
+-                        //move to box a
+-                        break;
+-                    case BOX_B:
+-                        //move to box b
+-                        break;
+-                    case BOX_C:
+-                        //move to box c
+-                        break;
+-                }
+-                break;
+-            case STATE_YEET_WOBBLE:
+-                break;
++//                switch (tensorflow.getTargetRegion()){
++//                    case BOX_A:
++//                        //move to box a
++//                        break;
++//                    case BOX_B:
++//                        //move to box b
++//                        break;
++//                    case BOX_C:
++//                        //move to box c
++//                        break;
++//                }
++//                break;
+             case STATE_SHOOT:
+                 //TODO Shoot the ring after target.
+                 // Shooter.shoot()

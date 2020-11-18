@@ -33,7 +33,6 @@ public abstract class BaseOpMode extends OpMode {
 
     protected void setCamera(CameraChoice cameraChoice){
         vuforia = new Vuforia(hardwareMap, cameraChoice);
-        skystone = vuforia.targetsSkyStone.get(0);
     }
 
     public final boolean isStopRequested() {

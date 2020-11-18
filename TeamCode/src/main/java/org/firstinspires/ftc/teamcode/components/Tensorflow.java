@@ -65,7 +65,7 @@ public class Tensorflow {
         }
     } //deactivate
 
-    public Enum getTargetRegion(){
+    public SquareState getTargetRegion(){
         if (tfod == null){
             return null;
         }

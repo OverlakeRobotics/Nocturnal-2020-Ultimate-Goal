@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
+import org.firstinspires.ftc.teamcode.components.Shooter;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Vuforia;
 
@@ -33,8 +34,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     Tensorflow.SquareState targetRegion;
-    DcMotor firstShooterMotor;
-    DcMotor secondShooterMotor;
+    Shooter shooter;
 
 
     public void init(Team team) {
@@ -45,6 +45,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         tensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraId);
         targetRegion = tensorflow.getTargetRegion();
         vuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.WEBCAM1);
+        shooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
         newState(State.STATE_INITIAL);
     }
 
@@ -92,6 +93,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                 }
                 break;
             case STATE_SHOOT:
+                shooter.setMotorPower();
                 //TODO Shoot the ring after target.
                 //Shooter.shoot()
                 /*

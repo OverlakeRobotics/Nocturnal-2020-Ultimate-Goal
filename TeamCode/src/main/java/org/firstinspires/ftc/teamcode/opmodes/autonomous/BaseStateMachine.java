@@ -83,7 +83,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
 
-                switch (targetRegion){
+                switch (targetRegion) {
                     case BOX_A:
                         //driveSystem.driveToPosition()
                     case BOX_B:
@@ -93,12 +93,30 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                 }
                 break;
             case STATE_SHOOT:
-                shooter.setMotorPower();
-                //TODO Shoot the ring after target.
-                //Shooter.shoot()
-                /*
-                shooter will either receive the information to set power or this state is only called if the robot is parked in position to shoot
-                 */
+                // **Basic Version, stop at white line**
+                //DriveSystem.stop()
+                //shooter.setMotorPower(**Whichever target it's going for**);
+                //shooter.shoot();
+                //for (int i = 1; i < totalRings; i++){
+                //  if (sticks) {
+                //      DriveSystem.strafe(**Proper number to do it**)
+                //  }
+                //  shooter.shoot();
+                //}
+                //shooter.stop();
+
+                // **Advanced Version, from anywhere**
+                //DriveSystem.stop()
+                //shooter.setMotorPower(**Whichever target it's going for**);
+                //shooter.shoot();
+                //for (int i = 1; i < totalRings; i++) {
+                //  if (sticks) {
+                //      DriveSystem.strafe(**Proper number to do it**)
+                //  }
+                //  shooter.shoot();
+                //}
+                //shooter.stop();
+
                 break;
             case STATE_COMPLETE:
                 break;

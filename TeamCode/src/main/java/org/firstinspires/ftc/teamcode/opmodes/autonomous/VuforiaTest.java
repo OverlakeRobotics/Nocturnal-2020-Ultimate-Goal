@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 //import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.Vuforia;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Autonomous
@@ -30,12 +31,10 @@ public class VuforiaTest extends LinearOpMode {
 
         Vuforia vuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.PHONE_BACK);
         OpenGLMatrix lastLocation = new OpenGLMatrix();
-        redLocation = OpenGLMatrix.translation(halfField, -quadField, mmTargetHeight);
-        blueLocation = OpenGLMatrix.translation(halfField, quadField, mmTargetHeight);
 
-        vuforia.activate();
+        vuforia.targetsUltGoal.activate();
 
-        while (!isStopRequested()) {
+        while (opModeIsActive()) {
 
             for (VuforiaTrackable trackable : Vuforia.getTrackables()) {
                 telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
@@ -51,6 +50,7 @@ public class VuforiaTest extends LinearOpMode {
             } else {
                 telemetry.addData("Pos", "Unknown");
             }
+            telemetry.addData("Offset", Arrays.toString(vuforia.getOffset(vuforia.targetsUltGoal.get(2))));
             telemetry.update();
         }
     }

@@ -24,17 +24,19 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         STATE_DRIVE,
         STATE_DELIVER_WOBBLE,
         STATE_SHOOT,
+        STATE_COLLECT,
         STATE_COMPLETE,
-        LOGGING,
+        LOGGING
     }
 
-    private Tensorflow tensorflow;
-    private Vuforia vuforia;
+    private Tensorflow mTensorflow;
+    private Vuforia mVuforia;
     private final static String TAG = "BaseStateMachine";
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
-    Tensorflow.SquareState targetRegion;
-    Shooter shooter;
+    Tensorflow.SquareState mTargetRegion;
+    Shooter mShooter;
+    private int mTotalRings;
 
 
     public void init(Team team) {
@@ -42,10 +44,10 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
         int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        tensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraId);
-        targetRegion = tensorflow.getTargetRegion();
-        vuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.WEBCAM1);
-        shooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
+        mTensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraId);
+        mTargetRegion = mTensorflow.getTargetRegion();
+        mVuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.WEBCAM1);
+        //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
         newState(State.STATE_INITIAL);
     }
 
@@ -83,7 +85,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
 
-                switch (targetRegion) {
+                switch (mTargetRegion) {
                     case BOX_A:
                         //driveSystem.driveToPosition()
                     case BOX_B:
@@ -92,32 +94,37 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                         //driveSystem.driveToPosition()
                 }
                 break;
+            case STATE_COLLECT:
+
+                break;
             case STATE_SHOOT:
-                // **Basic Version, stop at white line**
+                //**Basic Version, stop at white line**
                 //DriveSystem.stop()
-                //shooter.setMotorPower(**Whichever target it's going for**);
-                //shooter.shoot();
-                //for (int i = 1; i < totalRings; i++){
+                //mShooter.setMotorPower(**Whichever target it's going for**);
+                //mShooter.shoot();
+                //for (int i = 1; i < mTotalRings; i++){
                 //  if (sticks) {
                 //      DriveSystem.strafe(**Proper number to do it**)
                 //  }
-                //  shooter.shoot();
+                //  mShooter.shoot();
                 //}
-                //shooter.stop();
+                //mShooter.stop();
+                //mTotalRings = 0;
 
-                // **Advanced Version, from anywhere**
+                //**Advanced Version, from anywhere**
                 //DriveSystem.stop()
-                //shooter.setMotorPower(**Whichever target it's going for**);
-                //shooter.shoot();
+                //mShooter.setMotorPower(**Whichever target it's going for**);
+                //mShooter.shoot();
                 //for (int i = 1; i < totalRings; i++) {
                 //  if (sticks) {
                 //      DriveSystem.strafe(**Proper number to do it**)
                 //  }
-                //  shooter.shoot();
+                //  mShooter.shoot();
                 //}
-                //shooter.stop();
-
+                //mShooter.stop();
+                //mTotalRings = 0;
                 break;
+
             case STATE_COMPLETE:
                 break;
         }

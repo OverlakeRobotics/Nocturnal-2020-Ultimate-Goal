@@ -50,7 +50,7 @@ public class VuforiaTest extends LinearOpMode {
             } else {
                 telemetry.addData("Pos", "Unknown");
             }
-            telemetry.addData("Offset", Arrays.toString(vuforia.getOffset(vuforia.targetsUltGoal.get(2))));
+            telemetry.addData("Offset", vuforia.getXOffset(vuforia.targetsUltGoal.get(2), lastLocation) + ", " + vuforia.getYOffset(vuforia.targetsUltGoal.get(2), lastLocation));
             telemetry.update();
         }
     }

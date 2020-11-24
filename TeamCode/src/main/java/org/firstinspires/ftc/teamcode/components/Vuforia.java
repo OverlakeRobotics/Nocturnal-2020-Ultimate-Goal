@@ -207,11 +207,20 @@ public class Vuforia {
      * Index 0: Rotation of the target relative to the robot
      * Index 1: Vertical distance from target relative to the robot]
      */
-    public float[] getOffset(VuforiaTrackable trackable) {
-        OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)trackable.getListener()).getPose();
-        if (pose != null) {
-            return new float[] {Orientation.getOrientation(pose, EXTRINSIC, XYZ, DEGREES).thirdAngle, pose.getTranslation().get(0)};
+    public float getXOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+        if (listener.isVisible()) {
+            return lastLocation.getTranslation().get(0) - trackable.getLocation().getTranslation().get(0);
         }
-        return new float[]{};
+        return Float.NaN;
     }
+
+    public float getYOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+        if (listener.isVisible()) {
+            return lastLocation.getTranslation().get(1) - trackable.getLocation().getTranslation().get(1);
+        }
+        return Float.NaN;
+    }
+
 }

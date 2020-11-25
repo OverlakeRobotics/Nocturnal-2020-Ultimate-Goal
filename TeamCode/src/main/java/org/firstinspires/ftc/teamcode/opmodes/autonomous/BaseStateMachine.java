@@ -98,6 +98,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
 
                 break;
             case STATE_SHOOT:
+                mVuforia.
                 //**Basic Version, stop at white line**
                 //DriveSystem.stop()
                 //mShooter.setMotorPower(**Whichever target it's going for**);

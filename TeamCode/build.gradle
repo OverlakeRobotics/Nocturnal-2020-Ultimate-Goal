@@ -22,12 +22,16 @@ dependencies {
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 }
 
-/*task gitCleanLocalBranches {
-    doLast {
-        exec {
-            workingDir '/orgs/OverlakeRobotics/actions/secrets/:secret_name'
-            commandLine 'git',  branch --merged | grep -v \\* | grep -v master | grep -v develop | grep -v dmz | xargs git branch -D'
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
-        }
+android {
+
+    defaultConfig {
+
+        // should correspond to key/value pairs inside the file
+        buildConfigField("String", "VUFORIA_KEY", apikeyProperties['VUFORIA_KEY'])
+        buildConfigField("String", "DUDE_NAME", apikeyProperties['DUDE_NAME'])
     }
-}*/
+}

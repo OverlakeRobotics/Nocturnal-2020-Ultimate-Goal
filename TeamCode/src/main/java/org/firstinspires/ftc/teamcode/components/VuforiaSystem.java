@@ -18,10 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Teddy, trust my code, you blasphemer. */
-public class Vuforia {
+public class VuforiaSystem {
 
     public enum CameraChoice {
-        PHONE_FRONT, PHONE_BACK, WEBCAM1, WEBCAM2;
+        PHONE_FRONT, PHONE_BACK, WEBCAM1, WEBCAM2
     }
 
     private class VuforiaLocalizer extends VuforiaLocalizerImpl {
@@ -58,13 +58,13 @@ public class Vuforia {
 
     private OpenGLMatrix lastLocation = null; // class members
     private VuforiaLocalizer vuforia = null;
-    private float phoneXRotate    = 0;
-    private float phoneYRotate    = 0;
-    private float phoneZRotate    = 0;
+    private final float phoneXRotate    = 0;
+    private final float phoneYRotate    = 0;
+    private final float phoneZRotate    = 0;
     public VuforiaTrackables targetsUltGoal;
     private static ArrayList<VuforiaTrackable> allTrackables;
 
-    public Vuforia(HardwareMap hardwareMap, CameraChoice cameraChoice) {
+    public VuforiaSystem(HardwareMap hardwareMap, CameraChoice cameraChoice) {
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
         allTrackables = new ArrayList<VuforiaTrackable>();
@@ -103,9 +103,9 @@ public class Vuforia {
         // TODO most likely will need to end up establishing precise positions in the future
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+        final float CAMERA_FORWARD_DISPLACEMENT  = 1.3f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 7.1f * mmPerInch;   // eg: Camera is 8 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = 30.2f;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -203,24 +203,14 @@ public class Vuforia {
         targetsUltGoal.deactivate();
     }
 
-    /**
-     * Index 0: Rotation of the target relative to the robot
-     * Index 1: Vertical distance from target relative to the robot]
-     */
     public float getXOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
         VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
-        if (listener.isVisible()) {
-            return lastLocation.getTranslation().get(0) - trackable.getLocation().getTranslation().get(0);
-        }
-        return Float.NaN;
+        return (trackable.getLocation().getTranslation().get(0)/mmPerInch) - (lastLocation.getTranslation().get(0)/mmPerInch);
     }
 
     public float getYOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
         VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
-        if (listener.isVisible()) {
-            return lastLocation.getTranslation().get(1) - trackable.getLocation().getTranslation().get(1);
-        }
-        return Float.NaN;
+        return (trackable.getLocation().getTranslation().get(1)/mmPerInch) - (lastLocation.getTranslation().get(1)/mmPerInch);
     }
 
 }

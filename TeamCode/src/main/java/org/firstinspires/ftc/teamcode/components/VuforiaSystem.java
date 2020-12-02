@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
+import org.firstinspires.ftc.teamcode.opmodes.autonomous.BaseAutonomous;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
@@ -203,14 +204,18 @@ public class VuforiaSystem {
         targetsUltGoal.deactivate();
     }
 
-    public float getXOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
-        return (trackable.getLocation().getTranslation().get(0)/mmPerInch) - (lastLocation.getTranslation().get(0)/mmPerInch);
+    public float getXOffset(OpenGLMatrix lastLocation) {
+        return (halfField / mmPerInch) - (lastLocation.getTranslation().get(0) / mmPerInch);
     }
 
-    public float getYOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
-        return (trackable.getLocation().getTranslation().get(1)/mmPerInch) - (lastLocation.getTranslation().get(1)/mmPerInch);
+    public float getYOffset(BaseAutonomous.Team team, OpenGLMatrix lastLocation) {
+        switch (team) {
+            case RED:
+                return Math.abs((-quadField / mmPerInch) - (lastLocation.getTranslation().get(1) / mmPerInch));
+            case BLUE:
+                return Math.abs((quadField / mmPerInch) - (lastLocation.getTranslation().get(1) / mmPerInch));
+        }
+        return Float.NaN;
     }
 
 }

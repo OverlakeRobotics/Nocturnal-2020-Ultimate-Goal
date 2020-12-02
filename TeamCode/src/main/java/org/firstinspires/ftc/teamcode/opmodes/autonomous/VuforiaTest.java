@@ -26,6 +26,8 @@ public class VuforiaTest extends LinearOpMode {
     private static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
     private static final float quadField  = 36 * mmPerInch;
 
+    BaseAutonomous.Team team = BaseAutonomous.Team.RED;
+
     @Override
     public void runOpMode() throws InterruptedException, NullPointerException {
 
@@ -39,10 +41,12 @@ public class VuforiaTest extends LinearOpMode {
             for (VuforiaTrackable trackable : VuforiaSystem.getTrackables()) {
                 telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
 
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getFtcCameraFromTarget();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
+
+                telemetry.addData(trackable.getName() + " location", ((VuforiaTrackableDefaultListener)trackable.getListener()).getPose());
             }
 
             if (lastLocation.getData() != null) {
@@ -55,7 +59,7 @@ public class VuforiaTest extends LinearOpMode {
                 telemetry.addData("Pos (in)", "Unknown");
                 telemetry.addData("Rot (deg)", "Unknown");
             }
-            telemetry.addData("Offset", vuforia.getXOffset(vuforia.targetsUltGoal.get(2), lastLocation) + ", " + vuforia.getYOffset(vuforia.targetsUltGoal.get(2), lastLocation));
+            telemetry.addData("Offset", vuforia.getXOffset(lastLocation) + ", " + vuforia.getYOffset(team, lastLocation));
             telemetry.update();
         }
     }

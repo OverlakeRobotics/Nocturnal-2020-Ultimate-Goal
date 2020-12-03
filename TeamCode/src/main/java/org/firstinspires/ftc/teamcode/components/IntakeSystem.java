@@ -17,7 +17,7 @@ public class IntakeSystem {
      * Gets the number of rings currently in the robot
      * @return the number of rings currently in the robot
      */
-    public int getRings() {
+    public int getRingCount() {
         return rings;
     }
 
@@ -30,9 +30,9 @@ public class IntakeSystem {
     }
 
     /**
-     * Sucks in rings
+     * Intakes rings
      */
-    public void suck() {
+    public void intake() {
         //TODO implement
     }
 }

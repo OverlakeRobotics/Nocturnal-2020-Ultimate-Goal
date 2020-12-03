@@ -31,7 +31,7 @@ android {
     defaultConfig {
 
         // should correspond to key/value pairs inside the file
-        buildConfigField("String", "VUFORIA_KEY", apikeyProperties['VUFORIA_KEY'])
-        buildConfigField("String", "DUDE_NAME", apikeyProperties['DUDE_NAME'])
+        buildConfigField("String", "NOCTURNAL_VUFORIA_KEY", apikeyProperties['NOCTURNAL_VUFORIA_KEY'])
+        buildConfigField("String", "TEST_NAME", apikeyProperties['TEST_NAME'])
     }
 }

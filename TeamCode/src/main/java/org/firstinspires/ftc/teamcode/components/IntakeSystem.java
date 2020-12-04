@@ -1,16 +1,30 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class IntakeSystem {
-    private DcMotor motor1;
+    private DcMotor motor;
     private int rings;
 
     public IntakeSystem(DcMotor motor) {
-        motor1 = motor;
+        this.motor = motor;
+        initMotors();
 
         // Sets the rings to 3 since we start with 3 rings
         rings = 3;
+    }
+
+    /**
+     * Initializes the motors
+     */
+    public void initMotors() {
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //TODO Figure out what direction to set to
+        motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        motor.setPower(0);
     }
 
     /**

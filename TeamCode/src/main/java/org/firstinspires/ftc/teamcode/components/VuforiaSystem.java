@@ -17,15 +17,14 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import java.util.ArrayList;
 import java.util.List;
-
 /** Teddy, trust my code, you blasphemer. */
 public class VuforiaSystem {
 
     public enum CameraChoice {
-        PHONE_FRONT, PHONE_BACK, WEBCAM1, WEBCAM2
+        PHONE_FRONT, PHONE_BACK, WEBCAM1, WEBCAM2;
     }
 
-    private class VuforiaLocalizer extends VuforiaLocalizerImpl {
+    public static class VuforiaLocalizer extends VuforiaLocalizerImpl {
         public VuforiaLocalizer(Parameters parameters) {
             super(parameters);
         }
@@ -59,9 +58,9 @@ public class VuforiaSystem {
 
     private OpenGLMatrix lastLocation = null; // class members
     private VuforiaLocalizer vuforia = null;
-    private final float phoneXRotate    = 0;
-    private final float phoneYRotate    = 0;
-    private final float phoneZRotate    = 0;
+    private float phoneXRotate    = 0;
+    private float phoneYRotate    = 0;
+    private float phoneZRotate    = 0;
     public VuforiaTrackables targetsUltGoal;
     private static ArrayList<VuforiaTrackable> allTrackables;
 
@@ -70,12 +69,20 @@ public class VuforiaSystem {
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
         allTrackables = new ArrayList<VuforiaTrackable>();
 
-        vuforia = initVuforia(hardwareMap, cameraChoice);
+        vuforia = initVuforia(vuforia, hardwareMap, cameraChoice);
     }
 
-    private VuforiaLocalizer initVuforia(HardwareMap hardwareMap, CameraChoice cameraChoice) {
-        if (vuforia != null)
-            vuforia.close();
+    public VuforiaSystem(VuforiaLocalizer vf, HardwareMap hardwareMap, CameraChoice cameraChoice) {
+
+        // For convenience, gather together all the trackable objects in one easily-iterable collection */
+        allTrackables = new ArrayList<VuforiaTrackable>();
+
+        vuforia = initVuforia(vf, hardwareMap, cameraChoice);
+    }
+
+    private VuforiaLocalizer initVuforia(VuforiaLocalizer vf, HardwareMap hardwareMap, CameraChoice cameraChoice) {
+        if (vf != null)
+            vf.close();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
@@ -99,20 +106,20 @@ public class VuforiaSystem {
                 break;
             */
         }
-        vuforia = new VuforiaLocalizer(parameters);
 
+        vf = new VuforiaLocalizer(parameters);
         // TODO most likely will need to end up establishing precise positions in the future
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 1.3f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 7.1f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 30.2f;     // eg: Camera is ON the robot's center line
+        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
-        targetsUltGoal = vuforia.loadTrackablesFromAsset("UltimateGoal");
+        targetsUltGoal = vf.loadTrackablesFromAsset("UltimateGoal");
 
         VuforiaTrackable blueTowerGoalTarget = targetsUltGoal.get(0);
         blueTowerGoalTarget.setName("Blue Tower Goal");
@@ -153,7 +160,7 @@ public class VuforiaSystem {
 
         targetsUltGoal.activate();
 
-        return vuforia;
+        return vf;
     }
 
     public void close() {
@@ -204,16 +211,30 @@ public class VuforiaSystem {
         targetsUltGoal.deactivate();
     }
 
-    public float getXOffset(OpenGLMatrix lastLocation) {
-        return (halfField / mmPerInch) - (lastLocation.getTranslation().get(0) / mmPerInch);
+    /**
+     * Index 0: Rotation of the target relative to the robot
+     * Index 1: Vertical distance from target relative to the robot]
+     */
+    public float getXOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+        if (listener.isVisible()) {
+            return lastLocation.getTranslation().get(0) - trackable.getLocation().getTranslation().get(0);
+        }
+        return Float.NaN;
     }
 
-    public float getYOffset(BaseAutonomous.Team team, OpenGLMatrix lastLocation) {
-        switch (team) {
-            case RED:
-                return Math.abs((-quadField / mmPerInch) - (lastLocation.getTranslation().get(1) / mmPerInch));
-            case BLUE:
-                return Math.abs((quadField / mmPerInch) - (lastLocation.getTranslation().get(1) / mmPerInch));
+    public float getYOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+        if (listener.isVisible()) {
+            return lastLocation.getTranslation().get(1) - trackable.getLocation().getTranslation().get(1);
+        }
+        return Float.NaN;
+    }
+
+    public float getZOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+        if (listener.isVisible()) {
+            return lastLocation.getTranslation().get(2) - trackable.getLocation().getTranslation().get(2);
         }
         return Float.NaN;
     }

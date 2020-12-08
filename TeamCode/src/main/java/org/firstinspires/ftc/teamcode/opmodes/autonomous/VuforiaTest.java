@@ -26,7 +26,7 @@ public class VuforiaTest extends LinearOpMode {
     private static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
     private static final float quadField  = 36 * mmPerInch;
 
-    BaseAutonomous.Team team = BaseAutonomous.Team.RED;
+    BaseAutonomous.Team team = BaseAutonomous.Team.BLUE;
 
     @Override
     public void runOpMode() throws InterruptedException, NullPointerException {

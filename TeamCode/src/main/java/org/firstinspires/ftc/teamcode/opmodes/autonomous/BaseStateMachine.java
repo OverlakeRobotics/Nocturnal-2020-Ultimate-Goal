@@ -35,15 +35,24 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         this.msStuckDetectInitLoop = 15000;
         int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         mTensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraId);
-        mTargetRegion = mTensorflow.getTargetRegion();
+        mTensorflow.activate();
         mVuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.WEBCAM1);
+
+        //TODO add shooter and intakes system
         //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
         newState(State.STATE_INITIAL);
     }
 
     @Override
     public void init_loop() {
-        //TODO identify targets
+        if (mTargetRegion != null) mTensorflow.shutdown();
+        else mTargetRegion = mTensorflow.getTargetRegion();
+    }
+
+    @Override
+    public void start() {
+        if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
+        mTensorflow.shutdown();
     }
 
     @Override

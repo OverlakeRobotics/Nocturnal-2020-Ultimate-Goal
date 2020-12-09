@@ -21,7 +21,7 @@ import java.util.List;
 public class VuforiaSystem {
 
     public enum CameraChoice {
-        PHONE_FRONT, PHONE_BACK, WEBCAM1, WEBCAM2;
+        PHONE_BACK, WEBCAM1;
     }
 
     public static class VuforiaLocalizer extends VuforiaLocalizerImpl {
@@ -91,20 +91,12 @@ public class VuforiaSystem {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         switch (cameraChoice) {
-            case PHONE_FRONT:
-                parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-                break;
             case PHONE_BACK:
                 parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
                 break;
             case WEBCAM1:
                 parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
                 break;
-            /*
-            case WEBCAM2:
-                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 2");
-                break;
-            */
         }
 
         vf = new VuforiaLocalizer(parameters);
@@ -125,12 +117,6 @@ public class VuforiaSystem {
         blueTowerGoalTarget.setName("Blue Tower Goal");
         VuforiaTrackable redTowerGoalTarget = targetsUltGoal.get(1);
         redTowerGoalTarget.setName("Red Tower Goal");
-        VuforiaTrackable redAllianceTarget = targetsUltGoal.get(2);
-        redAllianceTarget.setName("Red Alliance");
-        VuforiaTrackable blueAllianceTarget = targetsUltGoal.get(3);
-        blueAllianceTarget.setName("Blue Alliance");
-        VuforiaTrackable frontWallTarget = targetsUltGoal.get(4);
-        frontWallTarget.setName("Front Wall");
 
         allTrackables.addAll(targetsUltGoal);
 
@@ -138,17 +124,6 @@ public class VuforiaSystem {
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
-
-        redAllianceTarget.setLocation(OpenGLMatrix
-                .translation(0, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-
-        blueAllianceTarget.setLocation(OpenGLMatrix
-                .translation(0, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-        frontWallTarget.setLocation(OpenGLMatrix
-                .translation(-halfField, 0, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
 
         // The tower goal targets are located a quarter field length from the ends of the back perimeter wall.
         blueTowerGoalTarget.setLocation(OpenGLMatrix

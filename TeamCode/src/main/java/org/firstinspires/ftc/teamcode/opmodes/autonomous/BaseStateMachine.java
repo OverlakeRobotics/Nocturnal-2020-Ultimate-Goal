@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.components.Shooter;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
-import org.firstinspires.ftc.teamcode.components.Vuforia;
+import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
 public abstract class BaseStateMachine extends BaseAutonomous {
     public enum State {
@@ -24,7 +24,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
-    private Vuforia mVuforia;
+    private VuforiaSystem mVuforia;
     private Tensorflow.SquareState mTargetRegion;
     private Shooter mShooter;
 //    private IntakeSystem mIntakeSystem;
@@ -36,7 +36,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         mTensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraId);
         mTensorflow.activate();
-        mVuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.WEBCAM1);
+        mVuforia = new VuforiaSystem(hardwareMap, VuforiaSystem.CameraChoice.WEBCAM1);
 
         //TODO add shooter and intakes system
         //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));

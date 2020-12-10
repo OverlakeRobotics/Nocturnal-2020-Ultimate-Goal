@@ -1,43 +1,33 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-import android.util.Log;
-
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.Shooter;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
-import org.firstinspires.ftc.teamcode.components.Vuforia;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
 public abstract class BaseStateMachine extends BaseAutonomous {
     public enum State {
         STATE_INITIAL,
-        STATE_PARK,
-        STATE_DRIVE,
+        STATE_GRAB,
+        STATE_DRIVE_TO_TARGET,
         STATE_DELIVER_WOBBLE,
+        IDENTIFY_TARGETS,
         STATE_SHOOT,
-        STATE_COLLECT,
+        STATE_COLLECT_RINGS,
         STATE_COMPLETE,
         LOGGING
     }
 
-    private Tensorflow mTensorflow;
-    private Vuforia mVuforia;
     private final static String TAG = "BaseStateMachine";
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
-    Tensorflow.SquareState mTargetRegion;
-    Shooter mShooter;
-    private int mTotalRings;
-
+    private Tensorflow mTensorflow;
+    private VuforiaSystem mVuforia;
+    private Tensorflow.SquareState mTargetRegion;
+    private Shooter mShooter;
+//    private IntakeSystem mIntakeSystem;
 
     public void init(Team team) {
         super.init(team);
@@ -45,10 +35,24 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         this.msStuckDetectInitLoop = 15000;
         int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         mTensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraId);
-        mTargetRegion = mTensorflow.getTargetRegion();
-        mVuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.WEBCAM1);
+        mTensorflow.activate();
+        mVuforia = new VuforiaSystem(hardwareMap, VuforiaSystem.CameraChoice.WEBCAM1);
+
+        //TODO add shooter and intakes system
         //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
         newState(State.STATE_INITIAL);
+    }
+
+    @Override
+    public void init_loop() {
+        if (mTargetRegion != null) mTensorflow.shutdown();
+        else mTargetRegion = mTensorflow.getTargetRegion();
+    }
+
+    @Override
+    public void start() {
+        if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
+        mTensorflow.shutdown();
     }
 
     @Override
@@ -70,7 +74,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                 // Drive 0.5m (1 tile) to the left
                 newState(State.STATE_DELIVER_WOBBLE);
                 break;
-            case STATE_DRIVE:
+            case STATE_DRIVE_TO_TARGET:
 //                if (driveSystem.driveToPosition(975, centerDirection, 0.7)) {
 //                    newState(State.STATE_COMPLETE);
 //                }
@@ -79,8 +83,8 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                 some variation of roadrunner.drive to be implemented and calibrated later. Probably with hardware help
                  */
                 break;
-            case STATE_PARK:
-                driveSystem.setMotorPower(0);
+            case STATE_GRAB:
+
                 break;
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
@@ -94,7 +98,10 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                         //driveSystem.driveToPosition()
                 }
                 break;
-            case STATE_COLLECT:
+            case IDENTIFY_TARGETS:
+
+                break;
+            case STATE_COLLECT_RINGS:
 
                 break;
             case STATE_SHOOT:

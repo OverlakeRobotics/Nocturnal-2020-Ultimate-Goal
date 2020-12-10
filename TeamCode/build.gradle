@@ -21,3 +21,17 @@ repositories {
 dependencies {
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 }
+
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
+android {
+
+    defaultConfig {
+
+        // should correspond to key/value pairs inside the file
+        buildConfigField("String", "NOCTURNAL_VUFORIA_KEY", apikeyProperties['NOCTURNAL_VUFORIA_KEY'])
+        buildConfigField("String", "TEST_NAME", apikeyProperties['TEST_NAME'])
+    }
+}

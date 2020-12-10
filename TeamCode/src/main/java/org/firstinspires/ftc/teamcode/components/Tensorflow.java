@@ -22,7 +22,7 @@ public class Tensorflow {
     private static final String LABEL_SECOND_ELEMENT = "One"; //OneRing
     private static final String VUFORIA_KEY = BuildConfig.NOCTURNAL_VUFORIA_KEY;
 
-    private VuforiaLocalizer vuforia; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
+    private Vuforia.VuforiaLocalizer vuforia; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
     private TFObjectDetector tfod; //declaring objectDetector
 
     public Tensorflow(WebcamName name, int tfodMonitorId) { //name tfod id
@@ -32,13 +32,26 @@ public class Tensorflow {
 
         parameters.cameraName = name; //setting name to name
 
-        vuforia = ClassFactory.getInstance().createVuforia(parameters); //creating vuforia obj w/parameters
+        initVuforia();
 
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorId); //creating parameters
         tfodParameters.minResultConfidence = 0.3f; //minimumConfidenceNecessaryForActingOnOr'Accepting'Detection
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia); //create objectDetector
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); //loading models
         tfod.activate(); //turnOn
+    }
+
+    public void initVuforia () {
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+
+        vuforia = new Vuforia.VuforiaLocalizer(parameters);
+    }
+
+    public Vuforia.VuforiaLocalizer getLocalizer(){
+        return vuforia;
     }
 
     /** Method getInference()

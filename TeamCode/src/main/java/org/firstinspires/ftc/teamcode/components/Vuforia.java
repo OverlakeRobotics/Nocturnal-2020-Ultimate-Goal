@@ -22,7 +22,7 @@ public class Vuforia {
         PHONE_FRONT, PHONE_BACK, WEBCAM1, WEBCAM2;
     }
 
-    private class VuforiaLocalizer extends VuforiaLocalizerImpl {
+    static class VuforiaLocalizer extends VuforiaLocalizerImpl {
         public VuforiaLocalizer(Parameters parameters) {
             super(parameters);
         }

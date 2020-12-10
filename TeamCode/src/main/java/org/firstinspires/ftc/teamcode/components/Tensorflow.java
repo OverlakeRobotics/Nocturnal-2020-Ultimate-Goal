@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.components;
 import java.util.EnumMap;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -25,7 +26,7 @@ public class Tensorflow {
     private VuforiaLocalizer vuforia; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
     private TFObjectDetector tfod; //declaring objectDetector
 
-    public Tensorflow(WebcamName name, int tfodMonitorId) { //name tfod id
+    public Tensorflow(CameraName name, int tfodMonitorId) { //name tfod id
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(); //creating parameters
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY; //setting key

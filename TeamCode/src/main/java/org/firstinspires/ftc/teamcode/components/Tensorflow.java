@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import com.vuforia.Vuforia;
+
 import java.util.EnumMap;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -27,7 +29,7 @@ public class Tensorflow {
     private TFObjectDetector tfod; //declaring objectDetector
 
     public Tensorflow(CameraName name, int tfodMonitorId) { //name tfod id
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(); //creating parameters
+        VuforiaSystem.VuforiaLocalizer.Parameters parameters = new VuforiaSystem.VuforiaLocalizer.Parameters(); //creating parameters
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY; //setting key
 

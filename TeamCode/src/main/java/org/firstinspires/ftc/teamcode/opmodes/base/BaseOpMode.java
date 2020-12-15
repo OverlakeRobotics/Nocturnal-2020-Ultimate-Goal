@@ -2,22 +2,17 @@ package org.firstinspires.ftc.teamcode.opmodes.base;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
-import org.firstinspires.ftc.teamcode.components.Vuforia;
-import org.firstinspires.ftc.teamcode.components.Vuforia.CameraChoice;
+import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
+import org.firstinspires.ftc.teamcode.components.VuforiaSystem.CameraChoice;
 
 import java.util.EnumMap;
 
 public abstract class BaseOpMode extends OpMode {
 
     protected DriveSystem driveSystem;
-    protected Vuforia vuforia;
-    protected VuforiaTrackable skystone;
-    protected VuforiaTrackable rearPerimeter;
+    protected VuforiaSystem vuforia;
     private boolean stopRequested;
 
     public void init(){
@@ -32,8 +27,7 @@ public abstract class BaseOpMode extends OpMode {
     }
 
     protected void setCamera(CameraChoice cameraChoice){
-        vuforia = new Vuforia(hardwareMap, cameraChoice);
-        skystone = vuforia.targetsSkyStone.get(0);
+        vuforia = new VuforiaSystem(hardwareMap, cameraChoice);
     }
 
     public final boolean isStopRequested() {

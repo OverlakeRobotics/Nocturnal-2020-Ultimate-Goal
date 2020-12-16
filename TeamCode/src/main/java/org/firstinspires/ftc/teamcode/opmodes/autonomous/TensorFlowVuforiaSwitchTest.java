@@ -119,7 +119,13 @@ public class TensorFlowVuforiaSwitchTest extends LinearOpMode {
             VuforiaSystem vuforia = new VuforiaSystem(vuforiaLocalizer, hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
             OpenGLMatrix lastLocation = new OpenGLMatrix();
 
+
+            System.out.println("MESSAGE: activating vuforia");
             vuforia.targetsUltGoal.activate();
+            System.out.println("MESSAGE: vuforia successfully activated");
+
+            vuforia.targetsUltGoal.activate();
+
             while (opModeIsActive()) {
                 int i = 0;
                 for (VuforiaTrackable trackable : VuforiaSystem.getTrackables()) {
@@ -209,6 +215,9 @@ public class TensorFlowVuforiaSwitchTest extends LinearOpMode {
     }
 
     public void switchVuforiaTask() {
+        System.out.println("MESSAGE: shutting down tensorflow");
+        tfod.shutdown();
+        System.out.println("MESSAGE: tensorflow successfully shut down");
         tfod.shutdown();
         x = true;
     }

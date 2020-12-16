@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.components.DriveSystem;
+import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.Shooter;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
@@ -27,6 +30,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     private VuforiaSystem mVuforia;
     private Tensorflow.SquareState mTargetRegion;
     private Shooter mShooter;
+    private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
 //    private IntakeSystem mIntakeSystem;
 
     public void init(Team team) {
@@ -36,7 +40,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         mTensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraId);
         mTensorflow.activate();
-        mVuforia = new VuforiaSystem(hardwareMap, VuforiaSystem.CameraChoice.WEBCAM1);
+        mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 
         //TODO add shooter and intakes system
         //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
@@ -45,13 +49,13 @@ public abstract class BaseStateMachine extends BaseAutonomous {
 
     @Override
     public void init_loop() {
-        if (mTargetRegion != null) mTensorflow.shutdown();
-        else mTargetRegion = mTensorflow.getTargetRegion();
+        mTargetRegion = mTensorflow.getTargetRegion();
     }
 
     @Override
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
+        mVuforia = new VuforiaSystem(mTensorflow.getLocalizer(), hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
         mTensorflow.shutdown();
     }
 

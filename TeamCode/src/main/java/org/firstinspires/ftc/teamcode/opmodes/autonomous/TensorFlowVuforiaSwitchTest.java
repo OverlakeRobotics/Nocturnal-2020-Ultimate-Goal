@@ -63,25 +63,19 @@ public class TensorFlowVuforiaSwitchTest extends LinearOpMode {
      */
     private static final String VUFORIA_KEY = "Ad0Srbr/////AAABmdpa0/j2K0DPhXQjE2Hyum9QUQXZO8uAVCNpwlogfxiVmEaSuqHoTMWcV9nLlQpEnh5bwTlQG+T35Vir8IpdrSdk7TctIqH3QBuJFdHsx5hlcn74xa7AiQSJgUD/n7JJ2zJ/Er5Hc+b+r616Jf1YU6RO63Ajk5+TFB9N3a85NjMD6eDm+C6f14647ELnmGC03poSOeczbX7hZpIEObtYdVyKZ2NQ/26xDfSwwJuyMgUHwWY6nl6mk0GMnIGvu0/HoGNgyR5EkUQWyx9XlmxSrldY7BIEVkiKmracvD7W9hEGZ2nPied6DTY5RFNuFX07io6+I59/d7291NXKVMDnFAqSt4a2JYsECv+j7b25S0mD";
 
-    /**
-     * {@link #vuforiaLocalizer} is the variable we will use to store our instance of the Vuforia
-     * localization engine.
-     */
     private VuforiaSystem.VuforiaLocalizer vuforiaLocalizer;
-
-    /**
-     * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
-     * Detection engine.
-     */
-    private TFObjectDetector tfod;
+    private Tensorflow tfod;
 
     @Override
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
+        tfod = new Tensorflow(VuforiaLocalizer.CameraDirection.BACK, hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
 
-        initVuforiaLocalizer();
-        initTfod();
+        vuforiaLocalizer = tfod.getLocalizer();
+        //initVuforiaLocalizer();
+        //initTfod();
 
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
@@ -179,22 +173,10 @@ public class TensorFlowVuforiaSwitchTest extends LinearOpMode {
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
 
-    /**
-     * Initialize the TensorFlow Object Detection engine.
-     */
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.7f;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforiaLocalizer);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
-    }
-
 
     public List<Recognition> getInference() { //get "image" back, a bunch of Recognitions - check out instance variables
         if (tfod != null) {
-            return tfod.getRecognitions();
+            return tfod.getInference();
             //return tfod.getUpdatedRecognitions(); //Returns the list of recognitions, but only if they are different than the last call to {@link #getUpdatedRecognitions()}.
         }
         return null;
@@ -231,7 +213,6 @@ public class TensorFlowVuforiaSwitchTest extends LinearOpMode {
         telemetry.addData("Oopsie", null);
         return null;
     }
-
 
     public void switchVuforiaTask() {
         System.out.println("MESSAGE: shutting down tensorflow");

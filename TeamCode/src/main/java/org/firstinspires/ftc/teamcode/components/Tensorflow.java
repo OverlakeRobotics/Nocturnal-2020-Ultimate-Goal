@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import com.vuforia.Vuforia;
+
 import java.util.EnumMap;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -23,17 +25,17 @@ public class Tensorflow {
     private static final String LABEL_SECOND_ELEMENT = "One"; //OneRing
     private static final String VUFORIA_KEY = BuildConfig.NOCTURNAL_VUFORIA_KEY;
 
-    private VuforiaLocalizer vuforia; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
+    private VuforiaSystem.VuforiaLocalizer vuforia; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
     private TFObjectDetector tfod; //declaring objectDetector
 
     public Tensorflow(CameraName name, int tfodMonitorId) { //name tfod id
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(); //creating parameters
+        VuforiaSystem.VuforiaLocalizer.Parameters parameters = new VuforiaSystem.VuforiaLocalizer.Parameters(); //creating parameters
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY; //setting key
 
         parameters.cameraName = name; //setting name to name
 
-        vuforia = ClassFactory.getInstance().createVuforia(parameters); //creating vuforia obj w/parameters
+        initVuforia();
 
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorId); //creating parameters
         tfodParameters.minResultConfidence = 0.3f; //minimumConfidenceNecessaryForActingOnOr'Accepting'Detection
@@ -102,6 +104,10 @@ public class Tensorflow {
             tfod.shutdown();
         }
     } //deactivate
+
+    public VuforiaSystem.VuforiaLocalizer getLocalizer(){
+        return vuforia;
+    }
 
     public SquareState getTargetRegion(){
         if (tfod == null){

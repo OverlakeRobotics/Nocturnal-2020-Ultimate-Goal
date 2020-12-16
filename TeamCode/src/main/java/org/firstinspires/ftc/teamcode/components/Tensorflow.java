@@ -87,7 +87,7 @@ public class Tensorflow {
 
     public List<Recognition> getInference() { //get "image" back, a bunch of Recognitions - check out instance variables
         if (tfod != null) {
-            return tfod.getUpdatedRecognitions(); //Returns the list of recognitions, but only if they are different than the last call to {@link #getUpdatedRecognitions()}.
+            return tfod.getRecognitions(); //Returns the list of recognitions, but only if they are different than the last call to {@link #getUpdatedRecognitions()}.
         }
         return null;
     }

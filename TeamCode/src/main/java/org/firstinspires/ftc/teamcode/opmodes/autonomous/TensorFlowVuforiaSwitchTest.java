@@ -29,16 +29,12 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 @TeleOp(name = "TensorFlowVuforiaSwitch", group = "TensorFlow")
 public class TensorFlowVuforiaSwitchTest extends LinearOpMode {
-    public enum SquareState{
-        BOX_A, BOX_B, BOX_C,
-    }
 
-
-    private static final float mmPerInch        = 25.4f;                    // constant for converting measurements from inches to millimeters
-    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private static final float mmPerInch = 25.4f;                    // constant for converting measurements from inches to millimeters
+    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     private static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
-    private static final float quadField  = 36 * mmPerInch;
+    private static final float quadField = 36 * mmPerInch;
 
     private OpenGLMatrix redLocation;
     private OpenGLMatrix blueLocation;
@@ -100,30 +96,23 @@ public class TensorFlowVuforiaSwitchTest extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
-        Enum Result;
+        Tensorflow.SquareState result;
         ElapsedTime y = new ElapsedTime();
         if (opModeIsActive()) {
             while (opModeIsActive()) {
-                Result = getTargetRegion();
-                telemetry.addData ("Square State", Result.name());
+                result = getTargetRegion();
+                telemetry.addData ("Square State", result.name());
                 telemetry.update();
-                if (y.milliseconds() > 15000){
+                if (y.milliseconds() > 15000) {
                     switchVuforiaTask();
                     break;
                 }
             }
         }
 
-
         if (x) {
             VuforiaSystem vuforia = new VuforiaSystem(vuforiaLocalizer, hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
             OpenGLMatrix lastLocation = new OpenGLMatrix();
-
-
-            System.out.println("MESSAGE: activating vuforia");
-            vuforia.targetsUltGoal.activate();
-            System.out.println("MESSAGE: vuforia successfully activated");
-
             vuforia.targetsUltGoal.activate();
 
             while (opModeIsActive()) {
@@ -148,7 +137,6 @@ public class TensorFlowVuforiaSwitchTest extends LinearOpMode {
                 telemetry.update();
             }
         }
-
 
         if (tfod != null) {
             tfod.shutdown();
@@ -182,7 +170,7 @@ public class TensorFlowVuforiaSwitchTest extends LinearOpMode {
         return null;
     }
 
-    public Enum getTargetRegion() {
+    public Tensorflow.SquareState getTargetRegion() {
 
         List<Recognition> toOperateOffOf = getInference();
         if (toOperateOffOf != null && toOperateOffOf.size() == 1) {
@@ -215,9 +203,6 @@ public class TensorFlowVuforiaSwitchTest extends LinearOpMode {
     }
 
     public void switchVuforiaTask() {
-        System.out.println("MESSAGE: shutting down tensorflow");
-        tfod.shutdown();
-        System.out.println("MESSAGE: tensorflow successfully shut down");
         tfod.shutdown();
         x = true;
     }

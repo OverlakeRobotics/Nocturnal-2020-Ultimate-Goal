@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.Shooter;
@@ -38,7 +41,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
         int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        mTensorflow = new Tensorflow(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraId);
+        mTensorflow = new Tensorflow(VuforiaLocalizer.CameraDirection.BACK, hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 
@@ -109,7 +112,6 @@ public abstract class BaseStateMachine extends BaseAutonomous {
 
                 break;
             case STATE_SHOOT:
-                mVuforia.
                 //**Basic Version, stop at white line**
                 //DriveSystem.stop()
                 //mShooter.setMotorPower(**Whichever target it's going for**);

@@ -6,8 +6,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.Shooter;
@@ -28,7 +30,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     }
 
     private final static String TAG = "BaseStateMachine";
-    private final static VuforiaTrackable sideWall = VuforiaSystem.getTrackables().get(3);
+    private VuforiaTrackable sideWallTrackable = VuforiaSystem.getTrackables().get(3);
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
@@ -108,8 +110,17 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                 }
                 break;
             case IDENTIFY_TARGETS:
-                //TODO use vuforia to find the rings.
+                //TODO use vuforia to find the target
+                OpenGLMatrix lastLocation = new OpenGLMatrix();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) sideWallTrackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                }
+                float xOffset = mVuforia.getXOffset(sideWallTrackable, lastLocation);
+                float yOffset = mVuforia.getYOffset(sideWallTrackable, lastLocation);
+                //TODO use xOffset and yOffset to calibrate roadrunner.
                 break;
+
             case STATE_COLLECT_RINGS:
                 //TODO Use the intake system to collect the rings
                 break;

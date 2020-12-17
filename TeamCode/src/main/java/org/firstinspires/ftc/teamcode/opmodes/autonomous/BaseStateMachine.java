@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.Shooter;
@@ -27,6 +28,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     }
 
     private final static String TAG = "BaseStateMachine";
+    private final static VuforiaTrackable sideWall = VuforiaSystem.getTrackables().get(3);
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
@@ -106,10 +108,10 @@ public abstract class BaseStateMachine extends BaseAutonomous {
                 }
                 break;
             case IDENTIFY_TARGETS:
-
+                //TODO use vuforia to find the rings.
                 break;
             case STATE_COLLECT_RINGS:
-
+                //TODO Use the intake system to collect the rings
                 break;
             case STATE_SHOOT:
                 //**Basic Version, stop at white line**
@@ -149,5 +151,4 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         mStateTime.reset();
         mCurrentState = newState;
     }
-
 }

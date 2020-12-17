@@ -60,15 +60,12 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
         Log.d(TAG, "Attempting to shut down TensorFlow");
         mTensorflow.shutdown();
         Log.d(TAG, "Successfully shut down TensorFlow");
-        Log.d(TAG, "TargetRegion is: " + mTargetRegion);
+        Log.d(TAG, "Final TargetRegion is: " + mTargetRegion);
     }
 
     @Override
     public void loop() {
 
-        Log.d(TAG, "Attempting to activate Vuforia");
-        mVuforia.targetsUltGoal.activate();
-        Log.d(TAG, "Activated Vuforia");
     }
 
     private void newState(BaseStateMachine.State newState) {

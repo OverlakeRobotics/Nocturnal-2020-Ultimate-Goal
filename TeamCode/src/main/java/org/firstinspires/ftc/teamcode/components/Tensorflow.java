@@ -34,14 +34,7 @@ public class Tensorflow {
         parameters.vuforiaLicenseKey = VUFORIA_KEY; //setting key
 
         parameters.cameraName = name; //setting name to name
-
-        initVuforia();
-
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorId); //creating parameters
-        tfodParameters.minResultConfidence = 0.3f; //minimumConfidenceNecessaryForActingOnOr'Accepting'Detection
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia); //create objectDetector
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); //loading models
-        tfod.activate(); //turnOn
+        initTensorflow(parameters, tfodMonitorId);
     }
 
     public Tensorflow(VuforiaLocalizer.CameraDirection cameraDirection, int tfodMonitorId) { //name tfod id
@@ -51,6 +44,11 @@ public class Tensorflow {
 
         parameters.cameraDirection = cameraDirection; //setting name to name
 
+        initTensorflow(parameters, tfodMonitorId);
+        //Hi, this is Anish, and I'm teaching Vincent and Ethan, how git works.
+    }
+
+    public void initTensorflow (VuforiaSystem.VuforiaLocalizer.Parameters parameters, int tfodMonitorId) {
         initVuforia();
 
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorId); //creating parameters
@@ -58,7 +56,6 @@ public class Tensorflow {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia); //create objectDetector
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); //loading models
         tfod.activate(); //turnOn
-        //Hi, this is Anish, and I'm teaching Vincent and Ethan, how git works.
     }
 
     public void initVuforia () {

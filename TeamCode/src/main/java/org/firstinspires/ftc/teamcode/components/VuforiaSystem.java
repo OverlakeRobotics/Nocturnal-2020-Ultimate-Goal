@@ -41,8 +41,8 @@ public class VuforiaSystem {
         return visibleTrackables;
     }
 
-    public static VuforiaLocalizer getLocalizer (){
-        return ClassFactory.getInstance().createVuforia(parameters);
+    public static VuforiaLocalizer getVuforiaLocalizer(HardwareMap hardwareMap, CameraChoice cameraChoice) {
+        return initVuforia(hardwareMap, cameraChoice);
     }
 
     private static final String VUFORIA_KEY = "Ad0Srbr/////AAABmdpa0/j2K0DPhXQjE2Hyum9QUQXZO8uAVCNpwlogfxiVmEaSuqHoTMWcV9nLlQpEnh5bwTlQG+T35Vir8IpdrSdk7TctIqH3QBuJFdHsx5hlcn74xa7AiQSJgUD/n7JJ2zJ/Er5Hc+b+r616Jf1YU6RO63Ajk5+TFB9N3a85NjMD6eDm+C6f14647ELnmGC03poSOeczbX7hZpIEObtYdVyKZ2NQ/26xDfSwwJuyMgUHwWY6nl6mk0GMnIGvu0/HoGNgyR5EkUQWyx9XlmxSrldY7BIEVkiKmracvD7W9hEGZ2nPied6DTY5RFNuFX07io6+I59/d7291NXKVMDnFAqSt4a2JYsECv+j7b25S0mD";
@@ -54,28 +54,17 @@ public class VuforiaSystem {
     private static final float quadField  = 36 * mmPerInch;
 
     private OpenGLMatrix lastLocation = null; // class members
-    private VuforiaLocalizer vuforia;
-    private float phoneXRotate    = 0;
-    private float phoneYRotate    = 0;
-    private float phoneZRotate    = 0;
-    public VuforiaTrackables targetsUltGoal;
+    public static VuforiaTrackables targetsUltGoal;
     private static ArrayList<VuforiaTrackable> allTrackables;
 
-    public VuforiaSystem(VuforiaLocalizer vf, HardwareMap hardwareMap, CameraChoice cameraChoice) {
-
-        // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        allTrackables = new ArrayList<VuforiaTrackable>();
-
-        vuforia = initVuforia(vf, hardwareMap, cameraChoice);
-    }
-
-    private VuforiaLocalizer initVuforia(VuforiaLocalizer vf, HardwareMap hardwareMap, CameraChoice cameraChoice) {
+    private static VuforiaLocalizer initVuforia(HardwareMap hardwareMap, CameraChoice cameraChoice) {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.useExtendedTracking = false;
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
+
         switch (cameraChoice) {
             case PHONE_BACK:
                 parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
@@ -84,31 +73,40 @@ public class VuforiaSystem {
                 parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
                 break;
         }
+        VuforiaLocalizer vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
+        if (targetsUltGoal == null) initUltsGoal(parameters.cameraDirection, vuforiaLocalizer);
+        return vuforiaLocalizer;
+    }
 
-        vf = ClassFactory.getInstance().createVuforia(parameters);
+    private static void initUltsGoal(VuforiaLocalizer.CameraDirection cameraDirection, VuforiaLocalizer vuforiaLocalizer) {
         // TODO most likely will need to end up establishing precise positions in the future
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
+        final float CAMERA_FORWARD_DISPLACEMENT = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+        final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
+        float phoneXRotate = 0;
+        float phoneYRotate = 0;
+        float phoneZRotate = 0;
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
-        targetsUltGoal = vf.loadTrackablesFromAsset("UltimateGoal");
+        targetsUltGoal = vuforiaLocalizer.loadTrackablesFromAsset("UltimateGoal");
 
         VuforiaTrackable blueTowerGoalTarget = targetsUltGoal.get(0);
         blueTowerGoalTarget.setName("Blue Tower Goal");
         VuforiaTrackable redTowerGoalTarget = targetsUltGoal.get(1);
         redTowerGoalTarget.setName("Red Tower Goal");
 
+        // For convenience, gather together all the trackable objects in one easily-iterable collection */
+        allTrackables = new ArrayList<>();
         allTrackables.addAll(targetsUltGoal);
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, cameraDirection);
         }
 
         // The tower goal targets are located a quarter field length from the ends of the back perimeter wall.
@@ -120,8 +118,6 @@ public class VuforiaSystem {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
         targetsUltGoal.activate();
-
-        return vf;
     }
 
     public Orientation getRobotHeading() {
@@ -145,11 +141,7 @@ public class VuforiaSystem {
 
     public boolean isAnyTargetVisible() {
         for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
-                }
+            if (isTargetVisible(trackable)) {
                 return true;
             }
         }

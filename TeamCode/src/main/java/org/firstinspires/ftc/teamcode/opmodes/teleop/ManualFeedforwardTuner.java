@@ -13,14 +13,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.components.DriveConstants;
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 
 import java.util.Objects;
 
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.MAX_RPM;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.rpmToVelocity;
+import static org.firstinspires.ftc.teamcode.Constants.MAX_RPM;
+import static org.firstinspires.ftc.teamcode.Constants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.Constants.rpmToVelocity;
 
 /*
  * This routine is designed to tune the open-loop feedforward coefficients. Although it may seem unnecessary,
@@ -31,7 +31,7 @@ import static org.firstinspires.ftc.teamcode.components.DriveConstants.rpmToVelo
  * you are using the Control Hub. Once you've successfully connected, start the program, and your
  * robot will begin moving forward and backward according to a motion profile. Your job is to graph
  * the velocity errors over time and adjust the feedforward coefficients. Once you've found a
- * satisfactory set of gains, add them to the appropriate fields in the DriveConstants.java file.
+ * satisfactory set of gains, add them to the appropriate fields in the Constants.java file.
  *
  * Pressing X (on the Xbox and Logitech F310 gamepads, square on the PS4 Dualshock gamepad) will
  * pause the tuning process and enter driver override, allowing the user to reset the position of
@@ -62,9 +62,9 @@ public class ManualFeedforwardTuner extends LinearOpMode {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
         MotionState goal = new MotionState(movingForward ? DISTANCE : 0, 0, 0, 0);
         return MotionProfileGenerator.generateSimpleMotionProfile(start, goal,
-                DriveConstants.BASE_CONSTRAINTS.maxVel,
-                DriveConstants.BASE_CONSTRAINTS.maxAccel,
-                DriveConstants.BASE_CONSTRAINTS.maxJerk);
+                Constants.BASE_CONSTRAINTS.maxVel,
+                Constants.BASE_CONSTRAINTS.maxAccel,
+                Constants.BASE_CONSTRAINTS.maxJerk);
     }
 
     @Override

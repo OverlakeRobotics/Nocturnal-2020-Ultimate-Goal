@@ -32,13 +32,16 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
     private Tensorflow mTensorflow;
     private VuforiaSystem mVuforia;
     private Tensorflow.SquareState mTargetRegion;
+    private boolean called;
 
     @Override
     public void init() {
+        called = false;
+
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
 //        int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        mTensorflow = new Tensorflow(VuforiaLocalizer.CameraDirection.BACK, hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        mTensorflow = new Tensorflow(VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         Log.d(TAG, "Attempting to activate TensorFlow");
         mTensorflow.activate();
         Log.d(TAG, "Successfully activated TensorFlow");
@@ -55,7 +58,7 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
         Log.d(TAG, "Attempting to initialize Vuforia");
-        mVuforia = new VuforiaSystem(mTensorflow.getLocalizer(), hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
+        mVuforia = new VuforiaSystem();
         Log.d(TAG, "Initialized Vuforia");
         Log.d(TAG, "Attempting to shut down TensorFlow");
         mTensorflow.shutdown();
@@ -65,7 +68,10 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
 
     @Override
     public void loop() {
-
+        if (!called) {
+            Log.d(TAG, mVuforia.isAnyTargetVisible() ? "There are targets visible." : "There aren't targets visible");
+            called = true;
+        }
     }
 
     private void newState(BaseStateMachine.State newState) {

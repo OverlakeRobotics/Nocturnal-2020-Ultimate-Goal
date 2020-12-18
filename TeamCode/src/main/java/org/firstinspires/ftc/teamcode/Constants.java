@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.components;
+package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 
-public class DriveConstants {
+public class Constants {
 
     /*
      * These are motor constants that should be listed online for your motors.
@@ -67,4 +67,6 @@ public class DriveConstants {
         // see https://docs.google.com/document/d/1tyWrXDfMidwYyP_5H4mZyVgaEswhOC35gvdmP-V-5hA/edit#heading=h.61g9ixenznbx
         return 32767 * 60.0 / (MAX_RPM * TICKS_PER_REV);
     }
+
+    public static final String VUFORIA_KEY = BuildConfig.NOCTURNAL_VUFORIA_KEY;
 }

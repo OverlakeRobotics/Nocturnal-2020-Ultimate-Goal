@@ -19,37 +19,30 @@ public abstract class BaseAutonomous extends BaseOpMode {
     DriveSystem.Direction outsideDirection;
     Tensorflow tensorflow;
     ColorSensor colorSensor;
-    Team currentTeam;
 
-    public enum Team {
-        RED, BLUE
-    }
-
-    public void init(BaseStateMachine.Team team) {
+    public void init() {
         super.init();
-        
+
+        //TODO configure driveSystem
         EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
         for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
 
-        if (team == BaseStateMachine.Team.RED) {
-            distanceCenter = hardwareMap.get(DistanceSensor.class, "FRONTLEFTLIDAR");
-            distanceOutside = hardwareMap.get(DistanceSensor.class, "FRONTRIGHTLIDAR");
-            centerDirection = DriveSystem.Direction.LEFT;
-            outsideDirection = DriveSystem.Direction.RIGHT;
-        } else {
-            distanceCenter = hardwareMap.get(DistanceSensor.class, "FRONTRIGHTLIDAR");
-            distanceOutside = hardwareMap.get(DistanceSensor.class, "FRONTLEFTLIDAR");
-            centerDirection = DriveSystem.Direction.RIGHT;
-            outsideDirection = DriveSystem.Direction.LEFT;
-        }
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        WebcamName camName = hardwareMap.get(WebcamName.class, "Webcam 1");
-        tensorflow = new Tensorflow(camName, tfodMonitorViewId);
+        //TODO configure distanceCenter
+//        if (team == BaseStateMachine.Team.RED) {
+//            distanceCenter = hardwareMap.get(DistanceSensor.class, "FRONTLEFTLIDAR");
+//            distanceOutside = hardwareMap.get(DistanceSensor.class, "FRONTRIGHTLIDAR");
+//            centerDirection = DriveSystem.Direction.LEFT;
+//            outsideDirection = DriveSystem.Direction.RIGHT;
+//        } else {
+//            distanceCenter = hardwareMap.get(DistanceSensor.class, "FRONTRIGHTLIDAR");
+//            distanceOutside = hardwareMap.get(DistanceSensor.class, "FRONTLEFTLIDAR");
+//            centerDirection = DriveSystem.Direction.RIGHT;
+//            outsideDirection = DriveSystem.Direction.LEFT;
+//        }
+
         colorSensor = hardwareMap.get(ColorSensor.class, "COLORSENSOR");
-        currentTeam = team;
     }
 }

@@ -7,7 +7,6 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
@@ -16,7 +15,6 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -25,21 +23,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.BASE_CONSTRAINTS;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.getMotorVelocityF;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.kV;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.Constants.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.Constants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.Constants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.Constants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.Constants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.Constants.getMotorVelocityF;
+import static org.firstinspires.ftc.teamcode.Constants.kV;
+import static org.firstinspires.ftc.teamcode.Constants.kA;
+import static org.firstinspires.ftc.teamcode.Constants.kStatic;
 
 public class RoadRunnerDriveSystem extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);

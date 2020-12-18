@@ -28,12 +28,7 @@ public abstract class BaseOpMode extends OpMode {
         }
         driveSystem = new DriveSystem(driveMap);
 
-        int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraId);
-        parameters.useExtendedTracking = false;
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        vuforiaLocalizer = new VuforiaLocalizerImpl(parameters);
-        vuforia = new VuforiaSystem(vuforiaLocalizer, hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
+        vuforia = new VuforiaSystem();
     }
 
     public final boolean isStopRequested() {

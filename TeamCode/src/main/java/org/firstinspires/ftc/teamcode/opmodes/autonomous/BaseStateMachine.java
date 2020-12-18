@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.components.Shooter;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
-public abstract class BaseStateMachine extends BaseAutonomous {
+public class BaseStateMachine extends BaseAutonomous {
     public enum State {
         STATE_INITIAL,
         STATE_GRAB,
@@ -42,11 +42,11 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
 //    private IntakeSystem mIntakeSystem;
 
-    public void init(Team team) {
-        super.init(team);
+    public void init() {
+        super.init();
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
-        mTensorflow = new Tensorflow(vuforiaLocalizer, hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        mTensorflow = new Tensorflow(VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 
@@ -63,7 +63,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     @Override
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
-        mVuforia = new VuforiaSystem(vuforiaLocalizer, hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
+        mVuforia = new VuforiaSystem();
         mTensorflow.shutdown();
     }
 

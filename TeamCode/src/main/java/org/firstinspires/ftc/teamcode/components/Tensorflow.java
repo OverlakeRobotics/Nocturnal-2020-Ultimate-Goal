@@ -1,17 +1,11 @@
 package org.firstinspires.ftc.teamcode.components;
 
-import com.vuforia.Vuforia;
-
 import java.util.EnumMap;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
-import org.firstinspires.ftc.teamcode.BuildConfig;
 
 public class Tensorflow {
 
@@ -24,16 +18,15 @@ public class Tensorflow {
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Four"; //FourRings
     private static final String LABEL_SECOND_ELEMENT = "One"; //OneRing
-    private static final String VUFORIA_KEY = BuildConfig.NOCTURNAL_VUFORIA_KEY;
 
-    private VuforiaLocalizer vuforia; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
+    private VuforiaLocalizer vuforiaLocalizer; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
     private TFObjectDetector tfod; //declaring objectDetector
 
     public Tensorflow(VuforiaLocalizer vuforiaLocalizer, int tfodMonitorId){
-        vuforia = vuforiaLocalizer;
+        this.vuforiaLocalizer = vuforiaLocalizer;
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorId); //creating parameters
         tfodParameters.minResultConfidence = 0.3f; //minimumConfidenceNecessaryForActingOnDetection
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia); //create objectDetector
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, this.vuforiaLocalizer); //create objectDetector
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); //loading models
         tfod.activate(); //turnOn
     }
@@ -80,11 +73,7 @@ public class Tensorflow {
         }
         List<Recognition> recognitionList = getInference();
         if (recognitionList.size() == 1 && recognitionList.get(0).getConfidence() >= 0.4) {
-            if (recognitionList.get(0).getLabel().equals(LABEL_FIRST_ELEMENT)) {
-                return SquareState.BOX_A;
-            } else {
-                return SquareState.BOX_B;
-            }
+            return recognitionList.get(0).getLabel().equals(LABEL_FIRST_ELEMENT) ? SquareState.BOX_A : SquareState.BOX_B;
         }
         return SquareState.BOX_C;
     }

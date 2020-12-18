@@ -4,12 +4,14 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.Shooter;
@@ -29,12 +31,14 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         LOGGING
     }
 
+    private static final String VUFORIA_KEY = "Ad0Srbr/////AAABmdpa0/j2K0DPhXQjE2Hyum9QUQXZO8uAVCNpwlogfxiVmEaSuqHoTMWcV9nLlQpEnh5bwTlQG+T35Vir8IpdrSdk7TctIqH3QBuJFdHsx5hlcn74xa7AiQSJgUD/n7JJ2zJ/Er5Hc+b+r616Jf1YU6RO63Ajk5+TFB9N3a85NjMD6eDm+C6f14647ELnmGC03poSOeczbX7hZpIEObtYdVyKZ2NQ/26xDfSwwJuyMgUHwWY6nl6mk0GMnIGvu0/HoGNgyR5EkUQWyx9XlmxSrldY7BIEVkiKmracvD7W9hEGZ2nPied6DTY5RFNuFX07io6+I59/d7291NXKVMDnFAqSt4a2JYsECv+j7b25S0mD";
     private final static String TAG = "BaseStateMachine";
     private VuforiaTrackable sideWallTrackable = VuforiaSystem.getTrackables().get(3);
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
     private VuforiaSystem mVuforia;
+    private VuforiaLocalizerImpl mVuforiaLocalizer;
     private Tensorflow.SquareState mTargetRegion;
     private Shooter mShooter;
     private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
@@ -45,6 +49,11 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
         int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaSystem.VuforiaLocalizer.Parameters(cameraId);
+        parameters.useExtendedTracking = false;
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        mVuforiaLocalizer = new VuforiaLocalizerImpl(parameters);
         mTensorflow = new Tensorflow(VuforiaLocalizer.CameraDirection.BACK, hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);

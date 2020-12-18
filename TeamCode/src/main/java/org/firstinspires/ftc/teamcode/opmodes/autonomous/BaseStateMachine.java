@@ -54,6 +54,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         mVuforiaLocalizer = new VuforiaLocalizerImpl(parameters);
+        mTensorflow = new Tensorflow(mVuforiaLocalizer);
         mTensorflow = new Tensorflow(VuforiaLocalizer.CameraDirection.BACK, hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);

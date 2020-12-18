@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 import org.firstinspires.ftc.teamcode.BuildConfig;
 
 public class Tensorflow {
@@ -25,46 +26,16 @@ public class Tensorflow {
     private static final String LABEL_SECOND_ELEMENT = "One"; //OneRing
     private static final String VUFORIA_KEY = BuildConfig.NOCTURNAL_VUFORIA_KEY;
 
-    private VuforiaSystem.VuforiaLocalizer vuforia; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
+    private VuforiaLocalizerImpl vuforia; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
     private TFObjectDetector tfod; //declaring objectDetector
 
-    public Tensorflow(CameraName name, int tfodMonitorId) { //name tfod id
-        VuforiaSystem.VuforiaLocalizer.Parameters parameters = new VuforiaSystem.VuforiaLocalizer.Parameters(); //creating parameters
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY; //setting key
-
-        parameters.cameraName = name; //setting name to name
-        initTensorflow(parameters, tfodMonitorId);
-    }
-
-    public Tensorflow(VuforiaLocalizer.CameraDirection cameraDirection, int tfodMonitorId) { //name tfod id
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(); //creating parameters
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY; //setting key
-
-        parameters.cameraDirection = cameraDirection; //setting name to name
-
-        initTensorflow(parameters, tfodMonitorId);
-        //Hi, this is Anish, and I'm teaching Vincent and Ethan, how git works.
-    }
-
-    public void initTensorflow (VuforiaSystem.VuforiaLocalizer.Parameters parameters, int tfodMonitorId) {
-        initVuforia();
-
+    public Tensorflow(VuforiaLocalizerImpl vuforiaLocalizer, int tfodMonitorId){
+        vuforia = vuforiaLocalizer;
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorId); //creating parameters
         tfodParameters.minResultConfidence = 0.3f; //minimumConfidenceNecessaryForActingOnDetection
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia); //create objectDetector
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); //loading models
         tfod.activate(); //turnOn
-    }
-
-    public void initVuforia () {
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-
-        vuforia = new VuforiaSystem.VuforiaLocalizer(parameters);
     }
 
     /** Method getInference()

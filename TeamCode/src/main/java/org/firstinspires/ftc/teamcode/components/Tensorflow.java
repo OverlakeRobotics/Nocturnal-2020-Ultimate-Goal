@@ -61,7 +61,7 @@ public class Tensorflow {
     }
 
     public void activate() {
-        if (tfod != null){
+        if (tfod != null) {
             tfod.activate();
         }
 
@@ -73,30 +73,23 @@ public class Tensorflow {
         }
     } //deactivate
 
-    public VuforiaSystem.VuforiaLocalizer getLocalizer(){
+    public VuforiaLocalizerImpl getLocalizer() {
         return vuforia;
     }
 
-    public SquareState getTargetRegion(){
+    public SquareState getTargetRegion() {
         if (tfod == null){
             return null;
         }
         List<Recognition> recognitionList = getInference();
-        if (recognitionList.size() == 1){
-            int i = 0;
-            if (recognitionList.get(0).getConfidence() >= 0.4){
-                if (recognitionList.get(0).getLabel() == LABEL_FIRST_ELEMENT){
-                    return SquareState.BOX_A;
-                }
-                else{
-                    return SquareState.BOX_B;
-                }
+        if (recognitionList.size() == 1 && recognitionList.get(0).getConfidence() >= 0.4) {
+            if (recognitionList.get(0).getLabel().equals(LABEL_FIRST_ELEMENT)) {
+                return SquareState.BOX_A;
+            } else {
+                return SquareState.BOX_B;
             }
         }
-        else{
-            return SquareState.BOX_C;
-        }
-        return null;
+        return SquareState.BOX_C;
     }
 
 }

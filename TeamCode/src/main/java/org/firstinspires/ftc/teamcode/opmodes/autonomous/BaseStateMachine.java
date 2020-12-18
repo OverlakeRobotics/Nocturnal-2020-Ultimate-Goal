@@ -31,14 +31,12 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         LOGGING
     }
 
-    private static final String VUFORIA_KEY = "Ad0Srbr/////AAABmdpa0/j2K0DPhXQjE2Hyum9QUQXZO8uAVCNpwlogfxiVmEaSuqHoTMWcV9nLlQpEnh5bwTlQG+T35Vir8IpdrSdk7TctIqH3QBuJFdHsx5hlcn74xa7AiQSJgUD/n7JJ2zJ/Er5Hc+b+r616Jf1YU6RO63Ajk5+TFB9N3a85NjMD6eDm+C6f14647ELnmGC03poSOeczbX7hZpIEObtYdVyKZ2NQ/26xDfSwwJuyMgUHwWY6nl6mk0GMnIGvu0/HoGNgyR5EkUQWyx9XlmxSrldY7BIEVkiKmracvD7W9hEGZ2nPied6DTY5RFNuFX07io6+I59/d7291NXKVMDnFAqSt4a2JYsECv+j7b25S0mD";
     private final static String TAG = "BaseStateMachine";
     private VuforiaTrackable sideWallTrackable = VuforiaSystem.getTrackables().get(3);
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
     private VuforiaSystem mVuforia;
-    private VuforiaLocalizer mVuforiaLocalizer;
     private Tensorflow.SquareState mTargetRegion;
     private Shooter mShooter;
     private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
@@ -48,13 +46,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         super.init(team);
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
-        int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraId);
-        parameters.useExtendedTracking = false;
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        mVuforiaLocalizer = new VuforiaLocalizerImpl(parameters);
-        mTensorflow = new Tensorflow(mVuforiaLocalizer, hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        mTensorflow = new Tensorflow(vuforiaLocalizer, hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 
@@ -71,7 +63,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     @Override
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
-        mVuforia = new VuforiaSystem(mVuforiaLocalizer, hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
+        mVuforia = new VuforiaSystem(vuforiaLocalizer, hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
         mTensorflow.shutdown();
     }
 

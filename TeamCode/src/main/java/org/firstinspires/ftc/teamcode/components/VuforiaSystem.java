@@ -41,6 +41,10 @@ public class VuforiaSystem {
         return visibleTrackables;
     }
 
+    public static VuforiaLocalizer getLocalizer (){
+        return ClassFactory.getInstance().createVuforia(parameters);
+    }
+
     private static final String VUFORIA_KEY = "Ad0Srbr/////AAABmdpa0/j2K0DPhXQjE2Hyum9QUQXZO8uAVCNpwlogfxiVmEaSuqHoTMWcV9nLlQpEnh5bwTlQG+T35Vir8IpdrSdk7TctIqH3QBuJFdHsx5hlcn74xa7AiQSJgUD/n7JJ2zJ/Er5Hc+b+r616Jf1YU6RO63Ajk5+TFB9N3a85NjMD6eDm+C6f14647ELnmGC03poSOeczbX7hZpIEObtYdVyKZ2NQ/26xDfSwwJuyMgUHwWY6nl6mk0GMnIGvu0/HoGNgyR5EkUQWyx9XlmxSrldY7BIEVkiKmracvD7W9hEGZ2nPied6DTY5RFNuFX07io6+I59/d7291NXKVMDnFAqSt4a2JYsECv+j7b25S0mD";
 
     private static final float mmPerInch        = 25.4f;                    // constant for converting measurements from inches to millimeters
@@ -129,16 +133,12 @@ public class VuforiaSystem {
     }
 
     public boolean isTargetVisible(VuforiaTrackable targetTrackable) {
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                if (trackable.getName().equals(targetTrackable.getName())) {
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
-                    return true;
-                }
+        if (((VuforiaTrackableDefaultListener)targetTrackable.getListener()).isVisible()){
+            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)targetTrackable.getListener()).getUpdatedRobotLocation();
+            if (robotLocationTransform != null) {
+                lastLocation = robotLocationTransform;
             }
+            return true;
         }
         return false;
     }

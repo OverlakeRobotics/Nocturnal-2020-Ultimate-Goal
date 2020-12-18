@@ -26,10 +26,10 @@ public class Tensorflow {
     private static final String LABEL_SECOND_ELEMENT = "One"; //OneRing
     private static final String VUFORIA_KEY = BuildConfig.NOCTURNAL_VUFORIA_KEY;
 
-    private VuforiaLocalizerImpl vuforia; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
+    private VuforiaLocalizer vuforia; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
     private TFObjectDetector tfod; //declaring objectDetector
 
-    public Tensorflow(VuforiaLocalizerImpl vuforiaLocalizer, int tfodMonitorId){
+    public Tensorflow(VuforiaLocalizer vuforiaLocalizer, int tfodMonitorId){
         vuforia = vuforiaLocalizer;
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorId); //creating parameters
         tfodParameters.minResultConfidence = 0.3f; //minimumConfidenceNecessaryForActingOnDetection
@@ -72,10 +72,6 @@ public class Tensorflow {
             tfod.shutdown();
         }
     } //deactivate
-
-    public VuforiaSystem.VuforiaLocalizer getLocalizer(){
-        return vuforia;
-    }
 
     public SquareState getTargetRegion(){
         if (tfod == null){

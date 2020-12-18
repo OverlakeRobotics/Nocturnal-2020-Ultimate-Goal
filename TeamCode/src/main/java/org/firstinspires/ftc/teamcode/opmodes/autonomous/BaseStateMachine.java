@@ -38,7 +38,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
     private VuforiaSystem mVuforia;
-    private VuforiaLocalizerImpl mVuforiaLocalizer;
+    private VuforiaLocalizer mVuforiaLocalizer;
     private Tensorflow.SquareState mTargetRegion;
     private Shooter mShooter;
     private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
@@ -49,13 +49,12 @@ public abstract class BaseStateMachine extends BaseAutonomous {
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
         int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaSystem.VuforiaLocalizer.Parameters(cameraId);
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraId);
         parameters.useExtendedTracking = false;
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         mVuforiaLocalizer = new VuforiaLocalizerImpl(parameters);
-        mTensorflow = new Tensorflow(mVuforiaLocalizer);
-        mTensorflow = new Tensorflow(VuforiaLocalizer.CameraDirection.BACK, hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        mTensorflow = new Tensorflow(mVuforiaLocalizer, hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 
@@ -72,7 +71,7 @@ public abstract class BaseStateMachine extends BaseAutonomous {
     @Override
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
-        mVuforia = new VuforiaSystem(mTensorflow.getLocalizer(), hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
+        mVuforia = new VuforiaSystem(mVuforiaLocalizer, hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
         mTensorflow.shutdown();
     }
 

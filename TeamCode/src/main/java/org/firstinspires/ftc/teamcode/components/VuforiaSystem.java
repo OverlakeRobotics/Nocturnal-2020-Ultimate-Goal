@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
@@ -22,16 +25,6 @@ public class VuforiaSystem {
 
     public enum CameraChoice {
         PHONE_BACK, WEBCAM1;
-    }
-
-    public static class VuforiaLocalizer extends VuforiaLocalizerImpl {
-        public VuforiaLocalizer(Parameters parameters) {
-            super(parameters);
-        }
-
-        public void close() {
-            super.close();
-        }
     }
 
     public static List<VuforiaTrackable> getTrackables() {
@@ -57,20 +50,12 @@ public class VuforiaSystem {
     private static final float quadField  = 36 * mmPerInch;
 
     private OpenGLMatrix lastLocation = null; // class members
-    private VuforiaLocalizer vuforia = null;
+    private VuforiaLocalizer vuforia;
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
     public VuforiaTrackables targetsUltGoal;
     private static ArrayList<VuforiaTrackable> allTrackables;
-
-    public VuforiaSystem(HardwareMap hardwareMap, CameraChoice cameraChoice) {
-
-        // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        allTrackables = new ArrayList<VuforiaTrackable>();
-
-        vuforia = initVuforia(vuforia, hardwareMap, cameraChoice);
-    }
 
     public VuforiaSystem(VuforiaLocalizer vf, HardwareMap hardwareMap, CameraChoice cameraChoice) {
 
@@ -81,9 +66,6 @@ public class VuforiaSystem {
     }
 
     private VuforiaLocalizer initVuforia(VuforiaLocalizer vf, HardwareMap hardwareMap, CameraChoice cameraChoice) {
-        if (vf != null)
-            vf.close();
-
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -99,7 +81,7 @@ public class VuforiaSystem {
                 break;
         }
 
-        vf = new VuforiaLocalizer(parameters);
+        vf = ClassFactory.getInstance().createVuforia(parameters);
         // TODO most likely will need to end up establishing precise positions in the future
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
@@ -136,10 +118,6 @@ public class VuforiaSystem {
         targetsUltGoal.activate();
 
         return vf;
-    }
-
-    public void close() {
-        vuforia.close();
     }
 
     public Orientation getRobotHeading() {

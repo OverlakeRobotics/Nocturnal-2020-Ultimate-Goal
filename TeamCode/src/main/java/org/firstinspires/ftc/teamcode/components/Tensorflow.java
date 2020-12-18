@@ -19,14 +19,17 @@ public class Tensorflow {
     private static final String LABEL_FIRST_ELEMENT = "Four"; //FourRings
     private static final String LABEL_SECOND_ELEMENT = "One"; //OneRing
 
-    private VuforiaLocalizer vuforiaLocalizer; //declaring VuforiaLocalizer - converts Vuforia Frame into AndroidBitMap
     private TFObjectDetector tfod; //declaring objectDetector
 
-    public Tensorflow(VuforiaLocalizer vuforiaLocalizer, int tfodMonitorId){
-        this.vuforiaLocalizer = vuforiaLocalizer;
+    /**
+     * Constructor for TensorFlow
+     * @param vuforiaLocalizer converts Vuforia Frame into AndroidBitMap
+     * @param tfodMonitorId monitor ID
+     */
+    public Tensorflow(VuforiaLocalizer vuforiaLocalizer, int tfodMonitorId) {
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorId); //creating parameters
         tfodParameters.minResultConfidence = 0.3f; //minimumConfidenceNecessaryForActingOnDetection
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, this.vuforiaLocalizer); //create objectDetector
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforiaLocalizer); //create objectDetector
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); //loading models
         tfod.activate(); //turnOn
     }
@@ -61,14 +64,14 @@ public class Tensorflow {
     } //activate
 
     public void shutdown() {
-        if (tfod != null){
+        if (tfod != null) {
             tfod.shutdown();
         }
     } //deactivate
 
 
     public SquareState getTargetRegion() {
-        if (tfod == null){
+        if (tfod == null) {
             return null;
         }
         List<Recognition> recognitionList = getInference();

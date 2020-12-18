@@ -13,22 +13,21 @@ import java.util.EnumMap;
 
 public abstract class BaseOpMode extends OpMode {
 
-    private static final String VUFORIA_KEY = "Ad0Srbr/////AAABmdpa0/j2K0DPhXQjE2Hyum9QUQXZO8uAVCNpwlogfxiVmEaSuqHoTMWcV9nLlQpEnh5bwTlQG+T35Vir8IpdrSdk7TctIqH3QBuJFdHsx5hlcn74xa7AiQSJgUD/n7JJ2zJ/Er5Hc+b+r616Jf1YU6RO63Ajk5+TFB9N3a85NjMD6eDm+C6f14647ELnmGC03poSOeczbX7hZpIEObtYdVyKZ2NQ/26xDfSwwJuyMgUHwWY6nl6mk0GMnIGvu0/HoGNgyR5EkUQWyx9XlmxSrldY7BIEVkiKmracvD7W9hEGZ2nPied6DTY5RFNuFX07io6+I59/d7291NXKVMDnFAqSt4a2JYsECv+j7b25S0mD";
     protected DriveSystem driveSystem;
     protected VuforiaSystem vuforia;
     private boolean stopRequested;
 
-    public void init(){
+    public void init() {
         stopRequested = false;
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
         EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
-        for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
+        for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()) {
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         driveSystem = new DriveSystem(driveMap);
 
-        vuforia = new VuforiaSystem();
+//        vuforia = new VuforiaSystem();
     }
 
     public final boolean isStopRequested() {

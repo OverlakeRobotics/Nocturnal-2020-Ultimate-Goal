@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
@@ -42,13 +43,10 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
 //        int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        mTensorflow = new Tensorflow(VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        mTensorflow = new Tensorflow(VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK, Constants.TENSORFLOW), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         telemetry.addData(TAG, "Attempting to activate TensorFlow");
         mTensorflow.activate();
         telemetry.addData(TAG, "Successfully activated TensorFlow");
-        telemetry.addData(TAG, "Attempting to initialize Vuforia");
-        mVuforia = new VuforiaSystem();
-        telemetry.addData(TAG, "Initialized Vuforia");
         newState(BaseStateMachine.State.STATE_INITIAL);
     }
 
@@ -56,12 +54,14 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
     public void init_loop() {
         mTargetRegion = mTensorflow.getTargetRegion();
         telemetry.addData(TAG, "TargetRegion is: " + mTargetRegion);
-        telemetry.addData(TAG, mVuforia.isAnyTargetVisible() ? "There are targets visible." : "There aren't targets visible");
     }
 
     @Override
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
+        telemetry.addData(TAG, "Attempting to initialize Vuforia");
+        mVuforia = new VuforiaSystem(VuforiaSystem.CameraChoice.PHONE_BACK, VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK, Constants.VUFORIA));
+        telemetry.addData(TAG, "Initialized Vuforia");
         telemetry.addData(TAG, "Attempting to shut down TensorFlow");
         mTensorflow.shutdown();
         telemetry.addData(TAG, "Successfully shut down TensorFlow");
@@ -73,6 +73,13 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
         if (!called) {
             telemetry.addData(TAG, mVuforia.isAnyTargetVisible() ? "There are targets visible." : "There aren't targets visible");
             called = true;
+        }
+    }
+
+    @Override
+    public void stop() {
+        if (mVuforia != null) {
+            mVuforia.disable();
         }
     }
 

@@ -25,7 +25,7 @@ public abstract class BaseAutonomous extends BaseOpMode {
 
         //TODO configure driveSystem
         EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
-        for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
+        for (DriveSystem.MotorNames name : DriveSystem.MotorNames.values()) {
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));

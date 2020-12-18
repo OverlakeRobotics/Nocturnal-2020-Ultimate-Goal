@@ -68,5 +68,6 @@ public class Constants {
         return 32767 * 60.0 / (MAX_RPM * TICKS_PER_REV);
     }
 
-    public static final String VUFORIA_KEY = BuildConfig.NOCTURNAL_VUFORIA_KEY;
+    public static final String TENSORFLOW = "TensorFlow";
+    public static final String VUFORIA = "Vuforia";
 }

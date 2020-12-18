@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -42,34 +43,35 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
         this.msStuckDetectInitLoop = 15000;
 //        int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         mTensorflow = new Tensorflow(VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
-        Log.d(TAG, "Attempting to activate TensorFlow");
+        telemetry.addData(TAG, "Attempting to activate TensorFlow");
         mTensorflow.activate();
-        Log.d(TAG, "Successfully activated TensorFlow");
+        telemetry.addData(TAG, "Successfully activated TensorFlow");
+        telemetry.addData(TAG, "Attempting to initialize Vuforia");
+        mVuforia = new VuforiaSystem();
+        telemetry.addData(TAG, "Initialized Vuforia");
         newState(BaseStateMachine.State.STATE_INITIAL);
     }
 
     @Override
     public void init_loop() {
         mTargetRegion = mTensorflow.getTargetRegion();
-        Log.d(TAG, "TargetRegion is: " + mTargetRegion);
+        telemetry.addData(TAG, "TargetRegion is: " + mTargetRegion);
+        telemetry.addData(TAG, mVuforia.isAnyTargetVisible() ? "There are targets visible." : "There aren't targets visible");
     }
 
     @Override
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
-        Log.d(TAG, "Attempting to initialize Vuforia");
-        mVuforia = new VuforiaSystem();
-        Log.d(TAG, "Initialized Vuforia");
-        Log.d(TAG, "Attempting to shut down TensorFlow");
+        telemetry.addData(TAG, "Attempting to shut down TensorFlow");
         mTensorflow.shutdown();
-        Log.d(TAG, "Successfully shut down TensorFlow");
-        Log.d(TAG, "Final TargetRegion is: " + mTargetRegion);
+        telemetry.addData(TAG, "Successfully shut down TensorFlow");
+        telemetry.addData(TAG, "Final TargetRegion is: " + mTargetRegion);
     }
 
     @Override
     public void loop() {
         if (!called) {
-            Log.d(TAG, mVuforia.isAnyTargetVisible() ? "There are targets visible." : "There aren't targets visible");
+            telemetry.addData(TAG, mVuforia.isAnyTargetVisible() ? "There are targets visible." : "There aren't targets visible");
             called = true;
         }
     }

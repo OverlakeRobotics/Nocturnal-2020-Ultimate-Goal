@@ -1,43 +1,54 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import com.acmerobotics.roadrunner.drive.Drive;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class ArmSystem {
 
-    Servo rotator;
-    DcMotor outwardextender;
-    DcMotor lowerraise; //or should this be a Servo?
+    DcMotor motor; //one motor that we need
 
-    private static final double RETRACTED = 6.8; //wrong, incorrect placeholder values that need to be updated
-    private static final double EXTENDED = 13.8; //^^
+    private static final double TICKS_PER_REVOLUTION = DriveConstants.TICKS_PER_REV; //number of ticks per revolution
+    private static final double NUM_REVOLUTIONS = 0.8; // this needs to be changed - the number is num of revolutions
 
-    private static final double RAISED = 3.4; // ^^
-    private static final double LOWERED = 2.8; // ^^
-
-    private static final double ZERO = 0.0; // ^^^
+    private static final int DEFAULT = 0; // this needs to be changed
 
 
-    public ArmSystem(Servo servo, DcMotor motor1, DcMotor motor2) { //constructor
-        this.rotator = servo;
-        this.outwardextender = motor1;
-        this.lowerraise = motor2;
+    public ArmSystem(DcMotor motor1) { //constructor
+        this.motor = motor1; //setting ArmSystem motor to whatever motor that is
+        init();
     }
 
     private void init() {
-
-        while (outwardextender.getCurrentPosition() != RETRACTED) {
-            outwardextender.setPower(-1);
+        while (motor.getCurrentPosition() != DEFAULT) {
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setTargetPosition(DEFAULT);
         }
-
-        while (lowerraise.getCurrentPosition() != RAISED) {
-            lowerraise.setPower(-1);
-        }
-        rotator.setPosition(ZERO);
+        motor.setPower(0.0);
     }
+
+    private void up(){
+        while (motor.getCurrentPosition() != NUM_REVOLUTIONS * TICKS_PER_REVOLUTION){
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor.setPower(0.75);
+        }
+    }
+
+    /*private void movetoPositionRevolutions(double revolutions){
+        while (motor.getCurrentPosition() != revolutions * TICKS_PER_REVOLUTION){
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor.setPower(0.75);
+        }
+    }
+
+    private void movetoPositionTicks(double ticks){
+        while (motor.getCurrentPosition() != ticks * TICKS_PER_REVOLUTION){
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor.setPower(0.75);
+        }
+    }*/
 }
 
 
 
 
-}

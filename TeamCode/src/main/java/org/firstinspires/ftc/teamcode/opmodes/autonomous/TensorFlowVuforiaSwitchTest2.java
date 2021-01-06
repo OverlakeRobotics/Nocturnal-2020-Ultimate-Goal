@@ -60,7 +60,7 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
         telemetry.addData(TAG, "Attempting to initialize Vuforia");
-        mVuforia = new VuforiaSystem(VuforiaSystem.CameraChoice.PHONE_BACK, VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK, Constants.VUFORIA));
+        mVuforia = new VuforiaSystem(hardwareMap);
         telemetry.addData(TAG, "Initialized Vuforia");
         telemetry.addData(TAG, "Attempting to shut down TensorFlow");
         mTensorflow.shutdown();

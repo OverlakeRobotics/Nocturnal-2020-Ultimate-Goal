@@ -64,7 +64,7 @@ public class BaseStateMachine extends BaseAutonomous {
     @Override
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
-        mVuforia = new VuforiaSystem(VuforiaSystem.CameraChoice.PHONE_BACK, VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK, Constants.VUFORIA));
+//        mVuforia = new VuforiaSystem(VuforiaSystem.CameraChoice.PHONE_BACK, VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK, Constants.VUFORIA));
         mTensorflow.shutdown();
     }
 

@@ -36,9 +36,8 @@ public class VuforiaSystem {
             super(parameters);
         }
 
-        public void setMonitorViewParent(org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Parameters parameters) {
-            setMonitorViewParent(parameters.cameraMonitorViewParent);
-            if (parameters.useExtendedTracking) adjustExtendedTracking();
+        public void setMonitorViewParent(int cameraMonitorViewParentID) {
+            super.setMonitorViewParent(cameraMonitorViewParentID);
         }
 
         public void close() {
@@ -74,10 +73,6 @@ public class VuforiaSystem {
         parameters.vuforiaLicenseKey = BuildConfig.NOCTURNAL_VUFORIA_KEY;
         parameters.useExtendedTracking = true;
 
-        if (tag.equals(Constants.VUFORIA)) {
-            parameters.cameraMonitorViewIdParent = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        }
-
         switch (cameraChoice) {
             case PHONE_BACK:
                 parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
@@ -89,8 +84,6 @@ public class VuforiaSystem {
 
         if (tag.equals(Constants.TENSORFLOW)) {
             vuforiaLocalizer = new VuforiaLocalizer(parameters);
-
-            initUltsGoal(parameters.cameraDirection, vuforiaLocalizer);
         }
         return vuforiaLocalizer;
     }
@@ -117,10 +110,12 @@ public class VuforiaSystem {
     public static VuforiaTrackables targetsUltGoal;
     private static ArrayList<VuforiaTrackable> allTrackables;
 
-    public VuforiaSystem(CameraChoice cameraChoice, VuforiaLocalizer vuforiaLocalizer) {
-        if (targetsUltGoal == null) {
-            initUltsGoal(getCameraDirection(cameraChoice), vuforiaLocalizer);
-        }
+    public VuforiaSystem(HardwareMap hardwareMap) {
+//        if (targetsUltGoal == null) {
+//            initUltsGoal(getCameraDirection(cameraChoice), vuforiaLocalizer);
+//        }
+        vuforiaLocalizer.setMonitorViewParent(hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        initUltsGoal(org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK, vuforiaLocalizer);
         activate();
     }
 

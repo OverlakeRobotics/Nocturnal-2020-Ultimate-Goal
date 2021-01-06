@@ -35,6 +35,12 @@ public class VuforiaSystem {
         public VuforiaLocalizer(Parameters parameters) {
             super(parameters);
         }
+
+        public void setMonitorViewParent(org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Parameters parameters) {
+            setMonitorViewParent(parameters.cameraMonitorViewParent);
+            if (parameters.useExtendedTracking) adjustExtendedTracking();
+        }
+
         public void close() {
             super.close();
         }
@@ -62,14 +68,14 @@ public class VuforiaSystem {
         }
         currentCameraChoice = cameraChoice;
 
-        if (vuforiaLocalizer != null) vuforiaLocalizer.close();
+//        if (vuforiaLocalizer != null) vuforiaLocalizer.close();
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = BuildConfig.NOCTURNAL_VUFORIA_KEY;
+        parameters.useExtendedTracking = true;
 
         if (tag.equals(Constants.VUFORIA)) {
             parameters.cameraMonitorViewIdParent = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-            parameters.useExtendedTracking = false;
         }
 
         switch (cameraChoice) {
@@ -81,9 +87,11 @@ public class VuforiaSystem {
                 break;
         }
 
-        vuforiaLocalizer = new VuforiaLocalizer(parameters);
+        if (tag.equals(Constants.TENSORFLOW)) {
+            vuforiaLocalizer = new VuforiaLocalizer(parameters);
 
-        initUltsGoal(parameters.cameraDirection, vuforiaLocalizer);
+            initUltsGoal(parameters.cameraDirection, vuforiaLocalizer);
+        }
         return vuforiaLocalizer;
     }
 

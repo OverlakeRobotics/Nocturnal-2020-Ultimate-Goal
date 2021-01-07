@@ -1,21 +1,19 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 import org.firstinspires.ftc.teamcode.BuildConfig;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.opmodes.autonomous.BaseAutonomous;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
@@ -36,8 +34,10 @@ public class VuforiaSystem {
             super(parameters);
         }
 
-        public void setMonitorViewParent(int cameraMonitorViewParentID) {
-            super.setMonitorViewParent(cameraMonitorViewParentID);
+        public void setViewParent(int cameraMonitorViewParentID) {
+            setMonitorViewParent(cameraMonitorViewParentID);
+            stopAR();
+            startAR();
         }
 
         public void close() {
@@ -114,7 +114,8 @@ public class VuforiaSystem {
 //        if (targetsUltGoal == null) {
 //            initUltsGoal(getCameraDirection(cameraChoice), vuforiaLocalizer);
 //        }
-        vuforiaLocalizer.setMonitorViewParent(hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        vuforiaLocalizer.setViewParent(hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        Log.d("Debug", "After setViewParent() called");
         initUltsGoal(org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK, vuforiaLocalizer);
         activate();
     }

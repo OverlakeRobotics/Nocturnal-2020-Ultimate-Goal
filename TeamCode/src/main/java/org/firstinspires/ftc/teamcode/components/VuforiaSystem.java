@@ -29,6 +29,21 @@ public class VuforiaSystem {
         PHONE_BACK, WEBCAM1
     }
 
+    private static final float mmPerInch = 25.4f;                    // constant for converting measurements from inches to millimeters
+    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
+
+    private static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
+    private static final float quadField = 36 * mmPerInch;
+
+    private static VuforiaSystem.VuforiaLocalizer vuforiaLocalizer;
+    private static CameraChoice currentCameraChoice;
+    private static String currentTag;
+    private OpenGLMatrix lastLocation = null; // class members
+    public static VuforiaTrackables targetsUltGoal;
+    private static ArrayList<VuforiaTrackable> allTrackables;
+
+
+
     public static class VuforiaLocalizer extends VuforiaLocalizerImpl {
         public VuforiaLocalizer(Parameters parameters) {
             super(parameters);
@@ -49,16 +64,6 @@ public class VuforiaSystem {
         return allTrackables;
     }
 
-    public static List<VuforiaTrackable> getVisibleTrackables() {
-        ArrayList<VuforiaTrackable> visibleTrackables = new ArrayList<>();
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                visibleTrackables.add(trackable);
-            }
-        }
-        return visibleTrackables;
-    }
-
     public static VuforiaLocalizer getVuforiaLocalizer(HardwareMap hardwareMap, CameraChoice cameraChoice, String tag) {
         if (currentTag == null || !currentTag.equals(tag)) {
             currentTag = tag;
@@ -66,8 +71,6 @@ public class VuforiaSystem {
             return vuforiaLocalizer;
         }
         currentCameraChoice = cameraChoice;
-
-//        if (vuforiaLocalizer != null) vuforiaLocalizer.close();
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = BuildConfig.NOCTURNAL_VUFORIA_KEY;
@@ -96,19 +99,6 @@ public class VuforiaSystem {
                 return VuforiaLocalizer.CameraDirection.BACK;
         }
     }
-
-    private static final float mmPerInch = 25.4f;                    // constant for converting measurements from inches to millimeters
-    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
-
-    private static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
-    private static final float quadField = 36 * mmPerInch;
-
-    private static VuforiaSystem.VuforiaLocalizer vuforiaLocalizer;
-    private static CameraChoice currentCameraChoice;
-    private static String currentTag;
-    private OpenGLMatrix lastLocation = null; // class members
-    public static VuforiaTrackables targetsUltGoal;
-    private static ArrayList<VuforiaTrackable> allTrackables;
 
     public VuforiaSystem(HardwareMap hardwareMap) {
 //        if (targetsUltGoal == null) {
@@ -194,6 +184,7 @@ public class VuforiaSystem {
 
     public void disable() {
         targetsUltGoal.deactivate();
+        vuforiaLocalizer = null;
     }
 
     /**

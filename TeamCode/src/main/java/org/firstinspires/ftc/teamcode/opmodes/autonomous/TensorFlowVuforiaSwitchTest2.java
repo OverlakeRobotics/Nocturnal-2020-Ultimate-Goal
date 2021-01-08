@@ -71,9 +71,9 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
     @Override
     public void loop() {
         if (!called) {
-            telemetry.addData(TAG, mVuforia.isAnyTargetVisible() ? "There are targets visible." : "There aren't targets visible");
             called = true;
         }
+        telemetry.addData(TAG, mVuforia.isAnyTargetVisible() ? "There are targets visible." : "There aren't targets visible");
     }
 
     @Override

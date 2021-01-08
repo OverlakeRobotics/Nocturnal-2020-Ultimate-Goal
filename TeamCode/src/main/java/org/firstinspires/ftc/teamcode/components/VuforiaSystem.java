@@ -91,19 +91,7 @@ public class VuforiaSystem {
         return vuforiaLocalizer;
     }
 
-    private VuforiaLocalizer.CameraDirection getCameraDirection(CameraChoice cameraChoice) {
-        switch (cameraChoice) {
-            case PHONE_BACK:
-
-            default:
-                return VuforiaLocalizer.CameraDirection.BACK;
-        }
-    }
-
     public VuforiaSystem(HardwareMap hardwareMap) {
-//        if (targetsUltGoal == null) {
-//            initUltsGoal(getCameraDirection(cameraChoice), vuforiaLocalizer);
-//        }
         vuforiaLocalizer.setViewParent(hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         Log.d("Debug", "After setViewParent() called");
         initUltsGoal(org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK, vuforiaLocalizer);
@@ -148,14 +136,6 @@ public class VuforiaSystem {
         redTowerGoalTarget.setLocation(OpenGLMatrix
                 .translation(halfField, -quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-    }
-
-    public Orientation getRobotHeading() {
-        return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-    }
-
-    public VectorF getRobotPosition() {
-        return lastLocation.getTranslation();
     }
 
     public boolean isTargetVisible(VuforiaTrackable targetTrackable) {

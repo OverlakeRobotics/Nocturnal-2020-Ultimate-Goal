@@ -57,9 +57,12 @@ public class VuforiaSystem {
         }
         currentCameraChoice = cameraChoice;
 
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = BuildConfig.NOCTURNAL_VUFORIA_KEY;
         parameters.useExtendedTracking = true;
+        parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.NONE;
+
 
         switch (cameraChoice) {
             case PHONE_BACK:
@@ -77,7 +80,7 @@ public class VuforiaSystem {
     }
 
     public VuforiaSystem(HardwareMap hardwareMap) {
-        //vuforiaLocalizer.setViewParent(hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+
         Log.d("Debug", "After setViewParent() called");
         initUltsGoal(org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK, vuforiaLocalizer);
         activate();

@@ -50,43 +50,33 @@ public class VuforiaSystem {
     }
 
     public static VuforiaLocalizer getVuforiaLocalizer(HardwareMap hardwareMap, CameraChoice cameraChoice, String tag) {
-        if (currentTag == null || !currentTag.equals(tag)) {
-            currentTag = tag;
-        } else if (cameraChoice.equals(currentCameraChoice) && vuforiaLocalizer != null) {
-            return vuforiaLocalizer;
-        }
-        currentCameraChoice = cameraChoice;
+        if (vuforiaLocalizer == null) {
+            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+            VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+            parameters.vuforiaLicenseKey = BuildConfig.NOCTURNAL_VUFORIA_KEY;
+            parameters.useExtendedTracking = true;
+            parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.NONE;
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        parameters.vuforiaLicenseKey = BuildConfig.NOCTURNAL_VUFORIA_KEY;
-        parameters.useExtendedTracking = true;
-        parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.NONE;
-
-
-        switch (cameraChoice) {
-            case PHONE_BACK:
-                parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-                break;
-            case WEBCAM1:
-                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-                break;
-        }
-
-        if (tag.equals(Constants.TENSORFLOW)) {
+            switch (cameraChoice) {
+                case PHONE_BACK:
+                    parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+                    break;
+                case WEBCAM1:
+                    parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+                    break;
+            }
             vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
         }
+
         return vuforiaLocalizer;
     }
 
     public VuforiaSystem(HardwareMap hardwareMap) {
-
-        Log.d("Debug", "After setViewParent() called");
-        initUltsGoal(org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK, vuforiaLocalizer);
+        if (targetsUltGoal == null) initUltsGoal();
         activate();
     }
 
-    private static void initUltsGoal(VuforiaLocalizer.CameraDirection cameraDirection, VuforiaLocalizer vuforiaLocalizer) {
+    private static void initUltsGoal() {
         // TODO most likely will need to end up establishing precise positions in the future
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
@@ -114,7 +104,7 @@ public class VuforiaSystem {
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, cameraDirection);
+            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, VuforiaLocalizer.CameraDirection.BACK);
         }
 
         // The tower goal targets are located a quarter field length from the ends of the back perimeter wall.

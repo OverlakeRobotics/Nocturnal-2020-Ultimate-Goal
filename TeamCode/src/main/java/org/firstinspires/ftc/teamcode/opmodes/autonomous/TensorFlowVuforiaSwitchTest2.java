@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
@@ -27,21 +29,15 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
     private Tensorflow mTensorflow;
     private VuforiaSystem mVuforia;
     private Tensorflow.SquareState mTargetRegion;
-    private boolean called;
 
     @Override
     public void init() {
-        called = false;
-
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
-        telemetry.addData(TAG, "Attempting to initialize Vuforia");
+
         mVuforia = new VuforiaSystem(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
-        telemetry.addData(TAG, "Initialized Vuforia");
         mTensorflow = new Tensorflow(mVuforia.getVuforiaLocalizer(), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
-        telemetry.addData(TAG, "Attempting to activate TensorFlow");
         mTensorflow.activate();
-        telemetry.addData(TAG, "Successfully activated TensorFlow");
         newState(BaseStateMachine.State.STATE_INITIAL);
     }
 
@@ -54,19 +50,22 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
     @Override
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
-        telemetry.addData(TAG, "Attempting to shut down TensorFlow");
         mTensorflow.shutdown();
-        telemetry.addData(TAG, "Successfully shut down TensorFlow");
         mVuforia.activate();
-        telemetry.addData(TAG, "Final TargetRegion is: " + mTargetRegion);
     }
 
     @Override
     public void loop() {
-        if (!called) {
-            called = true;
-        }
+
         telemetry.addData(TAG, mVuforia.isAnyTargetVisible() ? "There are targets visible." : "There aren't targets visible");
+        OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)mVuforia.trackable.getListener()).getUpdatedRobotLocation();
+        if (robotLocationTransform != null) {
+            mVuforia.setLastLocation(robotLocationTransform);
+        }
+        telemetry.addData(TAG,
+                "X:" + mVuforia.getXOffset(mVuforia.trackable) +
+                "Y:" + mVuforia.getYOffset(mVuforia.trackable) +
+                "Z:" + mVuforia.getZOffset(mVuforia.trackable));
     }
 
     @Override

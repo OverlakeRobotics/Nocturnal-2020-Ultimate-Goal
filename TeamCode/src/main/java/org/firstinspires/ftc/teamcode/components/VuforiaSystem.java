@@ -36,6 +36,7 @@ public class VuforiaSystem {
     private OpenGLMatrix lastLocation = null; // class members
     public static VuforiaTrackables targetsUltGoal;
     private static ArrayList<VuforiaTrackable> allTrackables;
+    public static VuforiaTrackable trackable;
 
 
     public static List<VuforiaTrackable> getTrackables() {
@@ -101,6 +102,8 @@ public class VuforiaSystem {
         redTowerGoalTarget.setLocation(OpenGLMatrix
                 .translation(halfField, -quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+
+        trackable = allTrackables.get(1);
     }
 
     public VuforiaLocalizer getVuforiaLocalizer() {
@@ -136,11 +139,15 @@ public class VuforiaSystem {
         vuforiaLocalizer = null;
     }
 
+    public void setLastLocation(OpenGLMatrix lastLocation) {
+        this.lastLocation = lastLocation;
+    }
+
     /**
      * Index 0: Rotation of the target relative to the robot
      * Index 1: Vertical distance from target relative to the robot]
      */
-    public float getXOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
+    public float getXOffset(VuforiaTrackable trackable) {
         VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
         if (listener.isVisible()) {
             return lastLocation.getTranslation().get(0) - trackable.getLocation().getTranslation().get(0);
@@ -148,7 +155,7 @@ public class VuforiaSystem {
         return Float.NaN;
     }
 
-    public float getYOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
+    public float getYOffset(VuforiaTrackable trackable) {
         VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
         if (listener.isVisible()) {
             return lastLocation.getTranslation().get(1) - trackable.getLocation().getTranslation().get(1);
@@ -156,7 +163,7 @@ public class VuforiaSystem {
         return Float.NaN;
     }
 
-    public float getZOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
+    public float getZOffset(VuforiaTrackable trackable) {
         VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
         if (listener.isVisible()) {
             return lastLocation.getTranslation().get(2) - trackable.getLocation().getTranslation().get(2);

@@ -8,10 +8,15 @@ import java.util.EnumMap;
 
 public class ArmSystem {
 
+    private static final double LEFT_CLOSED_POSITION = 0.715;
+    private static final double RIGHT_CLOSED_POSITION = 0.189;
+    private static final double LEFT_OPEN_POSITION = 0.446;
+    private static final double RIGHT_OPEN_POSITION = 0.456;
+
     public enum Servoes {
 
-        LEFT (0.715, 0.446, false), //values need to be changed
-        RIGHT (0.189, 0.456, false); //values need to be changed
+        LEFT (LEFT_CLOSED_POSITION, LEFT_OPEN_POSITION, false), //values need to be changed
+        RIGHT (RIGHT_CLOSED_POSITION, RIGHT_OPEN_POSITION, false); //values need to be changed
 
         private final double openPosition;
         private final double closedPosition;
@@ -46,6 +51,7 @@ public class ArmSystem {
 
     private static final double TICKS_PER_REVOLUTION = DriveConstants.TICKS_PER_REV; //number of ticks per revolution
     private static final double NUM_REVOLUTIONS = 0.8; // this needs to be changed - the number is num of revolutions
+
 
     private static final int DEFAULT = 0; // this needs to be changed
 

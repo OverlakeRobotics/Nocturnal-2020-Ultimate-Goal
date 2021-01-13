@@ -1,16 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
@@ -42,8 +35,10 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
 
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
-//        int cameraId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        mTensorflow = new Tensorflow(VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK, Constants.TENSORFLOW), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        telemetry.addData(TAG, "Attempting to initialize Vuforia");
+        mVuforia = new VuforiaSystem(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
+        telemetry.addData(TAG, "Initialized Vuforia");
+        mTensorflow = new Tensorflow(mVuforia.getVuforiaLocalizer(), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         telemetry.addData(TAG, "Attempting to activate TensorFlow");
         mTensorflow.activate();
         telemetry.addData(TAG, "Successfully activated TensorFlow");
@@ -62,9 +57,7 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
         telemetry.addData(TAG, "Attempting to shut down TensorFlow");
         mTensorflow.shutdown();
         telemetry.addData(TAG, "Successfully shut down TensorFlow");
-        telemetry.addData(TAG, "Attempting to initialize Vuforia");
-        mVuforia = new VuforiaSystem(hardwareMap);
-        telemetry.addData(TAG, "Initialized Vuforia");
+        mVuforia.activate();
         telemetry.addData(TAG, "Final TargetRegion is: " + mTargetRegion);
     }
 

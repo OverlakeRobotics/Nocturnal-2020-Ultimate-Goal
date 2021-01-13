@@ -4,7 +4,43 @@ import com.acmerobotics.roadrunner.drive.Drive;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.util.EnumMap;
+
 public class ArmSystem {
+
+    public enum Servoes {
+
+        LEFT (0.715, 0.446, false), //values need to be changed
+        RIGHT (0.189, 0.456, false); //values need to be changed
+
+        private final double openPosition;
+        private final double closedPosition;
+        private boolean closed;
+
+        Servoes(double closedPosition, double openPosition, boolean closed) {
+            this.closedPosition = closedPosition;
+            this.openPosition = openPosition;
+            this.closed = closed;
+        }
+
+        private double getOpenPosition() {
+            return openPosition;
+        }
+
+        private double getClosedPosition() {
+            return closedPosition;
+        }
+
+        private boolean getClosed() {
+            return closed;
+        }
+
+        private void setLatched(boolean isClosed) {
+            closed = isClosed;
+        }
+    }
+
+    public EnumMap<Servoes, Servo> servoMap;
 
     DcMotor motor; //one motor that we need
 
@@ -14,12 +50,25 @@ public class ArmSystem {
     private static final int DEFAULT = 0; // this needs to be changed
 
 
-    public ArmSystem(DcMotor motor1) { //constructor
+    public ArmSystem(DcMotor motor1, EnumMap<Servoes, Servo> servoMap) { //constructor
         this.motor = motor1; //setting ArmSystem motor to whatever motor that is
         init();
     }
 
     private void init() {
+        down();
+        release();
+    }
+
+    private void up(){
+        grab();
+        while (motor.getCurrentPosition() != NUM_REVOLUTIONS * TICKS_PER_REVOLUTION){
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor.setPower(0.75);
+        }
+    }
+
+    private void down(){
         while (motor.getCurrentPosition() != DEFAULT) {
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setTargetPosition(DEFAULT);
@@ -27,26 +76,17 @@ public class ArmSystem {
         motor.setPower(0.0);
     }
 
-    private void up(){
-        while (motor.getCurrentPosition() != NUM_REVOLUTIONS * TICKS_PER_REVOLUTION){
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motor.setPower(0.75);
-        }
+    private void grab(){
+        servoMap.forEach((name, servo) -> {
+            servo.setPosition(name.getClosedPosition());
+        });
     }
 
-    /*private void movetoPositionRevolutions(double revolutions){
-        while (motor.getCurrentPosition() != revolutions * TICKS_PER_REVOLUTION){
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motor.setPower(0.75);
-        }
+    private void release(){
+        servoMap.forEach((name, servo) -> {
+            servo.setPosition(name.getOpenPosition());
+        });
     }
-
-    private void movetoPositionTicks(double ticks){
-        while (motor.getCurrentPosition() != ticks * TICKS_PER_REVOLUTION){
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motor.setPower(0.75);
-        }
-    }*/
 }
 
 

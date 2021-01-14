@@ -62,7 +62,7 @@ public class VuforiaSystem {
                 parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
                 break;
         }
-        vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
+        this.vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
     }
 
     private void initUltsGoal() {

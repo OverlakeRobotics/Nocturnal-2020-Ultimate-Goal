@@ -38,16 +38,29 @@ public class VuforiaSystem {
     public static VuforiaTrackables targetsUltGoal;
     private static ArrayList<VuforiaTrackable> allTrackables;
     public static VuforiaTrackable sideWallTrackable;
+    private static VuforiaSystem instance;
 
 
     public static List<VuforiaTrackable> getTrackables() {
         return allTrackables;
     }
 
-    public VuforiaSystem(HardwareMap hardwareMap, CameraChoice cameraChoice) {
+    public static VuforiaSystem getInstance(HardwareMap hardwareMap, CameraChoice cameraChoice) {
+        if (instance == null) {
+            instance = new VuforiaSystem(hardwareMap, cameraChoice);
+        }
+        return instance;
+    }
+
+    public static VuforiaSystem getInstance() {
+        return instance;
+    }
+
+    private VuforiaSystem(HardwareMap hardwareMap, CameraChoice cameraChoice) {
         initVuforiaLocalizer(hardwareMap, cameraChoice);
         initUltsGoal();
     }
+
 
     public void initVuforiaLocalizer(HardwareMap hardwareMap, CameraChoice cameraChoice) {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();

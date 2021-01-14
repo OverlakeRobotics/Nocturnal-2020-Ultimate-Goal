@@ -37,8 +37,8 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
 
-        mVuforia = new VuforiaSystem(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
-        mTensorflow = new Tensorflow(mVuforia.getVuforiaLocalizer(), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        mVuforia = VuforiaSystem.getInstance(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
+        mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         newState(BaseStateMachine.State.STATE_INITIAL);
     }

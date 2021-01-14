@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.EnumMap;
 
-public class ArmSystem {
+public class YeetSystem {
 
     private static final double LEFT_CLOSED_POSITION = 0.715;
     private static final double RIGHT_CLOSED_POSITION = 0.189;
@@ -56,7 +56,7 @@ public class ArmSystem {
     private static final int DEFAULT = 0; // this needs to be changed
 
 
-    public ArmSystem(DcMotor motor1, EnumMap<Servoes, Servo> servoMap) { //constructor
+    public YeetSystem(DcMotor motor1, EnumMap<Servoes, Servo> servoMap) { //constructor
         this.motor = motor1; //setting ArmSystem motor to whatever motor that is
         init();
     }

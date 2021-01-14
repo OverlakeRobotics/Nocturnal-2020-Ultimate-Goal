@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
@@ -24,7 +25,8 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
     }
 
     private final static String TAG = "MESSAGE";
-    private BaseStateMachine.State mCurrentState;                         // Current State Machine State.
+    private static final float mmPerInch = 25.4f;
+    private BaseStateMachine.State mCurrentState;  // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
     private VuforiaSystem mVuforia;
@@ -56,16 +58,11 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
 
     @Override
     public void loop() {
-
-        telemetry.addData(TAG, mVuforia.isAnyTargetVisible() ? "There are targets visible." : "There aren't targets visible");
-        OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)mVuforia.trackable.getListener()).getUpdatedRobotLocation();
-        if (robotLocationTransform != null) {
-            mVuforia.setLastLocation(robotLocationTransform);
+        VectorF translation = mVuforia.vector();
+        if (translation != null) {
+            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
         }
-        telemetry.addData(TAG,
-                "X:" + mVuforia.getXOffset(mVuforia.trackable) +
-                "Y:" + mVuforia.getYOffset(mVuforia.trackable) +
-                "Z:" + mVuforia.getZOffset(mVuforia.trackable));
     }
 
     @Override

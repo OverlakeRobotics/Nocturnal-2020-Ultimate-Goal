@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -36,7 +37,7 @@ public class VuforiaSystem {
     private OpenGLMatrix lastLocation = null; // class members
     public static VuforiaTrackables targetsUltGoal;
     private static ArrayList<VuforiaTrackable> allTrackables;
-    public static VuforiaTrackable trackable;
+    public static VuforiaTrackable sideWallTrackable;
 
 
     public static List<VuforiaTrackable> getTrackables() {
@@ -103,7 +104,7 @@ public class VuforiaSystem {
                 .translation(halfField, -quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
-        trackable = allTrackables.get(1);
+        sideWallTrackable = allTrackables.get(1);
     }
 
     public VuforiaLocalizer getVuforiaLocalizer() {
@@ -139,35 +140,42 @@ public class VuforiaSystem {
         vuforiaLocalizer = null;
     }
 
-    public void setLastLocation(OpenGLMatrix lastLocation) {
-        this.lastLocation = lastLocation;
-    }
-
     /**
      * Index 0: Rotation of the target relative to the robot
      * Index 1: Vertical distance from target relative to the robot]
      */
-    public float getXOffset(VuforiaTrackable trackable) {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+    public float getXOffset() {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)sideWallTrackable.getListener());
         if (listener.isVisible()) {
-            return lastLocation.getTranslation().get(0) - trackable.getLocation().getTranslation().get(0);
+            return lastLocation.getTranslation().get(0) - sideWallTrackable.getLocation().getTranslation().get(0);
         }
         return Float.NaN;
     }
 
-    public float getYOffset(VuforiaTrackable trackable) {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+    public float getYOffset() {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)sideWallTrackable.getListener());
         if (listener.isVisible()) {
-            return lastLocation.getTranslation().get(1) - trackable.getLocation().getTranslation().get(1);
+            return lastLocation.getTranslation().get(1) - sideWallTrackable.getLocation().getTranslation().get(1);
         }
         return Float.NaN;
     }
 
-    public float getZOffset(VuforiaTrackable trackable) {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+    public float getZOffset() {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)sideWallTrackable.getListener());
         if (listener.isVisible()) {
-            return lastLocation.getTranslation().get(2) - trackable.getLocation().getTranslation().get(2);
+            return lastLocation.getTranslation().get(2) - sideWallTrackable.getLocation().getTranslation().get(2);
         }
         return Float.NaN;
+    }
+
+    public VectorF vector () {
+        OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)sideWallTrackable.getListener()).getUpdatedRobotLocation();
+        if (robotLocationTransform != null) {
+            lastLocation = robotLocationTransform;
+        }
+        if (lastLocation == null) {
+            return null;
+        }
+        return lastLocation.getTranslation();
     }
 }

@@ -106,7 +106,7 @@ public class BaseStateMachine extends BaseAutonomous {
                 }
                 break;
             case IDENTIFY_TARGETS:
-                //TODO use vuforia to find the target
+                /*//TODO use vuforia to find the target
                 OpenGLMatrix lastLocation = new OpenGLMatrix();
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) sideWallTrackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
@@ -115,7 +115,7 @@ public class BaseStateMachine extends BaseAutonomous {
                 float xOffset = mVuforia.getXOffset(sideWallTrackable);
                 float yOffset = mVuforia.getYOffset(sideWallTrackable);
                 //TODO use xOffset and yOffset to calibrate roadrunner.
-                break;
+                break;*/
 
             case STATE_COLLECT_RINGS:
                 //TODO Use the intake system to collect the rings

@@ -40,8 +40,8 @@ public class BaseStateMachine extends BaseAutonomous {
         super.init();
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
-        VuforiaSystem initSystem = new VuforiaSystem(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
-        mTensorflow = new Tensorflow(initSystem.getVuforiaLocalizer(), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        mVuforia = new VuforiaSystem(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
+        mTensorflow = new Tensorflow(mVuforia.getVuforiaLocalizer(), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 

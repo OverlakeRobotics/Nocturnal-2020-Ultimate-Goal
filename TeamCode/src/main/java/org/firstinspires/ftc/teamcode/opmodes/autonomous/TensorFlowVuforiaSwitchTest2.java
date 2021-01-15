@@ -13,17 +13,6 @@ import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
 @Autonomous(name = "TensorFlowVuforiaSwitchTest2", group = "")
 public class TensorFlowVuforiaSwitchTest2 extends OpMode {
-    public enum State {
-        STATE_INITIAL,
-        STATE_GRAB,
-        STATE_DRIVE_TO_TARGET,
-        STATE_DELIVER_WOBBLE,
-        IDENTIFY_TARGETS,
-        STATE_SHOOT,
-        STATE_COLLECT_RINGS,
-        STATE_COMPLETE,
-        LOGGING
-    }
 
     private final static String TAG = "MESSAGE";
     private static final float mmPerInch = 25.4f;
@@ -44,7 +33,6 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
         mVuforia = VuforiaSystem.getInstance(null);
         mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
-        newState(BaseStateMachine.State.STATE_INITIAL);
     }
 
     @Override
@@ -76,11 +64,5 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
         if (mVuforia != null) {
             mVuforia.disable();
         }
-    }
-
-    private void newState(BaseStateMachine.State newState) {
-        // Restarts the state clock as well as the state
-        mStateTime.reset();
-        mCurrentState = newState;
     }
 }

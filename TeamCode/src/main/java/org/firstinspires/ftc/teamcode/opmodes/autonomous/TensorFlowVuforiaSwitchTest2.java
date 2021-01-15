@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
@@ -26,7 +27,6 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
 
     private final static String TAG = "MESSAGE";
     private static final float mmPerInch = 25.4f;
-    private BaseStateMachine.State mCurrentState;  // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
     private VuforiaSystem mVuforia;
@@ -37,7 +37,11 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
 
-        mVuforia = VuforiaSystem.getInstance(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
+        /*
+        * hardwareMap.get(WebcamName.class, "Webcam 1")
+        * For use when using the webcame in place of null for get Instance
+        */
+        mVuforia = VuforiaSystem.getInstance(null);
         mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         newState(BaseStateMachine.State.STATE_INITIAL);
@@ -63,6 +67,8 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
             telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                     translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
         }
+        telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                mVuforia.getXOffset() / mmPerInch, mVuforia.getYOffset() / mmPerInch, mVuforia.getZOffset() / mmPerInch);
     }
 
     @Override

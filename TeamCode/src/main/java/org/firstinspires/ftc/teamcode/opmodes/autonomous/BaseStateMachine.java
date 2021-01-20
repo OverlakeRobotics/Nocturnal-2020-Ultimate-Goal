@@ -95,11 +95,11 @@ public class BaseStateMachine extends OpMode {
         switch (mCurrentState) { // TODO: This monstrosity.
             case LOGGING:
                 // telemetry.addData("DistanceFront", distanceCenter.getDistance(DistanceUnit.MM));
-                telemetry.addData("Color Blue", colorSensor.blue());
+                /*telemetry.addData("Color Blue", colorSensor.blue());
                 telemetry.addData("Color Red", colorSensor.red());
                 telemetry.addData("Color Green", colorSensor.green());
                 telemetry.addData("Color Alpha", colorSensor.alpha());
-                telemetry.addData("Color Hue", colorSensor.argb());
+                telemetry.addData("Color Hue", colorSensor.argb());*/
                 telemetry.update();
                 break;
             case STATE_INITIAL:

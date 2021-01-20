@@ -135,7 +135,7 @@ public class VuforiaSystem {
         return Float.NaN;
     }
 
-    public VectorF vector () {
+    public VectorF vector() {
         OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener()).getUpdatedRobotLocation();
         if (robotLocationTransform != null) {
             lastLocation = robotLocationTransform;

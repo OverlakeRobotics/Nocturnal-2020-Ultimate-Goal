@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
@@ -18,15 +20,13 @@ public class BaseStateMachine extends BaseAutonomous {
         STATE_GRAB,
         STATE_DRIVE_TO_TARGET,
         STATE_DELIVER_WOBBLE,
-        IDENTIFY_TARGETS,
         STATE_SHOOT,
         STATE_COLLECT_RINGS,
-        STATE_COMPLETE,
-        LOGGING
+        STATE_COMPLETE
     }
 
     private final static String TAG = "BaseStateMachine";
-    private VuforiaTrackable sideWallTrackable = VuforiaSystem.getTrackables().get(3);
+    private static final float mmPerInch = 25.4f;
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
@@ -40,8 +40,8 @@ public class BaseStateMachine extends BaseAutonomous {
         super.init();
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
-        mVuforia = new VuforiaSystem(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK);
-        mTensorflow = new Tensorflow(mVuforia.getVuforiaLocalizer(), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        mVuforia = VuforiaSystem.getInstance();
+        mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 
@@ -53,29 +53,30 @@ public class BaseStateMachine extends BaseAutonomous {
     @Override
     public void init_loop() {
         mTargetRegion = mTensorflow.getTargetRegion();
+        telemetry.addData(TAG, "TargetRegion is: " + mTargetRegion);
     }
 
     @Override
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
-//        mVuforia = new VuforiaSystem(VuforiaSystem.CameraChoice.PHONE_BACK, VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK, Constants.VUFORIA));
         mTensorflow.shutdown();
+        mVuforia.activate();
     }
 
     @Override
     public void loop() {
+        VectorF translation = mVuforia.vector();
+        if (translation != null) {
+            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+        }
+        telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                mVuforia.getXOffset() / mmPerInch, mVuforia.getYOffset() / mmPerInch, mVuforia.getZOffset() / mmPerInch);
+
         telemetry.addData("State", mCurrentState);
         telemetry.update();
+
         switch (mCurrentState) {
-            case LOGGING:
-                // telemetry.addData("DistanceFront", distanceCenter.getDistance(DistanceUnit.MM));
-                telemetry.addData("Color Blue", colorSensor.blue());
-                telemetry.addData("Color Red", colorSensor.red());
-                telemetry.addData("Color Green", colorSensor.green());
-                telemetry.addData("Color Alpha", colorSensor.alpha());
-                telemetry.addData("Color Hue", colorSensor.argb());
-                telemetry.update();
-                break;
             case STATE_INITIAL:
                 // Initialize
                 // Drive 0.5m (1 tile) to the left
@@ -105,17 +106,6 @@ public class BaseStateMachine extends BaseAutonomous {
                         //driveSystem.driveToPosition()
                 }
                 break;
-            case IDENTIFY_TARGETS:
-                /*//TODO use vuforia to find the target
-                OpenGLMatrix lastLocation = new OpenGLMatrix();
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) sideWallTrackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
-                }
-                float xOffset = mVuforia.getXOffset(sideWallTrackable);
-                float yOffset = mVuforia.getYOffset(sideWallTrackable);
-                //TODO use xOffset and yOffset to calibrate roadrunner.
-                break;*/
 
             case STATE_COLLECT_RINGS:
                 //TODO Use the intake system to collect the rings

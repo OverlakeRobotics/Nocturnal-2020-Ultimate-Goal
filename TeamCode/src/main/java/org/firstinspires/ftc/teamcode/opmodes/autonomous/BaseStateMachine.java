@@ -2,12 +2,15 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
@@ -44,6 +47,8 @@ public class BaseStateMachine extends OpMode {
     private Tensorflow mTensorflow;
     private VuforiaSystem mVuforia;
     private Tensorflow.SquareState mTargetRegion;
+    private ColorSensor colorSensor;
+    private DistanceSensor distanceCenter;
 //    private Shooter mShooter;
 //    private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
 //    private IntakeSystem mIntakeSystem;
@@ -94,12 +99,12 @@ public class BaseStateMachine extends OpMode {
 
         switch (mCurrentState) { // TODO: This monstrosity.
             case LOGGING:
-                // telemetry.addData("DistanceFront", distanceCenter.getDistance(DistanceUnit.MM));
-                /*telemetry.addData("Color Blue", colorSensor.blue());
+                telemetry.addData("DistanceFront", distanceCenter.getDistance(DistanceUnit.MM));
+                telemetry.addData("Color Blue", colorSensor.blue());
                 telemetry.addData("Color Red", colorSensor.red());
                 telemetry.addData("Color Green", colorSensor.green());
                 telemetry.addData("Color Alpha", colorSensor.alpha());
-                telemetry.addData("Color Hue", colorSensor.argb());*/
+                telemetry.addData("Color Hue", colorSensor.argb());
                 telemetry.update();
                 break;
             case STATE_INITIAL:

@@ -31,17 +31,6 @@ public abstract class BaseAutonomous extends BaseOpMode {
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
 
         //TODO configure distanceCenter
-//        if (team == BaseStateMachine.Team.RED) {
-//            distanceCenter = hardwareMap.get(DistanceSensor.class, "FRONTLEFTLIDAR");
-//            distanceOutside = hardwareMap.get(DistanceSensor.class, "FRONTRIGHTLIDAR");
-//            centerDirection = DriveSystem.Direction.LEFT;
-//            outsideDirection = DriveSystem.Direction.RIGHT;
-//        } else {
-//            distanceCenter = hardwareMap.get(DistanceSensor.class, "FRONTRIGHTLIDAR");
-//            distanceOutside = hardwareMap.get(DistanceSensor.class, "FRONTLEFTLIDAR");
-//            centerDirection = DriveSystem.Direction.RIGHT;
-//            outsideDirection = DriveSystem.Direction.LEFT;
-//        }
 
         colorSensor = hardwareMap.get(ColorSensor.class, "COLORSENSOR");
     }

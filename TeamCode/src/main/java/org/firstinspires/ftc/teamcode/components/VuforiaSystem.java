@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.components;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -17,8 +15,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Teddy, trust my code, you blasphemer. */
 public class VuforiaSystem {
@@ -38,14 +34,15 @@ public class VuforiaSystem {
     public static VuforiaTrackables targetsUltGoal;
     public static VuforiaTrackable redAllianceTarget ;
     private static VuforiaSystem instance;
-    private static VuforiaLocalizer.CameraDirection cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+    private static final VuforiaLocalizer.CameraDirection CAMERA_DIRECTION = VuforiaLocalizer.CameraDirection.BACK;
 
     public static VuforiaSystem getInstance(WebcamName webcamName) {
-        if (instance == null) instance = new VuforiaSystem(null);
+        if (instance == null) instance = new VuforiaSystem(webcamName);
         return instance;
     }
 
     public static VuforiaSystem getInstance() {
+        if (instance == null) instance = new VuforiaSystem(null);
         return instance;
     }
 
@@ -54,18 +51,17 @@ public class VuforiaSystem {
         initUltsGoal();
     }
 
-
-    public void initVuforiaLocalizer(WebcamName webcamName) {
+    private void initVuforiaLocalizer(WebcamName webcamName) {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = BuildConfig.NOCTURNAL_VUFORIA_KEY;
         parameters.useExtendedTracking = true;
         if (webcamName != null) {
             parameters.cameraName = webcamName;
         } else {
-            parameters.cameraDirection = cameraDirection;
+            parameters.cameraDirection = CAMERA_DIRECTION;
         }
 
-        this.vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
+        vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
     }
 
     private void initUltsGoal() {

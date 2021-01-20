@@ -30,7 +30,7 @@ public class TensorFlowVuforiaSwitchTest2 extends OpMode {
         * hardwareMap.get(WebcamName.class, "Webcam 1")
         * For use when using the webcame in place of null for get Instance
         */
-        mVuforia = VuforiaSystem.getInstance(null);
+        mVuforia = VuforiaSystem.getInstance();
         mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
     }

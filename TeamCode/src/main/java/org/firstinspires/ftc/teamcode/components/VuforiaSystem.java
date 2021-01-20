@@ -48,7 +48,7 @@ public class VuforiaSystem {
 
     private VuforiaSystem(WebcamName webcamName) {
         initVuforiaLocalizer(webcamName);
-        initUltsGoal();
+        initUltsGoal(webcamName);
     }
 
     private void initVuforiaLocalizer(WebcamName webcamName) {
@@ -64,7 +64,7 @@ public class VuforiaSystem {
         vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
     }
 
-    private void initUltsGoal() {
+    private void initUltsGoal(WebcamName webcamName) {
         // TODO most likely will need to end up establishing precise positions in the future
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
@@ -83,7 +83,12 @@ public class VuforiaSystem {
 
         redAllianceTarget = targetsUltGoal.get(2);
         redAllianceTarget.setName("Red Alliance");
-        ((VuforiaTrackableDefaultListener) redAllianceTarget.getListener()).setPhoneInformation(robotFromCamera, VuforiaLocalizer.CameraDirection.BACK);
+        if (webcamName == null) {
+            ((VuforiaTrackableDefaultListener) redAllianceTarget.getListener()).setPhoneInformation(robotFromCamera, VuforiaLocalizer.CameraDirection.BACK);
+        } else {
+            ((VuforiaTrackableDefaultListener) redAllianceTarget.getListener()).setCameraLocationOnRobot(webcamName, robotFromCamera);
+        }
+
         redAllianceTarget.setLocation(OpenGLMatrix
                 .translation(0, -halfField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));

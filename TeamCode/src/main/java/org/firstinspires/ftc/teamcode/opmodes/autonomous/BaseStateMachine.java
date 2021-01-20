@@ -14,20 +14,33 @@ import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
 public class BaseStateMachine extends BaseAutonomous {
     public enum State {
-        STATE_INITIAL,
-        STATE_GRAB,
-        STATE_DRIVE_TO_TARGET,
-        STATE_DELIVER_WOBBLE,
-        IDENTIFY_TARGETS,
-        STATE_SHOOT,
-        STATE_COLLECT_RINGS,
+        STATE_INITIAL,//Game starts!
+        DRIVE_FORWARD, //Robot drives forward
+        //Robot uses vuforia with right side camera
+        STATE_SCAN_RINGS, //Scan stack of rings
+        DRIVE_TO_SHOOTING_LINE, //Robot drives forward to right behind shooting line
+        STATE_SHOOT, //Shoot power shots, strafing left to get all 3
+        STATE_ROADRUNNER, //Use roadrunner to go to specified target zone
+        STATE_DELIVER_WOBBLE, //Drop off wobble goal
+        STATE_DRIVE_TO_WOBBLE,//Turn around and drive towards second wobble goal
+        STATE_COLLECT_WOBBLE,//Pick up second wobble goal
+        //Turn around and drive back to target zone (STATE_ROADRUNNER)
+        //Drop off second wobble goal (STATE_DELIVER_WOBBLE)
+        STATE_RETURN_TO_NEST,//Backup and park on line using vuforia
         STATE_COMPLETE,
-        LOGGING
+        LOGGING;
+    }
+
+    public enum CurrentTarget {
+        TARGET_A,
+        TARGET_B,
+        TARGET_C,
     }
 
     private final static String TAG = "BaseStateMachine";
     private VuforiaTrackable sideWallTrackable = VuforiaSystem.getTrackables().get(3);
     private State mCurrentState;                         // Current State Machine State.
+    private CurrentTarget mCurrentTarget                 // Current wobble goal target the robot is moving toward to drop off the wobble goal
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
     private VuforiaSystem mVuforia;
@@ -66,7 +79,7 @@ public class BaseStateMachine extends BaseAutonomous {
     public void loop() {
         telemetry.addData("State", mCurrentState);
         telemetry.update();
-        switch (mCurrentState) {
+        switch (mCurrentState) { // TODO: This monstrosity.
             case LOGGING:
                 // telemetry.addData("DistanceFront", distanceCenter.getDistance(DistanceUnit.MM));
                 telemetry.addData("Color Blue", colorSensor.blue());
@@ -81,44 +94,11 @@ public class BaseStateMachine extends BaseAutonomous {
                 // Drive 0.5m (1 tile) to the left
                 newState(State.STATE_DELIVER_WOBBLE);
                 break;
-            case STATE_DRIVE_TO_TARGET:
-//                if (driveSystem.driveToPosition(975, centerDirection, 0.7)) {
-//                    newState(State.STATE_COMPLETE);
-//                }
-                //TODO Add drive after confirmed the targets / target actions using search. Use roadrunner
-                /*
-                some variation of roadrunner.drive to be implemented and calibrated later. Probably with hardware help
-                 */
+            case DRIVE_FORWARD:
                 break;
-            case STATE_GRAB:
-
+            case STATE_SCAN_RINGS:
                 break;
-            case STATE_DELIVER_WOBBLE:
-                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
-
-                switch (mTargetRegion) {
-                    case BOX_A:
-                        //driveSystem.driveToPosition()
-                    case BOX_B:
-                        //driveSystem.driveToPosition()
-                    case BOX_C:
-                        //driveSystem.driveToPosition()
-                }
-                break;
-            case IDENTIFY_TARGETS:
-                /*//TODO use vuforia to find the target
-                OpenGLMatrix lastLocation = new OpenGLMatrix();
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) sideWallTrackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
-                }
-                float xOffset = mVuforia.getXOffset(sideWallTrackable);
-                float yOffset = mVuforia.getYOffset(sideWallTrackable);
-                //TODO use xOffset and yOffset to calibrate roadrunner.
-                break;*/
-
-            case STATE_COLLECT_RINGS:
-                //TODO Use the intake system to collect the rings
+            case DRIVE_TO_SHOOTING_LINE:
                 break;
             case STATE_SHOOT:
                 //**Basic Version, stop at white line**
@@ -147,7 +127,26 @@ public class BaseStateMachine extends BaseAutonomous {
                 //mShooter.stop();
                 //mTotalRings = 0;
                 break;
+            case STATE_ROADRUNNER:
+                break;
+            case STATE_DELIVER_WOBBLE:
+                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
 
+                switch (mTargetRegion) {
+                    case BOX_A:
+                        //driveSystem.driveToPosition()
+                    case BOX_B:
+                        //driveSystem.driveToPosition()
+                    case BOX_C:
+                        //driveSystem.driveToPosition()
+                }
+                break;
+            case STATE_DRIVE_TO_WOBBLE:
+                break;
+            case STATE_COLLECT_WOBBLE:
+                break;
+            case STATE_RETURN_TO_NEST:
+                break;
             case STATE_COMPLETE:
                 break;
         }

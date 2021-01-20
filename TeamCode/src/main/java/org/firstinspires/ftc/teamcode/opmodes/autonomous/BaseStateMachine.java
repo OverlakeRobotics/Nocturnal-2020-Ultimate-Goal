@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -14,7 +16,8 @@ import org.firstinspires.ftc.teamcode.components.Shooter;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
-public class BaseStateMachine extends BaseAutonomous {
+@Autonomous(name = "BaseStateMachine", group = "")
+public class BaseStateMachine extends OpMode {
     public enum State {
         STATE_INITIAL,
         STATE_GRAB,
@@ -32,18 +35,17 @@ public class BaseStateMachine extends BaseAutonomous {
     private Tensorflow mTensorflow;
     private VuforiaSystem mVuforia;
     private Tensorflow.SquareState mTargetRegion;
-    private Shooter mShooter;
-    private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
+//    private Shooter mShooter;
+//    private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
 //    private IntakeSystem mIntakeSystem;
 
     public void init() {
-        super.init();
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
         mVuforia = VuforiaSystem.getInstance();
         mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
-        mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
+        //mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 
         //TODO add shooter and intakes system
         //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
@@ -73,6 +75,11 @@ public class BaseStateMachine extends BaseAutonomous {
         telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                 mVuforia.getXOffset() / mmPerInch, mVuforia.getYOffset() / mmPerInch, mVuforia.getZOffset() / mmPerInch);
 
+        if (translation != null) {
+            telemetry.addLine("null");
+        } else {
+            telemetry.addLine("not null");
+        }
         telemetry.addData("State", mCurrentState);
         telemetry.update();
 

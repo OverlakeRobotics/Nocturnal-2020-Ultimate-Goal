@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
-import org.firstinspires.ftc.teamcode.components.DriveSystem;
+import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem.CameraChoice;
 
@@ -13,7 +13,7 @@ import java.util.EnumMap;
 
 public abstract class BaseOpMode extends OpMode {
 
-    protected DriveSystem driveSystem;
+    protected RoadRunnerDriveSystem RoadRunnerDriveSystem;
     protected VuforiaSystem vuforia;
     private boolean stopRequested;
 
@@ -21,13 +21,6 @@ public abstract class BaseOpMode extends OpMode {
         stopRequested = false;
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
-        EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
-        for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()) {
-            driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
-        }
-        driveSystem = new DriveSystem(driveMap);
-
-//        vuforia = new VuforiaSystem();
     }
 
     public final boolean isStopRequested() {

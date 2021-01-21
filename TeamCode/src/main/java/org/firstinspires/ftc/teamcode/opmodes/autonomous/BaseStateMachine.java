@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -31,9 +33,13 @@ public class BaseStateMachine extends BaseOpMode {
         LOGGING;
     }
 
+    public enum RoadrunnerTarget {
+        TARGET_A, TARGET_B, TARGET_C
+    }
 
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
+    private RoadrunnerTarget mCurrentTarget;
     private Tensorflow mTensorflow;
     private Tensorflow.SquareState mTargetRegion;
 //    private Shooter mShooter;
@@ -109,7 +115,31 @@ public class BaseStateMachine extends BaseOpMode {
                 //mShooter.stop();
                 //mTotalRings = 0;
                 break;
-            case STATE_ROADRUNNER:
+            case STATE_ROADRUNNER: // TODO: Refine these measurements
+                Trajectory trajectory;
+                switch (mCurrentTarget) {
+                    case TARGET_A:
+                        trajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                                .forward(48)
+                                .build();
+                        break;
+                    case TARGET_B:
+                        trajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                                .strafeLeft(24)
+                                .forward(24)
+                                .build();
+                        break;
+                    case TARGET_C:
+                        trajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                                .strafeLeft(48)
+                                .forward(48)
+                                .build();
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + mCurrentTarget);
+                }
+                RoadRunnerDriveSystem.turn(-90);
+                RoadRunnerDriveSystem.followTrajectory(trajectory);
                 break;
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal

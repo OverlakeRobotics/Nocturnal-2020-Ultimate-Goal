@@ -21,6 +21,7 @@ public abstract class BaseOpMode extends OpMode {
         stopRequested = false;
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
+        vuforia = VuforiaSystem.getInstance();
     }
 
     public final boolean isStopRequested() {

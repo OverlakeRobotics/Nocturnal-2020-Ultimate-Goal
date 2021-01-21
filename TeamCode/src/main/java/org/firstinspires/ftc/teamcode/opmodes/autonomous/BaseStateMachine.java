@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,9 +9,10 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
+import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 @Autonomous(name = "BaseStateMachine", group = "")
-public class BaseStateMachine extends OpMode {
+public class BaseStateMachine extends BaseOpMode {
     public enum State {
         STATE_INITIAL,//Game starts!
         DRIVE_FORWARD, //Robot drives forward
@@ -37,10 +37,7 @@ public class BaseStateMachine extends OpMode {
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
-    private VuforiaSystem mVuforia;
     private Tensorflow.SquareState mTargetRegion;
-    private ColorSensor colorSensor;
-    private DistanceSensor distanceCenter;
 //    private Shooter mShooter;
 //    private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
 //    private IntakeSystem mIntakeSystem;
@@ -48,7 +45,6 @@ public class BaseStateMachine extends OpMode {
     public void init() {
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
-        mVuforia = VuforiaSystem.getInstance();
         mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
         //mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
@@ -68,18 +64,18 @@ public class BaseStateMachine extends OpMode {
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
         mTensorflow.shutdown();
-        mVuforia.activate();
+        vuforia.activate();
     }
 
     @Override
     public void loop() {
-        VectorF translation = mVuforia.vector();
+        VectorF translation = vuforia.vector();
         if (translation != null) {
             telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                     translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
         }
         telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                mVuforia.getXOffset() / mmPerInch, mVuforia.getYOffset() / mmPerInch, mVuforia.getZOffset() / mmPerInch);
+                vuforia.getXOffset() / mmPerInch, vuforia.getYOffset() / mmPerInch, vuforia.getZOffset() / mmPerInch);
 
         if (translation != null) {
             telemetry.addLine("null");
@@ -91,13 +87,6 @@ public class BaseStateMachine extends OpMode {
 
         switch (mCurrentState) { // TODO: This monstrosity.
             case LOGGING:
-                telemetry.addData("DistanceFront", distanceCenter.getDistance(DistanceUnit.MM));
-                telemetry.addData("Color Blue", colorSensor.blue());
-                telemetry.addData("Color Red", colorSensor.red());
-                telemetry.addData("Color Green", colorSensor.green());
-                telemetry.addData("Color Alpha", colorSensor.alpha());
-                telemetry.addData("Color Hue", colorSensor.argb());
-                telemetry.update();
                 break;
             case STATE_INITIAL:
                 // Initialize

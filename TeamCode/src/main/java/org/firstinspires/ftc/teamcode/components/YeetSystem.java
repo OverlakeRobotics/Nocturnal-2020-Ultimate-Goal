@@ -75,7 +75,7 @@ public class YeetSystem {
         }
     }
 
-    private void down(){
+    public void down(){
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (motor.getCurrentPosition() != DEFAULT) {
             motor.setTargetPosition(DEFAULT);
@@ -89,7 +89,7 @@ public class YeetSystem {
         });
     }
 
-    private void release(){
+    public void release(){
         servoMap.forEach((name, servo) -> {
             servo.setPosition(name.getOpenPosition());
         });

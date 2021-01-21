@@ -32,8 +32,6 @@ public class BaseStateMachine extends BaseOpMode {
     }
 
 
-    private final static String TAG = "BaseStateMachine";
-    private static final float mmPerInch = 25.4f;
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
@@ -43,6 +41,7 @@ public class BaseStateMachine extends BaseOpMode {
 //    private IntakeSystem mIntakeSystem;
 
     public void init() {
+        super.init();
         this.msStuckDetectInit = 15000;
         this.msStuckDetectInitLoop = 15000;
         mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
@@ -57,34 +56,21 @@ public class BaseStateMachine extends BaseOpMode {
     @Override
     public void init_loop() {
         mTargetRegion = mTensorflow.getTargetRegion();
-        telemetry.addData(TAG, "TargetRegion is: " + mTargetRegion);
+        telemetry.addData("MESSAGE:", "TargetRegion is: " + mTargetRegion);
     }
 
     @Override
     public void start() {
+        super.start();
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
         mTensorflow.shutdown();
-        vuforia.activate();
     }
 
     @Override
     public void loop() {
-        VectorF translation = vuforia.vector();
-        if (translation != null) {
-            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-        }
-        telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                vuforia.getXOffset() / mmPerInch, vuforia.getYOffset() / mmPerInch, vuforia.getZOffset() / mmPerInch);
-
-        if (translation != null) {
-            telemetry.addLine("null");
-        } else {
-            telemetry.addLine("not null");
-        }
+        vuforiaData();
         telemetry.addData("State", mCurrentState);
         telemetry.update();
-
         switch (mCurrentState) { // TODO: This monstrosity.
             case LOGGING:
                 break;
@@ -148,6 +134,15 @@ public class BaseStateMachine extends BaseOpMode {
                 break;
             case STATE_COMPLETE:
                 break;
+        }
+    }
+
+    public void stop() {
+        if (vuforia != null) {
+            vuforia.disable();
+        }
+        if (mTensorflow != null) {
+            mTensorflow.shutdown();
         }
     }
 

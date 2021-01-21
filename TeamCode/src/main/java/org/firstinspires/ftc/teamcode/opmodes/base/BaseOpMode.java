@@ -17,15 +17,17 @@ public abstract class BaseOpMode extends OpMode {
     private static final float mmPerInch = 25.4f;
     protected RoadRunnerDriveSystem RoadRunnerDriveSystem;
     protected VuforiaSystem vuforia;
-    private boolean stopRequested;
 
+    @Override
     public void init() {
-        stopRequested = false;
-        this.msStuckDetectInit = 20000;
-        this.msStuckDetectInitLoop = 20000;
+        this.msStuckDetectInit = 15000;
+        this.msStuckDetectInitLoop = 15000;
         vuforia = VuforiaSystem.getInstance();
+
+        //TODO initialize RoadRunnerDriveSystem once hardware online
     }
 
+    @Override
     public void start() {
         vuforia.activate();
     }
@@ -50,13 +52,10 @@ public abstract class BaseOpMode extends OpMode {
 
     }
 
-    public final boolean isStopRequested() {
-        return this.stopRequested || Thread.currentThread().isInterrupted();
-    }
-
     @Override
     public void stop() {
-        stopRequested = true;
-        super.stop();
+        if (vuforia != null) {
+            vuforia.disable();
+        }
     }
 }

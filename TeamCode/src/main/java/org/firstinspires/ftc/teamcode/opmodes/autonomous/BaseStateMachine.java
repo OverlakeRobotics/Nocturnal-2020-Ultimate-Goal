@@ -37,16 +37,13 @@ public class BaseStateMachine extends BaseOpMode {
     private Tensorflow mTensorflow;
     private Tensorflow.SquareState mTargetRegion;
 //    private Shooter mShooter;
-//    private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
 //    private IntakeSystem mIntakeSystem;
 
+    @Override
     public void init() {
         super.init();
-        this.msStuckDetectInit = 15000;
-        this.msStuckDetectInitLoop = 15000;
         mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
-        //mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 
         //TODO add shooter and intakes system
         //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
@@ -61,9 +58,9 @@ public class BaseStateMachine extends BaseOpMode {
 
     @Override
     public void start() {
-        super.start();
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
         mTensorflow.shutdown();
+        super.start();
     }
 
     @Override
@@ -137,10 +134,9 @@ public class BaseStateMachine extends BaseOpMode {
         }
     }
 
+    @Override
     public void stop() {
-        if (vuforia != null) {
-            vuforia.disable();
-        }
+        super.stop();
         if (mTensorflow != null) {
             mTensorflow.shutdown();
         }

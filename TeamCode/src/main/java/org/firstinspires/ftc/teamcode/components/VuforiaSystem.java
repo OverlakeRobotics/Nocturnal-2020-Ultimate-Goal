@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.components;
 
-import android.util.Log;
-
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -13,16 +9,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 import org.firstinspires.ftc.teamcode.BuildConfig;
-import org.firstinspires.ftc.teamcode.Constants;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Teddy, trust my code, you blasphemer. */
 public class VuforiaSystem {
@@ -37,56 +29,42 @@ public class VuforiaSystem {
     private static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
     private static final float quadField = 36 * mmPerInch;
 
-    private static VuforiaLocalizer vuforiaLocalizer;
-    private static CameraChoice currentCameraChoice;
-    private static String currentTag;
+    private VuforiaLocalizer vuforiaLocalizer;
     private OpenGLMatrix lastLocation = null; // class members
     public static VuforiaTrackables targetsUltGoal;
-    private static ArrayList<VuforiaTrackable> allTrackables;
+    public static VuforiaTrackable redAllianceTarget ;
+    private static VuforiaSystem instance;
+    private static final VuforiaLocalizer.CameraDirection CAMERA_DIRECTION = VuforiaLocalizer.CameraDirection.BACK;
 
-
-    public static List<VuforiaTrackable> getTrackables() {
-        return allTrackables;
+    public static VuforiaSystem getInstance(WebcamName webcamName) {
+        if (instance == null) instance = new VuforiaSystem(webcamName);
+        return instance;
     }
 
-    public static VuforiaLocalizer getVuforiaLocalizer(HardwareMap hardwareMap, CameraChoice cameraChoice, String tag) {
-        if (currentTag == null || !currentTag.equals(tag)) {
-            currentTag = tag;
-        } else if (cameraChoice.equals(currentCameraChoice) && vuforiaLocalizer != null) {
-            return vuforiaLocalizer;
-        }
-        currentCameraChoice = cameraChoice;
+    public static VuforiaSystem getInstance() {
+        if (instance == null) instance = new VuforiaSystem(null);
+        return instance;
+    }
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+    private VuforiaSystem(WebcamName webcamName) {
+        initVuforiaLocalizer(webcamName);
+        initUltsGoal(webcamName);
+    }
+
+    private void initVuforiaLocalizer(WebcamName webcamName) {
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = BuildConfig.NOCTURNAL_VUFORIA_KEY;
         parameters.useExtendedTracking = true;
-        parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.NONE;
-
-
-        switch (cameraChoice) {
-            case PHONE_BACK:
-                parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-                break;
-            case WEBCAM1:
-                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-                break;
+        if (webcamName != null) {
+            parameters.cameraName = webcamName;
+        } else {
+            parameters.cameraDirection = CAMERA_DIRECTION;
         }
 
-        if (tag.equals(Constants.TENSORFLOW)) {
-            vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
-        }
-        return vuforiaLocalizer;
+        vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
     }
 
-    public VuforiaSystem(HardwareMap hardwareMap) {
-
-        Log.d("Debug", "After setViewParent() called");
-        initUltsGoal(org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK, vuforiaLocalizer);
-        activate();
-    }
-
-    private static void initUltsGoal(VuforiaLocalizer.CameraDirection cameraDirection, VuforiaLocalizer vuforiaLocalizer) {
+    private void initUltsGoal(WebcamName webcamName) {
         // TODO most likely will need to end up establishing precise positions in the future
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
@@ -103,47 +81,21 @@ public class VuforiaSystem {
 
         targetsUltGoal = vuforiaLocalizer.loadTrackablesFromAsset("UltimateGoal");
 
-        VuforiaTrackable blueTowerGoalTarget = targetsUltGoal.get(0);
-        blueTowerGoalTarget.setName("Blue Tower Goal");
-        VuforiaTrackable redTowerGoalTarget = targetsUltGoal.get(1);
-        redTowerGoalTarget.setName("Red Tower Goal");
-
-        // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        allTrackables = new ArrayList<>();
-        allTrackables.addAll(targetsUltGoal);
-
-        /**  Let all the trackable listeners know where the phone is.  */
-        for (VuforiaTrackable trackable : allTrackables) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, cameraDirection);
+        redAllianceTarget = targetsUltGoal.get(2);
+        redAllianceTarget.setName("Red Alliance");
+        if (webcamName == null) {
+            ((VuforiaTrackableDefaultListener) redAllianceTarget.getListener()).setPhoneInformation(robotFromCamera, VuforiaLocalizer.CameraDirection.BACK);
+        } else {
+            ((VuforiaTrackableDefaultListener) redAllianceTarget.getListener()).setCameraLocationOnRobot(webcamName, robotFromCamera);
         }
 
-        // The tower goal targets are located a quarter field length from the ends of the back perimeter wall.
-        blueTowerGoalTarget.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-        redTowerGoalTarget.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+        redAllianceTarget.setLocation(OpenGLMatrix
+                .translation(0, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
     }
 
-    public boolean isTargetVisible(VuforiaTrackable targetTrackable) {
-        if (((VuforiaTrackableDefaultListener)targetTrackable.getListener()).isVisible()) {
-            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)targetTrackable.getListener()).getUpdatedRobotLocation();
-            if (robotLocationTransform != null) {
-                lastLocation = robotLocationTransform;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isAnyTargetVisible() {
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (isTargetVisible(trackable)) {
-                return true;
-            }
-        }
-        return false;
+    public VuforiaLocalizer getVuforiaLocalizer() {
+        return vuforiaLocalizer;
     }
 
     public void activate() {
@@ -152,34 +104,45 @@ public class VuforiaSystem {
 
     public void disable() {
         targetsUltGoal.deactivate();
-        vuforiaLocalizer = null;
+        instance = null;
     }
 
     /**
      * Index 0: Rotation of the target relative to the robot
      * Index 1: Vertical distance from target relative to the robot]
      */
-    public float getXOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+    public float getXOffset() {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener());
         if (listener.isVisible()) {
-            return lastLocation.getTranslation().get(0) - trackable.getLocation().getTranslation().get(0);
+            return lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0);
         }
         return Float.NaN;
     }
 
-    public float getYOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+    public float getYOffset() {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener());
         if (listener.isVisible()) {
-            return lastLocation.getTranslation().get(1) - trackable.getLocation().getTranslation().get(1);
+            return lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1);
         }
         return Float.NaN;
     }
 
-    public float getZOffset(VuforiaTrackable trackable, OpenGLMatrix lastLocation) {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)trackable.getListener());
+    public float getZOffset() {
+        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener());
         if (listener.isVisible()) {
-            return lastLocation.getTranslation().get(2) - trackable.getLocation().getTranslation().get(2);
+            return lastLocation.getTranslation().get(2) - redAllianceTarget.getLocation().getTranslation().get(2);
         }
         return Float.NaN;
+    }
+
+    public VectorF vector() {
+        OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener()).getUpdatedRobotLocation();
+        if (robotLocationTransform != null) {
+            lastLocation = robotLocationTransform;
+        }
+        if (lastLocation == null) {
+            return null;
+        }
+        return lastLocation.getTranslation();
     }
 }

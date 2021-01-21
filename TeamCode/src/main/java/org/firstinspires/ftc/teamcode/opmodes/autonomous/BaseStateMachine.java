@@ -1,55 +1,55 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-import android.util.Log;
-
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.vuforia.Vuforia;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
-import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.components.DriveSystem;
-import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
-import org.firstinspires.ftc.teamcode.components.Shooter;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
+import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
-public class BaseStateMachine extends BaseAutonomous {
+@Autonomous(name = "BaseStateMachine", group = "")
+public class BaseStateMachine extends BaseOpMode {
     public enum State {
-        STATE_INITIAL,
-        STATE_GRAB,
-        STATE_DRIVE_TO_TARGET,
-        STATE_DELIVER_WOBBLE,
-        IDENTIFY_TARGETS,
-        STATE_SHOOT,
-        STATE_COLLECT_RINGS,
+        STATE_INITIAL,//Game starts!
+        DRIVE_FORWARD, //Robot drives forward
+        //Robot uses vuforia with right side camera
+        STATE_SCAN_RINGS, //Scan stack of rings
+        DRIVE_TO_SHOOTING_LINE, //Robot drives forward to right behind shooting line
+        STATE_SHOOT, //Shoot power shots, strafing left to get all 3
+        STATE_ROADRUNNER, //Use roadrunner to go to specified target zone
+        STATE_DELIVER_WOBBLE, //Drop off wobble goal
+        STATE_DRIVE_TO_WOBBLE,//Turn around and drive towards second wobble goal
+        STATE_COLLECT_WOBBLE,//Pick up second wobble goal
+        //Turn around and drive back to target zone (STATE_ROADRUNNER)
+        //Drop off second wobble goal (STATE_DELIVER_WOBBLE)
+        STATE_RETURN_TO_NEST,//Backup and park on line using vuforia
         STATE_COMPLETE,
-        LOGGING
+        LOGGING;
     }
 
-    private final static String TAG = "BaseStateMachine";
-    private VuforiaTrackable sideWallTrackable = VuforiaSystem.getTrackables().get(3);
+    public enum RoadrunnerTarget {
+        TARGET_A, TARGET_B, TARGET_C
+    }
+
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
+    private RoadrunnerTarget mCurrentTarget;
     private Tensorflow mTensorflow;
-    private VuforiaSystem mVuforia;
     private Tensorflow.SquareState mTargetRegion;
-    private Shooter mShooter;
-    private RoadRunnerDriveSystem mRoadRunnerDriveSystem;
+//    private Shooter mShooter;
 //    private IntakeSystem mIntakeSystem;
 
+    @Override
     public void init() {
         super.init();
-        this.msStuckDetectInit = 15000;
-        this.msStuckDetectInitLoop = 15000;
-        mTensorflow = new Tensorflow(VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK, Constants.TENSORFLOW), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
-        mRoadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 
         //TODO add shooter and intakes system
         //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
@@ -59,72 +59,34 @@ public class BaseStateMachine extends BaseAutonomous {
     @Override
     public void init_loop() {
         mTargetRegion = mTensorflow.getTargetRegion();
+        telemetry.addData("MESSAGE:", "TargetRegion is: " + mTargetRegion);
     }
 
     @Override
     public void start() {
         if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
-//        mVuforia = new VuforiaSystem(VuforiaSystem.CameraChoice.PHONE_BACK, VuforiaSystem.getVuforiaLocalizer(hardwareMap, VuforiaSystem.CameraChoice.PHONE_BACK, Constants.VUFORIA));
         mTensorflow.shutdown();
+        super.start();
     }
 
     @Override
     public void loop() {
+        vuforiaData();
         telemetry.addData("State", mCurrentState);
         telemetry.update();
-        switch (mCurrentState) {
+        switch (mCurrentState) { // TODO: This monstrosity.
             case LOGGING:
-                // telemetry.addData("DistanceFront", distanceCenter.getDistance(DistanceUnit.MM));
-                telemetry.addData("Color Blue", colorSensor.blue());
-                telemetry.addData("Color Red", colorSensor.red());
-                telemetry.addData("Color Green", colorSensor.green());
-                telemetry.addData("Color Alpha", colorSensor.alpha());
-                telemetry.addData("Color Hue", colorSensor.argb());
-                telemetry.update();
                 break;
             case STATE_INITIAL:
                 // Initialize
                 // Drive 0.5m (1 tile) to the left
                 newState(State.STATE_DELIVER_WOBBLE);
                 break;
-            case STATE_DRIVE_TO_TARGET:
-//                if (driveSystem.driveToPosition(975, centerDirection, 0.7)) {
-//                    newState(State.STATE_COMPLETE);
-//                }
-                //TODO Add drive after confirmed the targets / target actions using search. Use roadrunner
-                /*
-                some variation of roadrunner.drive to be implemented and calibrated later. Probably with hardware help
-                 */
+            case DRIVE_FORWARD:
                 break;
-            case STATE_GRAB:
-
+            case STATE_SCAN_RINGS:
                 break;
-            case STATE_DELIVER_WOBBLE:
-                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
-
-                switch (mTargetRegion) {
-                    case BOX_A:
-                        //driveSystem.driveToPosition()
-                    case BOX_B:
-                        //driveSystem.driveToPosition()
-                    case BOX_C:
-                        //driveSystem.driveToPosition()
-                }
-                break;
-            case IDENTIFY_TARGETS:
-                //TODO use vuforia to find the target
-                OpenGLMatrix lastLocation = new OpenGLMatrix();
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) sideWallTrackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
-                }
-                float xOffset = mVuforia.getXOffset(sideWallTrackable, lastLocation);
-                float yOffset = mVuforia.getYOffset(sideWallTrackable, lastLocation);
-                //TODO use xOffset and yOffset to calibrate roadrunner.
-                break;
-
-            case STATE_COLLECT_RINGS:
-                //TODO Use the intake system to collect the rings
+            case DRIVE_TO_SHOOTING_LINE:
                 break;
             case STATE_SHOOT:
                 //**Basic Version, stop at white line**
@@ -153,9 +115,60 @@ public class BaseStateMachine extends BaseAutonomous {
                 //mShooter.stop();
                 //mTotalRings = 0;
                 break;
+            case STATE_ROADRUNNER: // TODO: Refine these measurements
+                Trajectory trajectory;
+                switch (mCurrentTarget) {
+                    case TARGET_A:
+                        trajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                                .forward(48)
+                                .build();
+                        break;
+                    case TARGET_B:
+                        trajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                                .strafeLeft(24)
+                                .forward(24)
+                                .build();
+                        break;
+                    case TARGET_C:
+                        trajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                                .strafeLeft(48)
+                                .forward(48)
+                                .build();
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + mCurrentTarget);
+                }
+                RoadRunnerDriveSystem.turn(-90);
+                RoadRunnerDriveSystem.followTrajectory(trajectory);
+                break;
+            case STATE_DELIVER_WOBBLE:
+                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
 
+                switch (mTargetRegion) {
+                    case BOX_A:
+                        //driveSystem.driveToPosition()
+                    case BOX_B:
+                        //driveSystem.driveToPosition()
+                    case BOX_C:
+                        //driveSystem.driveToPosition()
+                }
+                break;
+            case STATE_DRIVE_TO_WOBBLE:
+                break;
+            case STATE_COLLECT_WOBBLE:
+                break;
+            case STATE_RETURN_TO_NEST:
+                break;
             case STATE_COMPLETE:
                 break;
+        }
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        if (mTensorflow != null) {
+            mTensorflow.shutdown();
         }
     }
 

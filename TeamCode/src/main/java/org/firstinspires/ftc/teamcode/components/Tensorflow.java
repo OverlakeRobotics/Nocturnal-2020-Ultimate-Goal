@@ -23,13 +23,13 @@ public class Tensorflow {
 
     /**
      * Constructor for TensorFlow
-     * @param vuforiaLocalizer converts Vuforia Frame into AndroidBitMap
      * @param tfodMonitorId monitor ID
      */
-    public Tensorflow(VuforiaLocalizer vuforiaLocalizer, int tfodMonitorId) {
+    public Tensorflow(int tfodMonitorId) {
+        VuforiaSystem vuforiaSystem = VuforiaSystem.getInstance();
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorId); //creating parameters
         tfodParameters.minResultConfidence = 0.3f; //minimumConfidenceNecessaryForActingOnDetection
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforiaLocalizer); //create objectDetector
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforiaSystem.getVuforiaLocalizer()); //create objectDetector
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); //loading models
         tfod.activate(); //turnOn
     }

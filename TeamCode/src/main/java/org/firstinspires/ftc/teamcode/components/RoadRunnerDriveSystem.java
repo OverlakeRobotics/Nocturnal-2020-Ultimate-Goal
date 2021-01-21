@@ -22,6 +22,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     private NanoClock clock;
 
-    private Mode mode;
+    public Mode mode;
 
     private PIDFController turnController;
     private MotionProfile turnProfile;
@@ -71,6 +72,8 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
     private StandardTrackingWheelLocalizer standardTrackingWheelLocalizer;
+    private boolean mSlowDrive;
+    public static final double SLOW_DRIVE_COEFF = 0.4;
 
     public RoadRunnerDriveSystem(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -329,5 +332,45 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     public double getRawExternalHeading() {
         // Three wheel tracking does not use imu for heading
         return 0;
+    }
+
+    /**
+     * Clips joystick values and drives the motors.
+     * @param rightX Right X joystick value
+     * @param leftX Left X joystick value
+     * @param leftY Left Y joystick value in case you couldn't tell from the others
+     */
+    public void drive(float rightX, float leftX, float leftY) {
+        // Prevent small values from causing the robot to drift
+        if (Math.abs(rightX) < 0.01) {
+            rightX = 0.0f;
+        }
+        if (Math.abs(leftX) < 0.01) {
+            leftX = 0.0f;
+        }
+        if (Math.abs(leftY) < 0.01) {
+            leftY = 0.0f;
+        }
+
+        double frontLeftPower = -leftY + rightX + leftX;
+        double frontRightPower = -leftY - rightX - leftX;
+        double backLeftPower = -leftY + rightX - leftX;
+        double backRightPower = -leftY - rightX + leftX;
+
+        rightFront.setPower(getDrivePower(frontRightPower));
+        leftRear.setPower(getDrivePower(backLeftPower));
+        leftFront.setPower(getDrivePower(frontLeftPower));
+        rightRear.setPower(getDrivePower(backRightPower));
+
+        mSlowDrive = false;
+    }
+
+    public void slowDrive(boolean slowDrive) {
+        mSlowDrive = slowDrive;
+    }
+
+    private double getDrivePower( double motorPower) {
+        return Range.clip(mSlowDrive ?
+                SLOW_DRIVE_COEFF * motorPower : motorPower, -1, 1);
     }
 }

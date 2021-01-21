@@ -13,7 +13,7 @@ public class YeetSystem {
     private static final double LEFT_OPEN_POSITION = 0.446;
     private static final double RIGHT_OPEN_POSITION = 0.456;
 
-    public enum Servoes {
+    public enum Servos {
 
         LEFT (LEFT_CLOSED_POSITION, LEFT_OPEN_POSITION, false), //values need to be changed
         RIGHT (RIGHT_CLOSED_POSITION, RIGHT_OPEN_POSITION, false); //values need to be changed
@@ -22,21 +22,21 @@ public class YeetSystem {
         private final double closedPosition;
         private boolean closed;
 
-        Servoes(double closedPosition, double openPosition, boolean closed) {
+        Servos(double closedPosition, double openPosition, boolean closed) {
             this.closedPosition = closedPosition;
             this.openPosition = openPosition;
             this.closed = closed;
         }
 
-        private double getOpenPosition() {
+        public double getOpenPosition() {
             return openPosition;
         }
 
-        private double getClosedPosition() {
+        public double getClosedPosition() {
             return closedPosition;
         }
 
-        private boolean getClosed() {
+        public boolean getClosed() {
             return closed;
         }
 
@@ -45,19 +45,19 @@ public class YeetSystem {
         }
     }
 
-    public EnumMap<Servoes, Servo> servoMap;
+    public EnumMap<Servos, Servo> servoMap;
 
     DcMotor motor; //one motor that we need
 
     private static final double TICKS_PER_REVOLUTION = DriveConstants.TICKS_PER_REV; //number of ticks per revolution
     private static final double NUM_REVOLUTIONS = 0.8; // this needs to be changed - the number is num of revolutions
-
+    private static final double UP_POSITION = TICKS_PER_REVOLUTION * NUM_REVOLUTIONS;
 
     private static final int DEFAULT = 0; // this needs to be changed
 
 
-    public YeetSystem(DcMotor motor1, EnumMap<Servoes, Servo> servoMap) { //constructor
-        this.motor = motor1; //setting ArmSystem motor to whatever motor that is
+    public YeetSystem(DcMotor motor, EnumMap<Servos, Servo> servoMap) { //constructor
+        this.motor = motor; //setting ArmSystem motor to whatever motor that is
         init();
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
@@ -67,23 +67,23 @@ public class YeetSystem {
         release();
     }
 
-    private void up(){
+    public void up(){
         grab();
-        while (motor.getCurrentPosition() != NUM_REVOLUTIONS * TICKS_PER_REVOLUTION){
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while (motor.getCurrentPosition() != UP_POSITION){
             motor.setPower(0.75);
         }
     }
 
     private void down(){
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (motor.getCurrentPosition() != DEFAULT) {
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setTargetPosition(DEFAULT);
         }
         motor.setPower(0.0);
     }
 
-    private void grab(){
+    public void grab(){
         servoMap.forEach((name, servo) -> {
             servo.setPosition(name.getClosedPosition());
         });

@@ -119,18 +119,18 @@ public class BaseStateMachine extends BaseOpMode {
                 Trajectory trajectory;
                 switch (mCurrentTarget) {
                     case TARGET_A:
-                        trajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                        trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
                                 .forward(48)
                                 .build();
                         break;
                     case TARGET_B:
-                        trajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                        trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
                                 .strafeLeft(24)
                                 .forward(24)
                                 .build();
                         break;
                     case TARGET_C:
-                        trajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                        trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
                                 .strafeLeft(48)
                                 .forward(48)
                                 .build();
@@ -138,8 +138,8 @@ public class BaseStateMachine extends BaseOpMode {
                     default:
                         throw new IllegalStateException("Unexpected value: " + mCurrentTarget);
                 }
-                RoadRunnerDriveSystem.turn(-90);
-                RoadRunnerDriveSystem.followTrajectory(trajectory);
+                roadRunnerDriveSystem.turn(-90);
+                roadRunnerDriveSystem.followTrajectory(trajectory);
                 break;
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal

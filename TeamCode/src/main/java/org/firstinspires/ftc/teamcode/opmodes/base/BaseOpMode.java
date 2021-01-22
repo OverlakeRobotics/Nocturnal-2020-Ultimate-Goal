@@ -17,8 +17,6 @@ public abstract class BaseOpMode extends OpMode {
         this.msStuckDetectInitLoop = 20000;
 
         roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
-        this.msStuckDetectInit = 15000;
-        this.msStuckDetectInitLoop = 15000;
         vuforia = VuforiaSystem.getInstance();
 
         //TODO initialize RoadRunnerDriveSystem once hardware online

@@ -73,6 +73,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     public static double OMEGA_WEIGHT = 1;
     private StandardTrackingWheelLocalizer standardTrackingWheelLocalizer;
     private boolean mSlowDrive;
+    private boolean mPathComplete = false;
     public static final double SLOW_DRIVE_COEFF = 0.4;
 
     public RoadRunnerDriveSystem(HardwareMap hardwareMap) {
@@ -132,8 +133,11 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         setLocalizer(standardTrackingWheelLocalizer);
     }
 
-    public double getEncoder() {
-        return standardTrackingWheelLocalizer.leftEncoderValue();
+    public ArrayList<Double> getEncoders() {
+        return new ArrayList<Double>(
+                Arrays.asList(standardTrackingWheelLocalizer.leftEncoderValue(),
+                standardTrackingWheelLocalizer.rightEncoderValue(),
+                standardTrackingWheelLocalizer.frontEncoderValue()));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -170,9 +174,16 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         waitForIdle();
     }
 
-    public void followTrajectoryAsync(Trajectory trajectory) {
+    public boolean followTrajectoryAsync(Trajectory trajectory) {
+        if (mPathComplete) {
+            mPathComplete = false;
+            return true;
+        }
+
         follower.followTrajectory(trajectory);
         mode = Mode.FOLLOW_TRAJECTORY;
+
+        return false;
     }
 
     public void followTrajectory(Trajectory trajectory) {
@@ -225,6 +236,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
                 if (t >= turnProfile.duration()) {
                     mode = Mode.IDLE;
+                    mPathComplete = true;
                     setDriveSignal(new DriveSignal());
                 }
 
@@ -239,6 +251,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
                 if (!follower.isFollowing()) {
                     mode = Mode.IDLE;
+                    mPathComplete = true;
                     setDriveSignal(new DriveSignal());
                 }
 

@@ -1,28 +1,19 @@
 package org.firstinspires.ftc.teamcode.opmodes.base;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
-import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
-import org.firstinspires.ftc.teamcode.components.VuforiaSystem.CameraChoice;
-
-import java.util.EnumMap;
 
 public abstract class BaseOpMode extends OpMode {
 
     protected RoadRunnerDriveSystem driveSystem;
     private static final float mmPerInch = 25.4f;
-    protected RoadRunnerDriveSystem RoadRunnerDriveSystem;
     protected VuforiaSystem vuforia;
 
     @Override
     public void init() {
-        stopRequested = false;
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
 

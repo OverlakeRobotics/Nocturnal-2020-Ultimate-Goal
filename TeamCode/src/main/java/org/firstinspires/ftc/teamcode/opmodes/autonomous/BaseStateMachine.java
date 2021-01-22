@@ -33,13 +33,8 @@ public class BaseStateMachine extends BaseOpMode {
         LOGGING;
     }
 
-    public enum RoadrunnerTarget {
-        TARGET_A, TARGET_B, TARGET_C
-    }
-
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
-    private RoadrunnerTarget mCurrentTarget;
     private Tensorflow mTensorflow;
     private Tensorflow.SquareState mTargetRegion;
 //    private Shooter mShooter;
@@ -117,26 +112,26 @@ public class BaseStateMachine extends BaseOpMode {
                 break;
             case STATE_ROADRUNNER: // TODO: Refine these measurements
                 Trajectory trajectory;
-                switch (mCurrentTarget) {
-                    case TARGET_A:
+                switch (mTargetRegion) {
+                    case BOX_A:
                         trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
                                 .forward(48)
                                 .build();
                         break;
-                    case TARGET_B:
+                    case BOX_B:
                         trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
                                 .strafeLeft(24)
                                 .forward(24)
                                 .build();
                         break;
-                    case TARGET_C:
+                    case BOX_C:
                         trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
                                 .strafeLeft(48)
                                 .forward(48)
                                 .build();
                         break;
                     default:
-                        throw new IllegalStateException("Unexpected value: " + mCurrentTarget);
+                        throw new IllegalStateException("Unexpected value: " + mTargetRegion);
                 }
                 roadRunnerDriveSystem.turn(-90);
                 roadRunnerDriveSystem.followTrajectory(trajectory);

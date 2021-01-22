@@ -72,17 +72,22 @@ public class BaseStateMachine extends BaseOpMode {
         switch (mCurrentState) { // TODO: This monstrosity.
             case LOGGING:
                 break;
+
             case STATE_INITIAL:
                 // Initialize
                 // Drive 0.5m (1 tile) to the left
                 newState(State.STATE_DELIVER_WOBBLE);
                 break;
+
             case DRIVE_FORWARD:
                 break;
+
             case STATE_SCAN_RINGS:
                 break;
+
             case DRIVE_TO_SHOOTING_LINE:
                 break;
+
             case STATE_SHOOT:
                 //**Basic Version, stop at white line**
                 //DriveSystem.stop()
@@ -110,7 +115,12 @@ public class BaseStateMachine extends BaseOpMode {
                 //mShooter.stop();
                 //mTotalRings = 0;
                 break;
+
             case STATE_ROADRUNNER: // TODO: Refine these measurements
+                break;
+
+            case STATE_DELIVER_WOBBLE:
+                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                 Trajectory trajectory;
                 switch (mTargetRegion) {
                     case BOX_A:
@@ -130,30 +140,23 @@ public class BaseStateMachine extends BaseOpMode {
                                 .forward(48)
                                 .build();
                         break;
+
                     default:
                         throw new IllegalStateException("Unexpected value: " + mTargetRegion);
                 }
                 roadRunnerDriveSystem.turn(-90);
                 roadRunnerDriveSystem.followTrajectory(trajectory);
                 break;
-            case STATE_DELIVER_WOBBLE:
-                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
 
-                switch (mTargetRegion) {
-                    case BOX_A:
-                        //driveSystem.driveToPosition()
-                    case BOX_B:
-                        //driveSystem.driveToPosition()
-                    case BOX_C:
-                        //driveSystem.driveToPosition()
-                }
-                break;
             case STATE_DRIVE_TO_WOBBLE:
                 break;
+
             case STATE_COLLECT_WOBBLE:
                 break;
+
             case STATE_RETURN_TO_NEST:
                 break;
+
             case STATE_COMPLETE:
                 break;
         }

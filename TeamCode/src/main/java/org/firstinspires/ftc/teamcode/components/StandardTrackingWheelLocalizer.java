@@ -54,8 +54,14 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
 
-    public double leftEncoderValue() {
+    public double leftEncoderValue() { return leftEncoder.getCurrentPosition(); }
+
+    public double rightEncoderValue() {
         return rightEncoder.getCurrentPosition();
+    }
+
+    public double frontEncoderValue() {
+        return frontEncoder.getCurrentPosition();
     }
 
     @Override

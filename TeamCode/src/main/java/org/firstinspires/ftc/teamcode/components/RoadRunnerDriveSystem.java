@@ -15,27 +15,28 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.BASE_CONSTRAINTS;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.getMotorVelocityF;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.kV;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.components.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.Constants.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.Constants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.Constants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.Constants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.Constants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.Constants.getMotorVelocityF;
+import static org.firstinspires.ftc.teamcode.Constants.kV;
+import static org.firstinspires.ftc.teamcode.Constants.kA;
+import static org.firstinspires.ftc.teamcode.Constants.kStatic;
 
 public class RoadRunnerDriveSystem extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
@@ -51,7 +52,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     private NanoClock clock;
 
-    private Mode mode;
+    public Mode mode;
 
     private PIDFController turnController;
     private MotionProfile turnProfile;
@@ -64,9 +65,16 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
-    private BNO055IMU imu;
 
     private Pose2d lastPoseOnTurn;
+
+    public static double VX_WEIGHT = 1;
+    public static double VY_WEIGHT = 1;
+    public static double OMEGA_WEIGHT = 1;
+    private StandardTrackingWheelLocalizer standardTrackingWheelLocalizer;
+    private boolean mSlowDrive;
+    private boolean mPathComplete = false;
+    public static final double SLOW_DRIVE_COEFF = 0.4;
 
     public RoadRunnerDriveSystem(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -84,17 +92,9 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
         poseHistory = new ArrayList<>();
 
-        // TODO Update firmware on rev hub
-
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
-
-        // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
@@ -123,10 +123,21 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        // TODO: reverse any motors using DcMotor.setDirection()
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        // TODO: if desired, use setLocalizer() to change the localization method
-        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        standardTrackingWheelLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
+
+        setLocalizer(standardTrackingWheelLocalizer);
+    }
+
+    public ArrayList<Double> getEncoders() {
+        return new ArrayList<Double>(
+                Arrays.asList(standardTrackingWheelLocalizer.leftEncoderValue(),
+                standardTrackingWheelLocalizer.rightEncoderValue(),
+                standardTrackingWheelLocalizer.frontEncoderValue()));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -163,9 +174,16 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         waitForIdle();
     }
 
-    public void followTrajectoryAsync(Trajectory trajectory) {
+    public boolean followTrajectoryAsync(Trajectory trajectory) {
+        if (mPathComplete) {
+            mPathComplete = false;
+            return true;
+        }
+
         follower.followTrajectory(trajectory);
         mode = Mode.FOLLOW_TRAJECTORY;
+
+        return false;
     }
 
     public void followTrajectory(Trajectory trajectory) {
@@ -218,6 +236,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
                 if (t >= turnProfile.duration()) {
                     mode = Mode.IDLE;
+                    mPathComplete = true;
                     setDriveSignal(new DriveSignal());
                 }
 
@@ -232,6 +251,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
                 if (!follower.isFollowing()) {
                     mode = Mode.IDLE;
+                    mPathComplete = true;
                     setDriveSignal(new DriveSignal());
                 }
 
@@ -276,6 +296,26 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         }
     }
 
+    public void setWeightedDrivePower(Pose2d drivePower) {
+        Pose2d vel = drivePower;
+
+        if (Math.abs(drivePower.getX()) + Math.abs(drivePower.getY())
+                + Math.abs(drivePower.getHeading()) > 1) {
+            // re-normalize the powers according to the weights
+            double denom = VX_WEIGHT * Math.abs(drivePower.getX())
+                    + VY_WEIGHT * Math.abs(drivePower.getY())
+                    + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
+
+            vel = new Pose2d(
+                    VX_WEIGHT * drivePower.getX(),
+                    VY_WEIGHT * drivePower.getY(),
+                    OMEGA_WEIGHT * drivePower.getHeading()
+            ).div(denom);
+        }
+
+        setDrivePower(vel);
+    }
+
     @Override
     public List<Double> getWheelPositions() {
         List<Double> wheelPositions = new ArrayList<>();
@@ -303,6 +343,47 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getAngularOrientation().firstAngle;
+        // Three wheel tracking does not use imu for heading
+        return 0;
+    }
+
+    /**
+     * Clips joystick values and drives the motors.
+     * @param rightX Right X joystick value
+     * @param leftX Left X joystick value
+     * @param leftY Left Y joystick value in case you couldn't tell from the others
+     */
+    public void drive(float rightX, float leftX, float leftY) {
+        // Prevent small values from causing the robot to drift
+        if (Math.abs(rightX) < 0.01) {
+            rightX = 0.0f;
+        }
+        if (Math.abs(leftX) < 0.01) {
+            leftX = 0.0f;
+        }
+        if (Math.abs(leftY) < 0.01) {
+            leftY = 0.0f;
+        }
+
+        double frontLeftPower = -leftY + rightX + leftX;
+        double frontRightPower = -leftY - rightX - leftX;
+        double backLeftPower = -leftY + rightX - leftX;
+        double backRightPower = -leftY - rightX + leftX;
+
+        rightFront.setPower(getDrivePower(frontRightPower));
+        leftRear.setPower(getDrivePower(backLeftPower));
+        leftFront.setPower(getDrivePower(frontLeftPower));
+        rightRear.setPower(getDrivePower(backRightPower));
+
+        mSlowDrive = false;
+    }
+
+    public void slowDrive(boolean slowDrive) {
+        mSlowDrive = slowDrive;
+    }
+
+    private double getDrivePower( double motorPower) {
+        return Range.clip(mSlowDrive ?
+                SLOW_DRIVE_COEFF * motorPower : motorPower, -1, 1);
     }
 }

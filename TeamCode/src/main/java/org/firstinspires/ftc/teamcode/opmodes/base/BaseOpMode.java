@@ -1,47 +1,56 @@
 package org.firstinspires.ftc.teamcode.opmodes.base;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.teamcode.components.DriveSystem;
-import org.firstinspires.ftc.teamcode.components.Vuforia;
-import org.firstinspires.ftc.teamcode.components.Vuforia.CameraChoice;
-
-import java.util.EnumMap;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
+import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
 public abstract class BaseOpMode extends OpMode {
 
-    protected DriveSystem driveSystem;
-    protected Vuforia vuforia;
-    protected VuforiaTrackable skystone;
-    protected VuforiaTrackable rearPerimeter;
-    private boolean stopRequested;
+    protected RoadRunnerDriveSystem roadRunnerDriveSystem;
+    private static final float mmPerInch = 25.4f;
+    protected VuforiaSystem vuforia;
 
-    public void init(){
-        stopRequested = false;
+    @Override
+    public void init() {
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
-        EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
-        for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
-            driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
+
+        roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
+        vuforia = VuforiaSystem.getInstance();
+
+        //TODO initialize RoadRunnerDriveSystem once hardware online
+    }
+
+    @Override
+    public void start() {
+        vuforia.activate();
+    }
+
+    public void vuforiaData() {
+        VectorF translation = vuforia.vector();
+
+        // only one of these two will be used
+        if (translation != null) {
+            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
         }
-        driveSystem = new DriveSystem(driveMap);
-    }
+        telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                vuforia.getXOffset() / mmPerInch, vuforia.getYOffset() / mmPerInch, vuforia.getZOffset() / mmPerInch);
 
-    protected void setCamera(CameraChoice cameraChoice){
-        vuforia = new Vuforia(hardwareMap, cameraChoice);
-    }
 
-    public final boolean isStopRequested() {
-        return this.stopRequested || Thread.currentThread().isInterrupted();
+        if (translation != null) {
+            telemetry.addLine("null");
+        } else {
+            telemetry.addLine("not null");
+        }
+
     }
 
     @Override
     public void stop() {
-        stopRequested = true;
-        super.stop();
+        if (vuforia != null) {
+            vuforia.disable();
+        }
     }
 }

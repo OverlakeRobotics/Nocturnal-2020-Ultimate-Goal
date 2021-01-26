@@ -18,11 +18,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 /** Teddy, trust my code, you blasphemer. */
 public class VuforiaSystem {
-
-    public enum CameraChoice {
-        PHONE_BACK, WEBCAM1
-    }
-
     private static final float mmPerInch = 25.4f;                    // constant for converting measurements from inches to millimeters
     private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
@@ -60,7 +55,6 @@ public class VuforiaSystem {
         } else {
             parameters.cameraDirection = CAMERA_DIRECTION;
         }
-
         vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
     }
 

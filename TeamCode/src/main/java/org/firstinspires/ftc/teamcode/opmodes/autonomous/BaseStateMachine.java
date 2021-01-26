@@ -22,8 +22,7 @@ public class BaseStateMachine extends BaseOpMode {
         STATE_SCAN_RINGS, //Scan stack of rings
         DRIVE_TO_SHOOTING_LINE, //Robot drives forward to right behind shooting line
         STATE_SHOOT, //Shoot power shots, strafing left to get all 3
-        STATE_ROADRUNNER, //Use roadrunner to go to specified target zone
-        STATE_DELIVER_WOBBLE, //Drop off wobble goal
+        STATE_DELIVER_WOBBLE, //Use roadrunner to go to specified target zone and drop off wobble goal
         STATE_DRIVE_TO_WOBBLE,//Turn around and drive towards second wobble goal
         STATE_COLLECT_WOBBLE,//Pick up second wobble goal
         //Turn around and drive back to target zone (STATE_ROADRUNNER)
@@ -37,6 +36,7 @@ public class BaseStateMachine extends BaseOpMode {
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
     private Tensorflow.SquareState mTargetRegion;
+    Trajectory trajectory;
 //    private Shooter mShooter;
 //    private IntakeSystem mIntakeSystem;
 
@@ -75,17 +75,25 @@ public class BaseStateMachine extends BaseOpMode {
 
             case STATE_INITIAL:
                 // Initialize
-                // Drive 0.5m (1 tile) to the left
                 newState(State.STATE_DELIVER_WOBBLE);
                 break;
 
             case DRIVE_FORWARD:
+                trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                        .forward(36)
+                        .build();
+                newState(State.STATE_SCAN_RINGS);
                 break;
 
             case STATE_SCAN_RINGS:
+                newState(State.DRIVE_TO_SHOOTING_LINE);
                 break;
 
             case DRIVE_TO_SHOOTING_LINE:
+                trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                        .forward(24)
+                        .build();
+                newState(State.STATE_SHOOT);
                 break;
 
             case STATE_SHOOT:
@@ -114,9 +122,7 @@ public class BaseStateMachine extends BaseOpMode {
                 //}
                 //mShooter.stop();
                 //mTotalRings = 0;
-                break;
-
-            case STATE_ROADRUNNER: // TODO: Refine these measurements
+                newState(State.STATE_DELIVER_WOBBLE);
                 break;
 
             case STATE_DELIVER_WOBBLE:
@@ -152,9 +158,11 @@ public class BaseStateMachine extends BaseOpMode {
                 break;
 
             case STATE_COLLECT_WOBBLE:
+                newState(State.STATE_RETURN_TO_NEST);
                 break;
 
             case STATE_RETURN_TO_NEST:
+                newState(State.STATE_COMPLETE);
                 break;
 
             case STATE_COMPLETE:

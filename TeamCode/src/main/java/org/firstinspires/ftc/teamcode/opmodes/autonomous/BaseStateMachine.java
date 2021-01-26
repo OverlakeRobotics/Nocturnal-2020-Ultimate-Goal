@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -28,8 +29,7 @@ public class BaseStateMachine extends BaseOpMode {
         //Turn around and drive back to target zone (STATE_ROADRUNNER)
         //Drop off second wobble goal (STATE_DELIVER_WOBBLE)
         STATE_RETURN_TO_NEST,//Backup and park on line using vuforia
-        STATE_COMPLETE,
-        LOGGING;
+        STATE_COMPLETE
     }
 
     private State mCurrentState;                         // Current State Machine State.
@@ -70,9 +70,7 @@ public class BaseStateMachine extends BaseOpMode {
         telemetry.addData("State", mCurrentState);
         telemetry.update();
         switch (mCurrentState) { // TODO: This monstrosity.
-            case LOGGING:
-                break;
-
+            //TODO Do we need a trajectory as a field?
             case STATE_INITIAL:
                 // Initialize
                 newState(State.STATE_DELIVER_WOBBLE);
@@ -127,29 +125,22 @@ public class BaseStateMachine extends BaseOpMode {
 
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
-                Trajectory trajectory;
+                TrajectoryBuilder trajectoryBuilder = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d());
                 switch (mTargetRegion) {
                     case BOX_A:
-                        trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
-                                .forward(48)
-                                .build();
+                        trajectoryBuilder.forward(48);
                         break;
                     case BOX_B:
-                        trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
-                                .strafeLeft(24)
-                                .forward(24)
-                                .build();
+                        trajectoryBuilder.strafeLeft(24).forward(24);
                         break;
                     case BOX_C:
-                        trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
-                                .strafeLeft(48)
-                                .forward(48)
-                                .build();
+                        trajectoryBuilder.strafeLeft(48).forward(48);
                         break;
 
                     default:
                         throw new IllegalStateException("Unexpected value: " + mTargetRegion);
                 }
+                trajectory = trajectoryBuilder.build();
                 roadRunnerDriveSystem.turn(-90);
                 roadRunnerDriveSystem.followTrajectory(trajectory);
                 break;

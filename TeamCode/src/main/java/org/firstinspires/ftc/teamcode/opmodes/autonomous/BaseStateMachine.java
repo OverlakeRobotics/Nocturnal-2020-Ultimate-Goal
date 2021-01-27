@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
+import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
@@ -35,7 +36,7 @@ public class BaseStateMachine extends BaseOpMode {
     private State mCurrentState;                         // Current State Machine State.
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
-    private Tensorflow.SquareState mTargetRegion;
+    public static Tensorflow.SquareState mTargetRegion;
     Trajectory trajectory;
 //    private Shooter mShooter;
 //    private IntakeSystem mIntakeSystem;
@@ -125,22 +126,6 @@ public class BaseStateMachine extends BaseOpMode {
 
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
-                TrajectoryBuilder trajectoryBuilder = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d());
-                switch (mTargetRegion) {
-                    case BOX_A:
-                        trajectoryBuilder.forward(48);
-                        break;
-                    case BOX_B:
-                        trajectoryBuilder.strafeLeft(24).forward(24);
-                        break;
-                    case BOX_C:
-                        trajectoryBuilder.strafeLeft(48).forward(48);
-                        break;
-
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + mTargetRegion);
-                }
-                trajectory = trajectoryBuilder.build();
                 roadRunnerDriveSystem.turn(-90);
                 roadRunnerDriveSystem.followTrajectory(trajectory);
                 break;
@@ -173,5 +158,6 @@ public class BaseStateMachine extends BaseOpMode {
         // Restarts the state clock as well as the state
         mStateTime.reset();
         mCurrentState = newState;
+        trajectory = Trajectories.getTrajectory(mCurrentState);
     }
 }

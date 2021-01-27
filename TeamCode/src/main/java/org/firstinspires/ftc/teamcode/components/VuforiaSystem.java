@@ -27,7 +27,7 @@ public class VuforiaSystem {
     private VuforiaLocalizer vuforiaLocalizer;
     private OpenGLMatrix lastLocation = null; // class members
     public static VuforiaTrackables targetsUltGoal;
-    public static VuforiaTrackable redAllianceTarget ;
+    public static VuforiaTrackable redAllianceTarget;
     private static VuforiaSystem instance;
     private static final VuforiaLocalizer.CameraDirection CAMERA_DIRECTION = VuforiaLocalizer.CameraDirection.BACK;
 

@@ -58,7 +58,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     private MotionProfile turnProfile;
     private double turnStart;
 
-    private DriveConstraints constraints;
+    private static DriveConstraints constraints;
     private TrajectoryFollower follower;
 
     private List<Pose2d> poseHistory;
@@ -140,15 +140,15 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
                 standardTrackingWheelLocalizer.frontEncoderValue()));
     }
 
-    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
+    public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, constraints);
     }
 
-    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
+    public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
         return new TrajectoryBuilder(startPose, reversed, constraints);
     }
 
-    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
+    public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
         return new TrajectoryBuilder(startPose, startHeading, constraints);
     }
 

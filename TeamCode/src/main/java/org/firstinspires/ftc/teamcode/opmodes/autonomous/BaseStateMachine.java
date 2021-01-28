@@ -70,6 +70,8 @@ public class BaseStateMachine extends BaseOpMode {
         vuforiaData();
         telemetry.addData("State", mCurrentState);
         telemetry.update();
+        trajectory = Trajectories.getTrajectory(mCurrentState);
+        roadRunnerDriveSystem.followTrajectory(trajectory);
         switch (mCurrentState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
             case STATE_INITIAL:
@@ -78,9 +80,6 @@ public class BaseStateMachine extends BaseOpMode {
                 break;
 
             case DRIVE_FORWARD:
-                trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
-                        .forward(36)
-                        .build();
                 newState(State.STATE_SCAN_RINGS);
                 break;
 
@@ -89,9 +88,6 @@ public class BaseStateMachine extends BaseOpMode {
                 break;
 
             case DRIVE_TO_SHOOTING_LINE:
-                trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
-                        .forward(24)
-                        .build();
                 newState(State.STATE_SHOOT);
                 break;
 
@@ -127,7 +123,6 @@ public class BaseStateMachine extends BaseOpMode {
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                 roadRunnerDriveSystem.turn(-90);
-                roadRunnerDriveSystem.followTrajectory(trajectory);
                 break;
 
             case STATE_DRIVE_TO_WOBBLE:

@@ -93,6 +93,12 @@ public class BaseStateMachine extends BaseOpMode {
                 trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
                         .forward(24)
                         .build();
+
+                if (roadRunnerDriveSystem.followTrajectoryAsync((trajectory))) {
+                    // Completed following path
+                } else {
+                    // Still following
+                }
                 newState(State.STATE_SHOOT);
                 break;
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.base;
 
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
@@ -10,6 +11,9 @@ public abstract class BaseOpMode extends OpMode {
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
     private static final float mmPerInch = 25.4f;
     protected VuforiaSystem vuforia;
+    protected Trajectory trajectory;
+    //    protected Shooter mShooter;
+    //    protected IntakeSystem mIntakeSystem;
 
     @Override
     public void init() {
@@ -38,13 +42,11 @@ public abstract class BaseOpMode extends OpMode {
         telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                 vuforia.getXOffset() / mmPerInch, vuforia.getYOffset() / mmPerInch, vuforia.getZOffset() / mmPerInch);
 
-
         if (translation != null) {
             telemetry.addLine("null");
         } else {
             telemetry.addLine("not null");
         }
-
     }
 
     @Override

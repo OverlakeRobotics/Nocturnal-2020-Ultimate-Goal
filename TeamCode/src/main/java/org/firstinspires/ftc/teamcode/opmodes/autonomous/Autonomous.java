@@ -1,22 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
-import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
-@Autonomous(name = "BaseStateMachine", group = "")
-public class BaseStateMachine extends BaseOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "")
+public class Autonomous extends BaseOpMode {
     public enum State {
         STATE_INITIAL,//Game starts!
         DRIVE_FORWARD, //Robot drives forward
@@ -34,12 +25,8 @@ public class BaseStateMachine extends BaseOpMode {
     }
 
     private State mCurrentState;                         // Current State Machine State.
-    private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
     private Tensorflow mTensorflow;
     public static Tensorflow.SquareState mTargetRegion;
-    Trajectory trajectory;
-//    private Shooter mShooter;
-//    private IntakeSystem mIntakeSystem;
 
     @Override
     public void init() {
@@ -150,8 +137,6 @@ public class BaseStateMachine extends BaseOpMode {
     }
 
     private void newState(State newState) {
-        // Restarts the state clock as well as the state
-        mStateTime.reset();
         mCurrentState = newState;
         trajectory = Trajectories.getTrajectory(mCurrentState);
     }

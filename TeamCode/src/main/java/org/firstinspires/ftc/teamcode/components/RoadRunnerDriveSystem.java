@@ -186,11 +186,6 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         return false;
     }
 
-    public void followTrajectory(Trajectory trajectory) {
-        followTrajectoryAsync(trajectory);
-        waitForIdle();
-    }
-
     public Pose2d getLastError() {
         switch (mode) {
             case FOLLOW_TRAJECTORY:

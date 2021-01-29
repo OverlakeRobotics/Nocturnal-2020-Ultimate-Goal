@@ -32,9 +32,11 @@ public class Trajectories {
                     case BOX_A:
                         trajectoryBuilder.forward(48);
                         break;
+
                     case BOX_B:
                         trajectoryBuilder.strafeLeft(24).forward(24);
                         break;
+
                     case BOX_C:
                         trajectoryBuilder.strafeLeft(48).forward(48);
                         break;
@@ -43,6 +45,9 @@ public class Trajectories {
                         throw new IllegalStateException("Unexpected value: " + Autonomous.mTargetRegion);
                 }
                 break;
+
+            default:
+                return null;
         }
         return trajectoryBuilder.build();
     }

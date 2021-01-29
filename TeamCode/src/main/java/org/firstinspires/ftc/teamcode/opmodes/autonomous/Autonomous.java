@@ -57,8 +57,10 @@ public class Autonomous extends BaseOpMode {
         vuforiaData();
         telemetry.addData("State", mCurrentState);
         telemetry.update();
-        trajectory = Trajectories.getTrajectory(mCurrentState);
-        roadRunnerDriveSystem.followTrajectory(trajectory);
+        if (trajectory != null) {
+            trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
+        }
+
         switch (mCurrentState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
             case STATE_INITIAL:
@@ -67,7 +69,9 @@ public class Autonomous extends BaseOpMode {
                 break;
 
             case DRIVE_FORWARD:
-                newState(State.STATE_SCAN_RINGS);
+                if (trajectoryFinished) {
+                    newState(State.STATE_SCAN_RINGS);
+                }
                 break;
 
             case STATE_SCAN_RINGS:
@@ -75,7 +79,9 @@ public class Autonomous extends BaseOpMode {
                 break;
 
             case DRIVE_TO_SHOOTING_LINE:
-                newState(State.STATE_SHOOT);
+                if (trajectoryFinished) {
+                    newState(State.STATE_SHOOT);
+                }
                 break;
 
             case STATE_SHOOT:

@@ -12,6 +12,7 @@ public abstract class BaseOpMode extends OpMode {
     private static final float mmPerInch = 25.4f;
     protected VuforiaSystem vuforia;
     protected Trajectory trajectory;
+    protected boolean trajectoryFinished;
     //    protected Shooter mShooter;
     //    protected IntakeSystem mIntakeSystem;
 

@@ -22,6 +22,7 @@ public abstract class BaseOpMode extends OpMode {
         this.msStuckDetectInitLoop = 20000;
 
         roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
+        //shooterSystem = new ShootingSystem()
         vuforia = VuforiaSystem.getInstance();
 
         //TODO initialize RoadRunnerDriveSystem once hardware online
@@ -48,6 +49,10 @@ public abstract class BaseOpMode extends OpMode {
         } else {
             telemetry.addLine("not null");
         }
+    }
+
+    public void shoot() {
+        //shootFromLine();
     }
 
     @Override

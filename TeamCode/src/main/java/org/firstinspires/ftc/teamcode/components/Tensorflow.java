@@ -72,7 +72,7 @@ public class Tensorflow {
 
     public SquareState getTargetRegion() {
         if (tfod == null) {
-            return null;
+            return SquareState.BOX_A;
         }
         List<Recognition> recognitionList = getInference();
         if (recognitionList.size() == 1 && recognitionList.get(0).getConfidence() >= 0.4) {

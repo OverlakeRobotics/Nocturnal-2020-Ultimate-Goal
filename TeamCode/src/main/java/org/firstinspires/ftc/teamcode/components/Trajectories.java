@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 
-import org.firstinspires.ftc.teamcode.opmodes.autonomous.Autonomous;
+import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
 
 public class Trajectories {
@@ -14,7 +14,7 @@ public class Trajectories {
      * @param currentState to draw trajectory for
      * @return Trajectory for currentState
      */
-    public static Trajectory getTrajectory(Autonomous.State currentState) {
+    public static Trajectory getTrajectory(AutonomousOpMode.State currentState) {
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d());
         //TODO Figure out the trajectories for each state
         switch (currentState) {
@@ -28,7 +28,7 @@ public class Trajectories {
 
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
-                switch (Autonomous.mTargetRegion) {
+                switch (AutonomousOpMode.mTargetRegion) {
                     case BOX_A:
                         trajectoryBuilder.forward(48);
                         break;
@@ -42,7 +42,7 @@ public class Trajectories {
                         break;
 
                     default:
-                        throw new IllegalStateException("Unexpected value: " + Autonomous.mTargetRegion);
+                        throw new IllegalStateException("Unexpected value: " + AutonomousOpMode.mTargetRegion);
                 }
                 break;
 

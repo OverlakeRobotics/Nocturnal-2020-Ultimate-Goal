@@ -6,8 +6,8 @@ import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "")
-public class Autonomous extends BaseOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutonomousOpMode", group = "")
+public class AutonomousOpMode extends BaseOpMode {
     public enum State {
         STATE_INITIAL,//Game starts!
         DRIVE_FORWARD, //Robot drives forward
@@ -47,7 +47,6 @@ public class Autonomous extends BaseOpMode {
 
     @Override
     public void start() {
-        if (mTargetRegion == null) mTargetRegion = Tensorflow.SquareState.BOX_A;
         mTensorflow.shutdown();
         super.start();
     }

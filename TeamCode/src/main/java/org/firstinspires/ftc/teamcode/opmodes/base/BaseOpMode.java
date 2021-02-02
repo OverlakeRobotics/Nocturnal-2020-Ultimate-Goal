@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.base;
 
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
@@ -22,10 +23,9 @@ public abstract class BaseOpMode extends OpMode {
         this.msStuckDetectInitLoop = 20000;
 
         roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
-        //shooterSystem = new ShootingSystem()
         vuforia = VuforiaSystem.getInstance();
 
-        //TODO initialize RoadRunnerDriveSystem once hardware online
+        //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
     }
 
     @Override
@@ -49,10 +49,6 @@ public abstract class BaseOpMode extends OpMode {
         } else {
             telemetry.addLine("not null");
         }
-    }
-
-    public void shoot() {
-        //shootFromLine();
     }
 
     @Override

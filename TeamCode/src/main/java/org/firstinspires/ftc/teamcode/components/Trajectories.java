@@ -18,10 +18,6 @@ public class Trajectories {
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d());
         //TODO Figure out the trajectories for each state
         switch (currentState) {
-            case DRIVE_FORWARD:
-                trajectoryBuilder.forward(36);
-                break;
-
             case DRIVE_TO_SHOOTING_LINE:
                 trajectoryBuilder.forward(24);
                 break;

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
@@ -10,9 +8,7 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 public class AutonomousOpMode extends BaseOpMode {
     public enum State {
         STATE_INITIAL,//Game starts!
-        DRIVE_FORWARD, //Robot drives forward
         //Robot uses vuforia with right side camera
-        STATE_SCAN_RINGS, //Scan stack of rings
         DRIVE_TO_SHOOTING_LINE, //Robot drives forward to right behind shooting line
         STATE_SHOOT, //Shoot power shots, strafing left to get all 3
         STATE_DELIVER_WOBBLE, //Use roadrunner to go to specified target zone and drop off wobble goal
@@ -56,7 +52,7 @@ public class AutonomousOpMode extends BaseOpMode {
         vuforiaData();
         telemetry.addData("State", mCurrentState);
         telemetry.update();
-        if (trajectory != null) {
+        if (!trajectoryFinished && trajectory != null) {
             trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         }
 
@@ -65,16 +61,6 @@ public class AutonomousOpMode extends BaseOpMode {
             case STATE_INITIAL:
                 // Initialize
                 newState(State.STATE_DELIVER_WOBBLE);
-                break;
-
-            case DRIVE_FORWARD:
-                if (trajectoryFinished) {
-                    newState(State.STATE_SCAN_RINGS);
-                }
-                break;
-
-            case STATE_SCAN_RINGS:
-                newState(State.DRIVE_TO_SHOOTING_LINE);
                 break;
 
             case DRIVE_TO_SHOOTING_LINE:

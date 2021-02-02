@@ -3,13 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.components.Encoder;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
-
-import java.util.EnumMap;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal

@@ -7,17 +7,18 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutonomousOpMode", group = "")
 public class AutonomousOpMode extends BaseOpMode {
     public enum State {
-        STATE_INITIAL,//Game starts!
+        INITIAL,//Game starts!
         //Robot uses vuforia with right side camera
+        DELIVER_FIRST_WOBBLE, //Use roadrunner to go to specified target zone and drop off wobble goal
         DRIVE_TO_SHOOTING_LINE, //Robot drives forward to right behind shooting line
-        STATE_SHOOT, //Shoot power shots, strafing left to get all 3
-        STATE_DELIVER_WOBBLE, //Use roadrunner to go to specified target zone and drop off wobble goal
-        STATE_DRIVE_TO_WOBBLE,//Turn around and drive towards second wobble goal
-        STATE_COLLECT_WOBBLE,//Pick up second wobble goal
+        SHOOT, //Shoot power shots, strafing left to get all 3
+        DRIVE_TO_SECOND_WOBBLE,//Turn around and drive towards second wobble goal
+        COLLECT_SECOND_WOBBLE,//Pick up second wobble goal
         //Turn around and drive back to target zone (STATE_ROADRUNNER)
-        //Drop off second wobble goal (STATE_DELIVER_WOBBLE)
-        STATE_RETURN_TO_NEST,//Backup and park on line using vuforia
-        STATE_COMPLETE
+        DELIVER_SECOND_WOBBLE,
+        //Drop off second wobble goal
+        RETURN_TO_NEST,//Backup and park on line using vuforia
+        COMPLETE
     }
 
     private State mCurrentState;                         // Current State Machine State.
@@ -32,7 +33,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
         //TODO add shooter and intakes system
         //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
-        newState(State.STATE_INITIAL);
+        newState(State.INITIAL);
     }
 
     @Override
@@ -58,18 +59,24 @@ public class AutonomousOpMode extends BaseOpMode {
 
         switch (mCurrentState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
-            case STATE_INITIAL:
+            case INITIAL:
                 // Initialize
-                newState(State.STATE_DELIVER_WOBBLE);
+                newState(State.DELIVER_FIRST_WOBBLE);
+                break;
+
+            case DELIVER_FIRST_WOBBLE:
+                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
+                roadRunnerDriveSystem.turn(-90);
                 break;
 
             case DRIVE_TO_SHOOTING_LINE:
                 if (trajectoryFinished) {
-                    newState(State.STATE_SHOOT);
+                    newState(State.SHOOT);
                 }
                 break;
 
-            case STATE_SHOOT:
+            case SHOOT:
+                //TODO shooting routine. Currently power shots
                 //**Basic Version, stop at white line**
                 //DriveSystem.stop()
                 //mShooter.setMotorPower(**Whichever target it's going for**);
@@ -95,26 +102,31 @@ public class AutonomousOpMode extends BaseOpMode {
                 //}
                 //mShooter.stop();
                 //mTotalRings = 0;
-                newState(State.STATE_DELIVER_WOBBLE);
+                newState(State.DRIVE_TO_SECOND_WOBBLE);
                 break;
 
-            case STATE_DELIVER_WOBBLE:
-                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
-                roadRunnerDriveSystem.turn(-90);
+            case DRIVE_TO_SECOND_WOBBLE:
+                //TODO drive to the second wobble goal
+                newState(State.COLLECT_SECOND_WOBBLE);
                 break;
 
-            case STATE_DRIVE_TO_WOBBLE:
+            case COLLECT_SECOND_WOBBLE:
+                //TODO position the robot and collect the second wobble goal
+                newState(State.DELIVER_SECOND_WOBBLE);
                 break;
 
-            case STATE_COLLECT_WOBBLE:
-                newState(State.STATE_RETURN_TO_NEST);
+            case DELIVER_SECOND_WOBBLE:
+                //TODO drive to delivery location and drop off second wobble goal
+                newState(State.RETURN_TO_NEST);
                 break;
 
-            case STATE_RETURN_TO_NEST:
-                newState(State.STATE_COMPLETE);
+            case RETURN_TO_NEST:
+                //TODO drive back to nest
+                newState(State.COMPLETE);
                 break;
 
-            case STATE_COMPLETE:
+            case COMPLETE:
+                //TODO park the robot, shut down system, and release used resources
                 break;
         }
     }

@@ -22,7 +22,7 @@ public class Trajectories {
                 trajectoryBuilder.forward(24);
                 break;
 
-            case STATE_DELIVER_WOBBLE:
+            case DELIVER_FIRST_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                 switch (AutonomousOpMode.mTargetRegion) {
                     case BOX_A:

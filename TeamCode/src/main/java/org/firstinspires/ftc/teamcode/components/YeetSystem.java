@@ -10,7 +10,7 @@ import java.util.EnumMap;
 
 public class YeetSystem {
 
-    //ALL CONTENTS NEED TO BE CHANGED
+    // [TODO, AC] ALL CONTENTS NEED TO BE CHANGED
     private static final double LEFT_CLOSED_POSITION = 0.715;
     private static final double RIGHT_CLOSED_POSITION = 0.189;
     private static final double LEFT_OPEN_POSITION = 0.446;

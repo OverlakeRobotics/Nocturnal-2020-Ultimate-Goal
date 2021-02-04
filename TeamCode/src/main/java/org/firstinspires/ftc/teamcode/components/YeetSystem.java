@@ -4,11 +4,13 @@ import com.acmerobotics.roadrunner.drive.Drive;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Constants;
+
 import java.util.EnumMap;
 
 public class YeetSystem {
 
-    //ALL CONTENTS NEED TO BE CHANGED
+    // [TODO, AC] ALL CONTENTS NEED TO BE CHANGED
     private static final double LEFT_CLOSED_POSITION = 0.715;
     private static final double RIGHT_CLOSED_POSITION = 0.189;
     private static final double LEFT_OPEN_POSITION = 0.446;
@@ -50,7 +52,7 @@ public class YeetSystem {
 
     DcMotor motor; //one motor that we need
 
-    private static final double TICKS_PER_REVOLUTION = DriveConstants.TICKS_PER_REV; //number of ticks per revolution
+    private static final double TICKS_PER_REVOLUTION = Constants.TICKS_PER_REV; //number of ticks per revolution
     private static final double NUM_REVOLUTIONS = 0.8; // THIS NEEDS TO BE CHANGED - the number is num of revolutions
     private static final double UP_POSITION = TICKS_PER_REVOLUTION * NUM_REVOLUTIONS;
 

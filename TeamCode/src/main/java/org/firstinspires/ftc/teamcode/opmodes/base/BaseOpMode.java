@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.opmodes.base;
 
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
+import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
 public abstract class BaseOpMode extends OpMode {
@@ -14,8 +17,8 @@ public abstract class BaseOpMode extends OpMode {
     protected VuforiaSystem vuforia;
     protected Trajectory trajectory;
     protected boolean trajectoryFinished;
-    //    protected Shooter mShooter;
-    //    protected IntakeSystem mIntakeSystem;
+    protected ShootingSystem shootingSystem;
+    protected IntakeSystem intakeSystem;
 
     @Override
     public void init() {
@@ -24,8 +27,9 @@ public abstract class BaseOpMode extends OpMode {
 
         roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
         vuforia = VuforiaSystem.getInstance();
-
         //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
+//        shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
+//        intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
     }
 
     @Override

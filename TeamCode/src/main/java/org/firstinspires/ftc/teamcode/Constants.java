@@ -79,17 +79,17 @@ public class Constants {
     }
 
 
-    //Vuforia Constants
+    //Vuforia
     public static final float mmPerInch = 25.4f;                    // constant for converting measurements from inches to millimeters
     public static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
     public static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
     public static final float quadField = 36 * mmPerInch;
 
-    //Shooter Constants
+    //Shooter
     public static final float firstPowerShotsDistanceFromWall = (50);
     public static final float powerShotDisplacement = 8;
 
-    //YeetSystem Constants
+    //YeetSystem
     public static final double LEFT_CLOSED_POSITION = 0.715;
     public static final double RIGHT_CLOSED_POSITION = 0.189;
     public static final double LEFT_OPEN_POSITION = 0.446;

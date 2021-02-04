@@ -46,7 +46,7 @@ public class IntakeSystem {
     /**
      * Intakes rings
      */
-    public void intake() {
+    public void suck() {
         //TODO implement
     }
 }

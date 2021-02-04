@@ -39,7 +39,6 @@ public class AutonomousOpMode extends BaseOpMode {
     @Override
     public void init_loop() {
         mTargetRegion = mTensorflow.getTargetRegion();
-        telemetry.addData("MESSAGE:", "TargetRegion is: " + mTargetRegion);
     }
 
     @Override

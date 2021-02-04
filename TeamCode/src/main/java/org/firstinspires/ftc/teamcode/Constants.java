@@ -5,10 +5,28 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 
 public class Constants {
 
+    private final static int CPS_STEP = 0x10000;
+
+    private static final float mmPerInch = 25.4f;
+
+    // [TODO, AC] ALL CONTENTS NEED TO BE CHANGED
+    private static final double LEFT_CLOSED_POSITION = 0.715;
+    private static final double RIGHT_CLOSED_POSITION = 0.189;
+    private static final double LEFT_OPEN_POSITION = 0.446;
+    private static final double RIGHT_OPEN_POSITION = 0.456;
+
+    public static double TICKS_PER_REV = 2400;
+    public static double WHEEL_RADIUS = 1; // in
+    public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
+
+    public static double LATERAL_DISTANCE = 3.532; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = 3.326772; // in; offset of the lateral wheel
+
+    public static double X_MULTIPLIER = 1.0;
+    public static double Y_MULTIPLIER = 1.0;
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static final double TICKS_PER_REV = 1120;
     public static final double MAX_RPM = 160;
 
     /*
@@ -26,8 +44,7 @@ public class Constants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 2; // in
-    public static double GEAR_RATIO = 32.0 / 24.0; // output (wheel) speed / input (motor) speed
+
     // TODO
     public static double TRACK_WIDTH = 12.75; // in
 

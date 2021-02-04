@@ -8,13 +8,12 @@ import org.firstinspires.ftc.teamcode.Constants;
 
 import java.util.EnumMap;
 
-public class YeetSystem {
+import static org.firstinspires.ftc.teamcode.Constants.LEFT_CLOSED_POSITION;
+import static org.firstinspires.ftc.teamcode.Constants.LEFT_OPEN_POSITION;
+import static org.firstinspires.ftc.teamcode.Constants.RIGHT_CLOSED_POSITION;
+import static org.firstinspires.ftc.teamcode.Constants.RIGHT_OPEN_POSITION;
 
-    // [TODO, AC] ALL CONTENTS NEED TO BE CHANGED
-    private static final double LEFT_CLOSED_POSITION = 0.715;
-    private static final double RIGHT_CLOSED_POSITION = 0.189;
-    private static final double LEFT_OPEN_POSITION = 0.446;
-    private static final double RIGHT_OPEN_POSITION = 0.456;
+public class YeetSystem {
 
     public enum Servos {
 

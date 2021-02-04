@@ -75,32 +75,14 @@ public class AutonomousOpMode extends BaseOpMode {
                 break;
 
             case SHOOT:
-                //TODO shooting routine. Currently power shots
-                //**Basic Version, stop at white line**
-                //DriveSystem.stop()
-                //mShooter.setMotorPower(**Whichever target it's going for**);
-                //mShooter.shoot();
-                //for (int i = 1; i < mTotalRings; i++){
-                //  if (sticks) {
-                //      DriveSystem.strafe(**Proper number to do it**)
-                //  }
-                //  mShooter.shoot();
-                //}
-                //mShooter.stop();
-                //mTotalRings = 0;
-
-                //**Advanced Version, from anywhere**
-                //DriveSystem.stop()
-                //mShooter.setMotorPower(**Whichever target it's going for**);
-                //mShooter.shoot();
-                //for (int i = 1; i < totalRings; i++) {
-                //  if (sticks) {
-                //      DriveSystem.strafe(**Proper number to do it**)
-                //  }
-                //  mShooter.shoot();
-                //}
-                //mShooter.stop();
-                //mTotalRings = 0;
+                trajectory = Trajectories.getTrajectory(State.SHOOT);
+                mShooter.setMotorPower(/**Whichever target it's going for**/);
+                mShooter.shoot();
+                for (int i = 1; i < 3; i++){
+                  roadRunnerDriveSystem.followTrajectory(trajectory);
+                  mShooter.shoot();
+                }
+                mShooter.stop();
                 newState(State.DRIVE_TO_SECOND_WOBBLE);
                 break;
 

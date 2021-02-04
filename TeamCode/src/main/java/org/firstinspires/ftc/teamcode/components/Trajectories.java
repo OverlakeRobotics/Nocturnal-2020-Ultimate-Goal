@@ -6,6 +6,8 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
+import static org.firstinspires.ftc.teamcode.Constants.firstPowerShotsDistanceFromWall;
+
 
 public class Trajectories {
 
@@ -41,7 +43,9 @@ public class Trajectories {
                         throw new IllegalStateException("Unexpected value: " + AutonomousOpMode.mTargetRegion);
                 }
                 break;
-
+            case SHOOT:
+                trajectoryBuilder.strafeLeft(firstPowerShotsDistanceFromWall);
+                break;
             default:
                 return null;
         }

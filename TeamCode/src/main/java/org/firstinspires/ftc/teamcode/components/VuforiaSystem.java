@@ -15,14 +15,12 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
+import static org.firstinspires.ftc.teamcode.Constants.halfField;
+import static org.firstinspires.ftc.teamcode.Constants.mmPerInch;
+import static org.firstinspires.ftc.teamcode.Constants.mmTargetHeight;
 
 /** Teddy, trust my code, you blasphemer. */
 public class VuforiaSystem {
-    private static final float mmPerInch = 25.4f;                    // constant for converting measurements from inches to millimeters
-    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
-
-    private static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
-    private static final float quadField = 36 * mmPerInch;
 
     private VuforiaLocalizer vuforiaLocalizer;
     private OpenGLMatrix lastLocation = null; // class members

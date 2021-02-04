@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
@@ -31,8 +32,6 @@ public class AutonomousOpMode extends BaseOpMode {
         mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         mTensorflow.activate();
 
-        //TODO add shooter and intakes system
-        //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
         newState(State.INITIAL);
     }
 
@@ -76,13 +75,12 @@ public class AutonomousOpMode extends BaseOpMode {
 
             case SHOOT:
                 trajectory = Trajectories.getTrajectory(State.SHOOT);
-                mShooter.setMotorPower(/**Whichever target it's going for**/);
-                mShooter.shoot();
+                shootingSystem.setTarget(ShootingSystem.Target.POWER_SHOT);
+                shootingSystem.shoot();
                 for (int i = 1; i < 3; i++){
                   roadRunnerDriveSystem.followTrajectory(trajectory);
-                  mShooter.shoot();
+                  shootingSystem.shoot();
                 }
-                mShooter.stop();
                 newState(State.DRIVE_TO_SECOND_WOBBLE);
                 break;
 

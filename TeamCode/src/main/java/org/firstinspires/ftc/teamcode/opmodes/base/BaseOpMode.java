@@ -28,7 +28,7 @@ public abstract class BaseOpMode extends OpMode {
         roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
         vuforia = VuforiaSystem.getInstance();
         //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
-//        shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
+        shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
 //        intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
     }
 

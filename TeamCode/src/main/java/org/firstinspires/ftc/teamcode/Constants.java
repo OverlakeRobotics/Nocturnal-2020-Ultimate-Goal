@@ -7,13 +7,6 @@ public class Constants {
 
     private final static int CPS_STEP = 0x10000;
 
-    private static final float mmPerInch = 25.4f;
-
-    // [TODO, AC] ALL CONTENTS NEED TO BE CHANGED
-    private static final double LEFT_CLOSED_POSITION = 0.715;
-    private static final double RIGHT_CLOSED_POSITION = 0.189;
-    private static final double LEFT_OPEN_POSITION = 0.446;
-    private static final double RIGHT_OPEN_POSITION = 0.456;
 
     public static double TICKS_PER_REV = 2400;
     public static double WHEEL_RADIUS = 1; // in

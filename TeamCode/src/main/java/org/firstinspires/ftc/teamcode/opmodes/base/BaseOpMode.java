@@ -55,6 +55,10 @@ public abstract class BaseOpMode extends OpMode {
         }
     }
 
+    public void shoot() {
+
+    }
+
     @Override
     public void stop() {
         if (vuforia != null) {

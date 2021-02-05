@@ -86,8 +86,9 @@ public class Constants {
     public static final float quadField = 36 * mmPerInch;
 
     //Shooter Constants
-    public static final float firstPowerShotsDistanceFromWall = (50);
-    public static final float powerShotDisplacement = 8;
+    public static final float firstPowerShotsDistanceFromWall = 23.5f * 2 + 4.25f - ((44 * 10) / mmPerInch / 2);
+    public static final float firstPowerShotDisplacement = 6.75f;
+    public static final float secondPowerShotDisplacement = 8.5f;
 
     //YeetSystem Constants
     public static final double LEFT_CLOSED_POSITION = 0.715;

@@ -46,15 +46,19 @@ public class Trajectories {
                         throw new IllegalStateException("Unexpected value: " + AutonomousOpMode.mTargetRegion);
                 }
                 break;
+
             case SHOOT1:
                 trajectoryBuilder.strafeLeft(firstPowerShotsDistanceFromWall);
                 break;
+
             case SHOOT2:
                 trajectoryBuilder.strafeLeft(firstPowerShotDisplacement);
                 break;
+
             case SHOOT3:
                 trajectoryBuilder.strafeLeft(secondPowerShotDisplacement);
                 break;
+
             default:
                 return null;
         }

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import org.firstinspires.ftc.teamcode.State;
-import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
@@ -56,30 +55,15 @@ public class AutonomousOpMode extends BaseOpMode {
 
             case DRIVE_TO_SHOOTING_LINE:
                 if (trajectoryFinished) {
-                    newState(State.SHOOT1);
+                    newState(State.POWERSHOT);
                 }
                 break;
 
             case POWERSHOT:
-                shoot();
-            case SHOOT1:
-                roadRunnerDriveSystem.followTrajectory(trajectory);
-                shootingSystem.setTarget(ShootingSystem.Target.POWER_SHOT);
-                shootingSystem.shoot();
-                newState(State.SHOOT2);
-                break;
-            case SHOOT2:
-                roadRunnerDriveSystem.followTrajectory(trajectory);
-                shootingSystem.setTarget(ShootingSystem.Target.POWER_SHOT);
-                shootingSystem.shoot();
-                newState(State.SHOOT3);
-                break;
-            case SHOOT3:
-                roadRunnerDriveSystem.followTrajectory(trajectory);
-                shootingSystem.setTarget(ShootingSystem.Target.POWER_SHOT);
-                shootingSystem.shoot();
+                powershotRoutine();
                 newState(State.DRIVE_TO_SECOND_WOBBLE);
                 break;
+
             case DRIVE_TO_SECOND_WOBBLE:
                 //TODO drive to the second wobble goal
                 newState(State.COLLECT_SECOND_WOBBLE);

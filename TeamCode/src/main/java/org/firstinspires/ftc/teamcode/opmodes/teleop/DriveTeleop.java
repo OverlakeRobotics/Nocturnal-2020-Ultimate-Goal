@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
@@ -13,7 +14,7 @@ public class DriveTeleop extends BaseOpMode {
     @Override
     public void init() {
         super.init();
-        //TODO init YeetSystem
+//        yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"));
     }
 
     @Override

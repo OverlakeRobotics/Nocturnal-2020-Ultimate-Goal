@@ -1,26 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-import org.firstinspires.ftc.teamcode.components.ShootingSystem;
+import org.firstinspires.ftc.teamcode.State;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutonomousOpMode", group = "")
 public class AutonomousOpMode extends BaseOpMode {
-    public enum State {
-        INITIAL,//Game starts!
-        //Robot uses vuforia with right side camera
-        DELIVER_FIRST_WOBBLE, //Use roadrunner to go to specified target zone and drop off wobble goal
-        DRIVE_TO_SHOOTING_LINE, //Robot drives forward to right behind shooting line
-        SHOOT, //Shoot power shots, strafing left to get all 3
-        DRIVE_TO_SECOND_WOBBLE,//Turn around and drive towards second wobble goal
-        COLLECT_SECOND_WOBBLE,//Pick up second wobble goal
-        //Turn around and drive back to target zone (STATE_ROADRUNNER)
-        DELIVER_SECOND_WOBBLE,
-        //Drop off second wobble goal
-        RETURN_TO_NEST,//Backup and park on line using vuforia
-        COMPLETE
-    }
 
     private State mCurrentState;                         // Current State Machine State.
     private Tensorflow mTensorflow;
@@ -69,18 +55,12 @@ public class AutonomousOpMode extends BaseOpMode {
 
             case DRIVE_TO_SHOOTING_LINE:
                 if (trajectoryFinished) {
-                    newState(State.SHOOT);
+                    newState(State.POWERSHOT);
                 }
                 break;
 
-            case SHOOT:
-                trajectory = Trajectories.getTrajectory(State.SHOOT);
-                shootingSystem.setTarget(ShootingSystem.Target.POWER_SHOT);
-                shootingSystem.shoot();
-                for (int i = 1; i < 3; i++){
-                  roadRunnerDriveSystem.followTrajectory(trajectory);
-                  shootingSystem.shoot();
-                }
+            case POWERSHOT:
+                powershotRoutine();
                 newState(State.DRIVE_TO_SECOND_WOBBLE);
                 break;
 

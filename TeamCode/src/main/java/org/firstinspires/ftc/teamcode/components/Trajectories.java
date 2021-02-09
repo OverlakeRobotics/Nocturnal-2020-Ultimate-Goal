@@ -3,10 +3,13 @@ package org.firstinspires.ftc.teamcode.components;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import org.firstinspires.ftc.teamcode.State;
 
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
+import static org.firstinspires.ftc.teamcode.Constants.firstPowerShotDisplacement;
 import static org.firstinspires.ftc.teamcode.Constants.firstPowerShotsDistanceFromWall;
+import static org.firstinspires.ftc.teamcode.Constants.secondPowerShotDisplacement;
 
 
 public class Trajectories {
@@ -16,7 +19,7 @@ public class Trajectories {
      * @param currentState to draw trajectory for
      * @return Trajectory for currentState
      */
-    public static Trajectory getTrajectory(AutonomousOpMode.State currentState) {
+    public static Trajectory getTrajectory(State currentState) {
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d());
         //TODO Figure out the trajectories for each state
         switch (currentState) {
@@ -43,9 +46,19 @@ public class Trajectories {
                         throw new IllegalStateException("Unexpected value: " + AutonomousOpMode.mTargetRegion);
                 }
                 break;
-            case SHOOT:
+
+            case SHOOT1:
                 trajectoryBuilder.strafeLeft(firstPowerShotsDistanceFromWall);
                 break;
+
+            case SHOOT2:
+                trajectoryBuilder.strafeLeft(firstPowerShotDisplacement);
+                break;
+
+            case SHOOT3:
+                trajectoryBuilder.strafeLeft(secondPowerShotDisplacement);
+                break;
+
             default:
                 return null;
         }

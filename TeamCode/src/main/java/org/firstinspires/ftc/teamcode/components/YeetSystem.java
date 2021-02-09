@@ -57,7 +57,7 @@ public class YeetSystem {
 
     private static final int DEFAULT = 0; // this needs to be changed
 
-    public YeetSystem(DcMotor motor, EnumMap<Servos, Servo> servoMap) { //constructor
+    public YeetSystem(DcMotor motor) { //constructor
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
         init();
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

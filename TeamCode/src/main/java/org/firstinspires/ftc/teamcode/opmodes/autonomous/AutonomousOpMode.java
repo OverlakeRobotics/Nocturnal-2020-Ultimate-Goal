@@ -14,26 +14,25 @@ public class AutonomousOpMode extends BaseOpMode {
     public static Tensorflow.SquareState mTargetRegion;
 
     // Systems
-    private Tensorflow mTensorflow;
-    private YeetSystem myeetSystem;
+    private Tensorflow tensorflow;
 
     @Override
     public void init() {
         super.init();
-        mTensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
-        mTensorflow.activate();
+        tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        tensorflow.activate();
 
         newState(State.INITIAL);
     }
 
     @Override
     public void init_loop() {
-        mTargetRegion = mTensorflow.getTargetRegion();
+        mTargetRegion = tensorflow.getTargetRegion();
     }
 
     @Override
     public void start() {
-        mTensorflow.shutdown();
+        tensorflow.shutdown();
         super.start();
     }
 
@@ -55,8 +54,8 @@ public class AutonomousOpMode extends BaseOpMode {
 
             case DELIVER_FIRST_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
+                yeetSystem.place();
                 roadRunnerDriveSystem.turn(-90);
-                myeetSystem.place();
                 break;
 
             case DRIVE_TO_SHOOTING_LINE:
@@ -78,14 +77,14 @@ public class AutonomousOpMode extends BaseOpMode {
                 break;
 
             case COLLECT_SECOND_WOBBLE:
-                myeetSystem.pickup();
                 //TODO position the robot and collect the second wobble goal
+                yeetSystem.pickup();
                 newState(State.DELIVER_SECOND_WOBBLE);
                 break;
 
             case DELIVER_SECOND_WOBBLE:
-                myeetSystem.place();
                 //TODO drive to delivery location and drop off second wobble goal
+                yeetSystem.place();
                 newState(State.RETURN_TO_NEST);
                 break;
 
@@ -95,8 +94,8 @@ public class AutonomousOpMode extends BaseOpMode {
                 break;
 
             case COMPLETE:
-                stop();
                 //TODO park the robot, shut down system, and release used resources
+                stop();
                 break;
         }
     }
@@ -104,8 +103,8 @@ public class AutonomousOpMode extends BaseOpMode {
     @Override
     public void stop() {
         super.stop();
-        if (mTensorflow != null) {
-            mTensorflow.shutdown();
+        if (tensorflow != null) {
+            tensorflow.shutdown();
         }
     }
 

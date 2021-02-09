@@ -9,12 +9,9 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 @TeleOp(name = "Real Teleop", group="TeleOp")
 public class DriveTeleop extends BaseOpMode {
 
-    private YeetSystem yeetSystem;
-
     @Override
     public void init() {
         super.init();
-//        yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"));
     }
 
     @Override
@@ -28,6 +25,6 @@ public class DriveTeleop extends BaseOpMode {
 
     @Override
     public void stop() {
-
+        super.stop();
     }
 }

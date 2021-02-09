@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
+import org.firstinspires.ftc.teamcode.components.YeetSystem;
 
 public abstract class BaseOpMode extends OpMode {
 
@@ -25,6 +26,7 @@ public abstract class BaseOpMode extends OpMode {
     protected Trajectory trajectory;
     protected ShootingSystem shootingSystem;
     protected IntakeSystem intakeSystem;
+    protected YeetSystem yeetSystem;
 
     @Override
     public void init() {
@@ -37,6 +39,7 @@ public abstract class BaseOpMode extends OpMode {
 //        roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
 //        shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
 //        intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
+//        yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"));
     }
 
     @Override

@@ -28,7 +28,7 @@ public class Trajectories {
                 break;
 
             case DELIVER_FIRST_WOBBLE:
-                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
+                //TODO Determine the trajectories to each dropoff box
                 switch (AutonomousOpMode.mTargetRegion) {
                     case BOX_A:
                         trajectoryBuilder.forward(48);
@@ -57,6 +57,35 @@ public class Trajectories {
 
             case SHOOT3:
                 trajectoryBuilder.strafeLeft(secondPowerShotDisplacement);
+                break;
+
+            case DRIVE_TO_SECOND_WOBBLE:
+                //TODO Determine the trajectories to each dropoff box
+                switch (AutonomousOpMode.mTargetRegion) {
+                    case BOX_A:
+
+                        break;
+
+                    case BOX_B:
+
+                        break;
+
+                    case BOX_C:
+
+                        break;
+
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + AutonomousOpMode.mTargetRegion);
+                }
+                break;
+
+            case COLLECT_SECOND_WOBBLE:
+                break;
+
+            case DELIVER_SECOND_WOBBLE:
+                break;
+
+            case RETURN_TO_NEST:
                 break;
 
             default:

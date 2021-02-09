@@ -15,11 +15,14 @@ import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 
 public abstract class BaseOpMode extends OpMode {
 
-    protected RoadRunnerDriveSystem roadRunnerDriveSystem;
+    // Variables
     private static final float mmPerInch = 25.4f;
+    protected boolean trajectoryFinished;
+
+    // Systems
+    protected RoadRunnerDriveSystem roadRunnerDriveSystem;
     protected VuforiaSystem vuforia;
     protected Trajectory trajectory;
-    protected boolean trajectoryFinished;
     protected ShootingSystem shootingSystem;
     protected IntakeSystem intakeSystem;
 
@@ -28,10 +31,11 @@ public abstract class BaseOpMode extends OpMode {
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
 
-        roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
         vuforia = VuforiaSystem.getInstance();
+
         //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
-        shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
+//        roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
+//        shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
 //        intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
     }
 
@@ -43,7 +47,7 @@ public abstract class BaseOpMode extends OpMode {
     /**
      * Initializes Vuforia data
      */
-    public void vuforiaData() {
+    protected void vuforiaData() {
         VectorF translation = vuforia.vector();
 
         // only one of these two will be used
@@ -64,7 +68,7 @@ public abstract class BaseOpMode extends OpMode {
     /**
      * Powershot routine
      */
-    public void powershotRoutine() {
+    protected void powershotRoutine() {
         shootingSystem.setTarget(ShootingSystem.Target.POWER_SHOT);
 
         // Shoot 1
@@ -92,6 +96,14 @@ public abstract class BaseOpMode extends OpMode {
     public void stop() {
         if (vuforia != null) {
             vuforia.disable();
+        }
+
+        if (shootingSystem != null) {
+            shootingSystem.stop();
+        }
+
+        if (intakeSystem != null) {
+            intakeSystem.stop();
         }
     }
 }

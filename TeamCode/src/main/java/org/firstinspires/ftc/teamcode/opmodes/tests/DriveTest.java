@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -16,19 +16,19 @@ public class DriveTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         RoadRunnerDriveSystem drive = new RoadRunnerDriveSystem(hardwareMap);
 
-        Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
+        Trajectory trajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
                 .forward(30)
                 .build();
 
-        Trajectory trajectory1 = drive.trajectoryBuilder(trajectory.end())
+        Trajectory trajectory1 = RoadRunnerDriveSystem.trajectoryBuilder(trajectory.end())
                 .strafeLeft(30)
                 .build();
 
-        Trajectory trajectory2 = drive.trajectoryBuilder(trajectory1.end())
+        Trajectory trajectory2 = RoadRunnerDriveSystem.trajectoryBuilder(trajectory1.end())
                 .strafeRight(60)
                 .build();
 
-        Trajectory trajectory3 = drive.trajectoryBuilder(trajectory2.end())
+        Trajectory trajectory3 = RoadRunnerDriveSystem.trajectoryBuilder(trajectory2.end())
                 .splineTo(new Vector2d(0, 0), Math.toRadians(0))
                 .build();
 

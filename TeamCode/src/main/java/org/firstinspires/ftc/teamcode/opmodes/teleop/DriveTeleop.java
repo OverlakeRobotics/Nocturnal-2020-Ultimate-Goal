@@ -25,4 +25,9 @@ public class DriveTeleop extends BaseOpMode {
         roadRunnerDriveSystem.slowDrive(gamepad1.left_trigger > 0.3f);
         roadRunnerDriveSystem.drive(rx, lx, ly);
     }
+
+    @Override
+    public void stop() {
+
+    }
 }

@@ -38,7 +38,7 @@ public class YeetSystem {
             return closedPosition;
         }
 
-        public boolean getClosed() {
+        public boolean isClosed() {
             return closed;
         }
 
@@ -49,7 +49,7 @@ public class YeetSystem {
 
     public EnumMap<Servos, Servo> servoMap;
 
-    DcMotor motor; //one motor that we need
+    private final DcMotor motor; //one motor that we need
 
     private static final double TICKS_PER_REVOLUTION = Constants.TICKS_PER_REV; //number of ticks per revolution
     private static final double NUM_REVOLUTIONS = 0.8; // THIS NEEDS TO BE CHANGED - the number is num of revolutions

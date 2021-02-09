@@ -8,9 +8,12 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutonomousOpMode", group = "")
 public class AutonomousOpMode extends BaseOpMode {
 
+    // Variables
     private State mCurrentState;                         // Current State Machine State.
-    private Tensorflow mTensorflow;
     public static Tensorflow.SquareState mTargetRegion;
+
+    // Systems
+    private Tensorflow mTensorflow;
 
     @Override
     public void init() {

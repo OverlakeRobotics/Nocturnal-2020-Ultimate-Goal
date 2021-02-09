@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.teleop;
+package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class TeleOpDriveTest extends BaseOpMode {
 
     private boolean homing = false;
-    private Trajectory home = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d()).splineTo(new Vector2d(0, 0), Math.toRadians(0)).build();
+    private Trajectory home = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d()).splineTo(new Vector2d(0, 0), Math.toRadians(0)).build();
 
     public void loop(){
         roadRunnerDriveSystem.update();

@@ -49,4 +49,11 @@ public class IntakeSystem {
     public void suck() {
         //TODO implement
     }
+
+    /**
+     * Shuts down the motor
+     */
+    public void stop() {
+        motor.setPower(0);
+    }
 }

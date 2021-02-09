@@ -55,7 +55,7 @@ public class ShootingSystem {
     /**
      * Starts the shooter
      */
-    private void start() {
+    public void start() {
         motor.setPower(currentTarget.getPower());
     }
 
@@ -63,7 +63,7 @@ public class ShootingSystem {
     /**
      * Stops the shooter
      */
-    private void stop() {
+    public void stop() {
         setMotorPower(0);
     }
 

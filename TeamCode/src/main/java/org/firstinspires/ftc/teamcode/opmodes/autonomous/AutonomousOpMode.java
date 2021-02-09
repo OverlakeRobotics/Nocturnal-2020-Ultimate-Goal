@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 import org.firstinspires.ftc.teamcode.State;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
+import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutonomousOpMode", group = "")
@@ -14,6 +15,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
     // Systems
     private Tensorflow mTensorflow;
+    private YeetSystem myeetSystem;
 
     @Override
     public void init() {
@@ -54,9 +56,12 @@ public class AutonomousOpMode extends BaseOpMode {
             case DELIVER_FIRST_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                 roadRunnerDriveSystem.turn(-90);
+                myeetSystem.place();
                 break;
 
             case DRIVE_TO_SHOOTING_LINE:
+                // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
+                //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
                 if (trajectoryFinished) {
                     newState(State.POWERSHOT);
                 }
@@ -73,11 +78,13 @@ public class AutonomousOpMode extends BaseOpMode {
                 break;
 
             case COLLECT_SECOND_WOBBLE:
+                myeetSystem.pickup();
                 //TODO position the robot and collect the second wobble goal
                 newState(State.DELIVER_SECOND_WOBBLE);
                 break;
 
             case DELIVER_SECOND_WOBBLE:
+                myeetSystem.place();
                 //TODO drive to delivery location and drop off second wobble goal
                 newState(State.RETURN_TO_NEST);
                 break;
@@ -88,6 +95,7 @@ public class AutonomousOpMode extends BaseOpMode {
                 break;
 
             case COMPLETE:
+                stop();
                 //TODO park the robot, shut down system, and release used resources
                 break;
         }

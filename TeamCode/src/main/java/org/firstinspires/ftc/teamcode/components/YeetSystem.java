@@ -76,6 +76,22 @@ public class YeetSystem {
         }
     }
 
+    public void place() {
+        down();
+        release();
+    }
+
+    public void yeet() {
+        up();
+        release();
+        // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
+    }
+
+    public void pickup() {
+        grab();
+        up();
+    }
+
     public void down() {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (motor.getCurrentPosition() != DEFAULT) {

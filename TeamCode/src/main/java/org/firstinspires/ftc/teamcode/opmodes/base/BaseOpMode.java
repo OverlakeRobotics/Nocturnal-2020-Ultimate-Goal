@@ -87,7 +87,7 @@ public abstract class BaseOpMode extends OpMode {
      * @param shot number to be performed
      */
     private void singlePowershot(State shot) {
-        trajectory = Trajectories.getTrajectory(shot);
+        trajectory = Trajectories.getTrajectory(shot, roadRunnerDriveSystem.getPositionEstimate());
         trajectoryFinished = false;
         while (!trajectoryFinished) trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         shootingSystem.shoot();

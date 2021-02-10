@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.State;
@@ -57,9 +58,10 @@ public class AutonomousOpMode extends BaseOpMode {
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                 yeetSystem.place();
                 roadRunnerDriveSystem.turn(-90);
+                newState(State.DRIVE_TO_SHOOTING_LOCATION);
                 break;
 
-            case DRIVE_TO_SHOOTING_LINE:
+            case DRIVE_TO_SHOOTING_LOCATION:
                 // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
                 //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
                 if (trajectoryFinished) {
@@ -111,6 +113,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
     private void newState(State newState) {
         mCurrentState = newState;
-        trajectory = Trajectories.getTrajectory(mCurrentState);
+        Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
+        trajectory = Trajectories.getTrajectory(mCurrentState, posEstimate);
     }
 }

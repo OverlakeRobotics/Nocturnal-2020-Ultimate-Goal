@@ -261,6 +261,11 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     }
 
+    public Pose2d getPositionEstimate() {
+        update();
+        return getPoseEstimate();
+    }
+
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy()) {
             update();

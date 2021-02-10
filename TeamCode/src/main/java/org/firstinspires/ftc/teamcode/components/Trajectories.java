@@ -19,14 +19,10 @@ public class Trajectories {
      * @param currentState to draw trajectory for
      * @return Trajectory for currentState
      */
-    public static Trajectory getTrajectory(State currentState) {
+    public static Trajectory getTrajectory(State currentState, Pose2d posEstimate) {
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d());
         //TODO Figure out the trajectories for each state
         switch (currentState) {
-            case DRIVE_TO_SHOOTING_LINE:
-                trajectoryBuilder.forward(24);
-                break;
-
             case DELIVER_FIRST_WOBBLE:
                 //TODO Determine the trajectories to each dropoff box
                 switch (AutonomousOpMode.mTargetRegion) {
@@ -45,6 +41,11 @@ public class Trajectories {
                     default:
                         throw new IllegalStateException("Unexpected value: " + AutonomousOpMode.mTargetRegion);
                 }
+                break;
+
+            case DRIVE_TO_SHOOTING_LOCATION:
+                //TODO get coordinate and orientation of robot to fire first powershot
+
                 break;
 
             case SHOOT1:

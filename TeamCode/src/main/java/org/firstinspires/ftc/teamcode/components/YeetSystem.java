@@ -68,14 +68,6 @@ public class YeetSystem {
         release();
     }
 
-    public void up() {
-        grab();
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while (motor.getCurrentPosition() != UP_POSITION){
-            motor.setPower(0.75);
-        }
-    }
-
     public void place() {
         down();
         release();
@@ -92,7 +84,15 @@ public class YeetSystem {
         up();
     }
 
-    public void down() {
+    private void up() {
+        grab();
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while (motor.getCurrentPosition() != UP_POSITION){
+            motor.setPower(0.75);
+        }
+    }
+
+    private void down() {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (motor.getCurrentPosition() != DEFAULT) {
             motor.setTargetPosition(DEFAULT);
@@ -100,13 +100,13 @@ public class YeetSystem {
         motor.setPower(0.0);
     }
 
-    public void grab() {
+    private void grab() {
         servoMap.forEach((name, servo) -> {
             servo.setPosition(name.getClosedPosition());
         });
     }
 
-    public void release() {
+    private void release() {
         servoMap.forEach((name, servo) -> {
             servo.setPosition(name.getOpenPosition());
         });

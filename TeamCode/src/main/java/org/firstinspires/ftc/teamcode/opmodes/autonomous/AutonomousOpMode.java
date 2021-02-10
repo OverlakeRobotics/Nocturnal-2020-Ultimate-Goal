@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.State;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
-import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutonomousOpMode", group = "")
+@Autonomous(name = "AutonomousOpMode", group = "Autonomous")
 public class AutonomousOpMode extends BaseOpMode {
 
     // Variables

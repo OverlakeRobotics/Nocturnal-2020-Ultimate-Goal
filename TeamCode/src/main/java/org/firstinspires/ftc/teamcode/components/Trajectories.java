@@ -46,7 +46,7 @@ public class Trajectories {
 
             case DRIVE_TO_SHOOTING_LOCATION:
                 //TODO get coordinate and orientation of robot to fire first powershot
-                trajectoryBuilder.strafeTo(new Vector2d(20, 6)); // idk what i'm doing here - @anishch
+                trajectoryBuilder.strafeTo(new Vector2d(92, 78)); // idk what i'm doing here - @anishch
                 break;
 
             case SHOOT1:

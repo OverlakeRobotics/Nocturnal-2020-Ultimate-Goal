@@ -7,7 +7,7 @@ public enum Coordinates {
     BOX_A(60, 84),
     BOX_B(36, 108),
     BOX_C(60, 132);//,
-    /*POWERSHOT_1(), BRANDON
+    /*POWERSHOT_1(20, 78), BRANDON
     POWERSHOT_2(),
     POWERSHOT_3(),
     SECOND_WOBBLE(),

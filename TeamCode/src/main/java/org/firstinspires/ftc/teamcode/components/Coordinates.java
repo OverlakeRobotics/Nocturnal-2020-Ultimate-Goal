@@ -17,20 +17,14 @@ public enum Coordinates {
 
     private final double x;
     private final double y;
-    private Vector2d z;
 
     Coordinates(double x, double y) {
         this.x = x;
         this.y = y;
-        this.z = new Vector2d(x, y);
     }
 
     public double getX() {
         return x;
-    }
-
-    public Vector2d getVector2d(){
-        return z;
     }
 
     public double getY() {

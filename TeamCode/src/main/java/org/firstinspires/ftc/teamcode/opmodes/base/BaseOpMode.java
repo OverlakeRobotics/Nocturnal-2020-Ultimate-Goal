@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.base;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -17,6 +19,7 @@ public abstract class BaseOpMode extends OpMode {
     // Variables
     private static final float mmPerInch = 25.4f;
     protected boolean trajectoryFinished;
+    protected Pose2d currentPosition;
 
     // Systems
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
@@ -30,6 +33,9 @@ public abstract class BaseOpMode extends OpMode {
     public void init() {
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
+
+        //TODO fill in starting position and robot initial heading
+        currentPosition = new Pose2d(new Vector2d(), );
 
         vuforia = VuforiaSystem.getInstance();
 
@@ -87,7 +93,7 @@ public abstract class BaseOpMode extends OpMode {
      * @param shot number to be performed
      */
     private void singlePowershot(State shot) {
-        trajectory = Trajectories.getTrajectory(shot);
+        trajectory = Trajectories.getTrajectory(shot, currentPosition);
         trajectoryFinished = false;
         while (!trajectoryFinished) trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         shootingSystem.shoot();

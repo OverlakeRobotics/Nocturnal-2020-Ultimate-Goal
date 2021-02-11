@@ -49,14 +49,17 @@ public class Trajectories {
                 break;
 
             case SHOOT1:
+                //TODO roadrunner adjust to optimal shooting position
                 trajectoryBuilder.strafeLeft(firstPowerShotsDistanceFromWall);
                 break;
 
             case SHOOT2:
+                //TODO roadrunner adjust to optimal shooting position
                 trajectoryBuilder.strafeLeft(firstPowerShotDisplacement);
                 break;
 
             case SHOOT3:
+                //TODO roadrunner adjust to optimal shooting position
                 trajectoryBuilder.strafeLeft(secondPowerShotDisplacement);
                 break;
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.State;
@@ -45,7 +46,7 @@ public class Trajectories {
 
             case DRIVE_TO_SHOOTING_LOCATION:
                 //TODO get coordinate and orientation of robot to fire first powershot
-
+                trajectoryBuilder.strafeTo(new Vector2d(92, 78)); // idk what i'm doing here - @anishch
                 break;
 
             case SHOOT1:

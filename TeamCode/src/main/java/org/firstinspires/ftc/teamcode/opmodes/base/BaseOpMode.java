@@ -35,7 +35,7 @@ public abstract class BaseOpMode extends OpMode {
         this.msStuckDetectInitLoop = 20000;
 
         //TODO fill in starting position and robot initial heading
-        currentPosition = new Pose2d(new Vector2d(), );
+        //currentPosition = new Pose2d(new Vector2d(), );
 
         vuforia = VuforiaSystem.getInstance();
 

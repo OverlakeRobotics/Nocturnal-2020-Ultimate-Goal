@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 
 public class Constants {
@@ -78,6 +79,8 @@ public class Constants {
         return 32767 * 60.0 / (MAX_RPM * TICKS_PER_REV);
     }
 
+    //Field
+    public static final int fieldBoxWidth = 24;
 
     //Vuforia
     public static final float mmPerInch = 25.4f;                    // constant for converting measurements from inches to millimeters
@@ -86,9 +89,10 @@ public class Constants {
     public static final float quadField = 36 * mmPerInch;
 
     //Shooter Constants
-    public static final float firstPowerShotsDistanceFromWall = 23.5f * 2 + 4.25f - ((44 * 10) / mmPerInch / 2);
-    public static final float firstPowerShotDisplacement = 6.75f;
-    public static final float secondPowerShotDisplacement = 8.5f;
+    public static final float powerShotY = 78;
+    public static final Vector2d firstPowerShotCoordinates = new Vector2d(72 - (23.5f * 2 + 4.25f - ((44 * 10) / mmPerInch / 2)), powerShotY);
+    public static final Vector2d secondPowerShotCoordinates = new Vector2d(firstPowerShotCoordinates.getX() - 6.75, 78);
+    public static final Vector2d thirdPowerShotCoordinates = new Vector2d(secondPowerShotCoordinates.getX() - 8.5, powerShotY);
 
     //YeetSystem
     public static final double LEFT_CLOSED_POSITION = 0.715;

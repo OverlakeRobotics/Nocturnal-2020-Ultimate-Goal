@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.State;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
 import static org.firstinspires.ftc.teamcode.Constants.firstPowerShotDisplacement;
-import static org.firstinspires.ftc.teamcode.Constants.firstPowerShotsDistanceFromWall;
+import static org.firstinspires.ftc.teamcode.Constants.firstPowerShotX;
 import static org.firstinspires.ftc.teamcode.Constants.secondPowerShotDisplacement;
 
 
@@ -51,7 +51,7 @@ public class Trajectories {
 
             case SHOOT1:
                 //TODO roadrunner adjust to optimal shooting position
-                trajectoryBuilder.strafeLeft(firstPowerShotsDistanceFromWall);
+                trajectoryBuilder.strafeLeft(firstPowerShotX);
                 break;
 
             case SHOOT2:

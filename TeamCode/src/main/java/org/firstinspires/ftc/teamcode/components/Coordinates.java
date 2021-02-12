@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.Constants;
 public enum Coordinates {
     //TODO fill in these coordinates
     // Starting position
-    STARTING_POSITION(2.5 * Constants.fieldBoxWidth, 0.5 * Constants.fieldBoxWidth),
+    STARTING_POSITION(),
 
     // Wobblegoal dropoff boxes
     BOX_A(3.5 * Constants.fieldBoxWidth, 3.5 * Constants.fieldBoxWidth),

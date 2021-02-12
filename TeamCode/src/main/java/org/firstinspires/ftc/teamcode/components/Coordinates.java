@@ -1,19 +1,27 @@
 package org.firstinspires.ftc.teamcode.components;
 
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-
 import org.firstinspires.ftc.teamcode.Constants;
 
 public enum Coordinates {
     //TODO fill in these coordinates
-    BOX_A(2.5 * Constants.fieldBoxWidth, 3.5 * Constants.fieldBoxWidth),
-    BOX_B(1.5 * Constants.fieldBoxWidth, 4.5 * Constants.fieldBoxWidth),
-    BOX_C(2.5 * Constants.fieldBoxWidth, 5.5 * Constants.fieldBoxWidth),
+    // Starting position
+    STARTING_POSITION(2.5 * Constants.fieldBoxWidth, 0.5 * Constants.fieldBoxWidth),
+
+    // Wobblegoal dropoff boxes
+    BOX_A(3.5 * Constants.fieldBoxWidth, 3.5 * Constants.fieldBoxWidth),
+    BOX_B(2.5 * Constants.fieldBoxWidth, 4.5 * Constants.fieldBoxWidth),
+    BOX_C(3.5 * Constants.fieldBoxWidth, 5.5 * Constants.fieldBoxWidth),
+
+    // Powershot
     POWERSHOT_1(Constants.firstPowerShotCoordinates.getX(), Constants.firstPowerShotCoordinates.getY()),
     POWERSHOT_2(Constants.secondPowerShotCoordinates.getX(), Constants.secondPowerShotCoordinates.getY()),
     POWERSHOT_3(Constants.thirdPowerShotCoordinates.getX(), Constants.thirdPowerShotCoordinates.getY()),
+
+    // Second wobble
     SECOND_WOBBLE(),
-    PARKING_POSITION();
+
+    // Parking position
+    PARKING_POSITION(2.5 * Constants.fieldBoxWidth, 3.5 * Constants.fieldBoxWidth);
 
     private final double x;
     private final double y;

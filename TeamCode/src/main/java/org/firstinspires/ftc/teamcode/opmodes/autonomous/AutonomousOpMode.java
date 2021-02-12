@@ -23,7 +23,6 @@ public class AutonomousOpMode extends BaseOpMode {
         super.init();
         tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         tensorflow.activate();
-
         newState(State.INITIAL);
     }
 

@@ -4,14 +4,9 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+
 import org.firstinspires.ftc.teamcode.State;
-
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
-
-import static org.firstinspires.ftc.teamcode.Constants.firstPowerShotDisplacement;
-import static org.firstinspires.ftc.teamcode.Constants.firstPowerShotX;
-import static org.firstinspires.ftc.teamcode.Constants.secondPowerShotDisplacement;
-
 
 public class Trajectories {
 

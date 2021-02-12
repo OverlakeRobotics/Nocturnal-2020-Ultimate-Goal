@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
@@ -79,6 +81,9 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     public RoadRunnerDriveSystem(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
+        standardTrackingWheelLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
+        setLocalizer(standardTrackingWheelLocalizer);
+
         clock = NanoClock.system();
 
         mode = Mode.IDLE;
@@ -127,10 +132,6 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        standardTrackingWheelLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
-
-        setLocalizer(standardTrackingWheelLocalizer);
     }
 
     public ArrayList<Double> getEncoders() {
@@ -175,6 +176,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     }
 
     public void followTrajectory(Trajectory trajectory) {
+        Log.d("roadrunner", "" + mPathComplete);
         followTrajectoryAsync(trajectory);
         waitForIdle();
     }
@@ -203,7 +205,9 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         throw new AssertionError();
     }
 
-    public void update() {
+    public boolean update() {
+        boolean pathComplete = false;
+
         updatePoseEstimate();
 
         Pose2d currentPose = getPoseEstimate();
@@ -236,7 +240,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
                 if (t >= turnProfile.duration()) {
                     mode = Mode.IDLE;
-                    mPathComplete = true;
+                    pathComplete = true;
                     setDriveSignal(new DriveSignal());
                 }
 
@@ -251,7 +255,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
                 if (!follower.isFollowing()) {
                     mode = Mode.IDLE;
-                    mPathComplete = true;
+                    pathComplete = true;
                     setDriveSignal(new DriveSignal());
                 }
 
@@ -259,6 +263,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
             }
         }
 
+        return pathComplete;
     }
 
     public void waitForIdle() {

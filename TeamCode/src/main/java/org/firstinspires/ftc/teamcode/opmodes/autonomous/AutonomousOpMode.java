@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
@@ -54,11 +52,11 @@ public class AutonomousOpMode extends BaseOpMode {
     @Override
     public void loop() {
         vuforiaData();
+
         telemetry.addData("State", mCurrentState);
         telemetry.update();
-        if (trajectory != null) {
-            trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
-        }
+
+        trajectoryFinished = roadRunnerDriveSystem.update();
 
         switch (mCurrentState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
@@ -114,7 +112,6 @@ public class AutonomousOpMode extends BaseOpMode {
 
             case STATE_DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
-                roadRunnerDriveSystem.turn(-90);
                 break;
 
             case STATE_DRIVE_TO_WOBBLE:
@@ -144,5 +141,7 @@ public class AutonomousOpMode extends BaseOpMode {
     private void newState(State newState) {
         mCurrentState = newState;
         trajectory = Trajectories.getTrajectory(mCurrentState);
+        if (trajectory != null)
+            trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
     }
 }

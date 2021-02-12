@@ -36,9 +36,9 @@ import static org.firstinspires.ftc.teamcode.Constants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.Constants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.Constants.encoderTicksToInches;
 import static org.firstinspires.ftc.teamcode.Constants.getMotorVelocityF;
-import static org.firstinspires.ftc.teamcode.Constants.kV;
 import static org.firstinspires.ftc.teamcode.Constants.kA;
 import static org.firstinspires.ftc.teamcode.Constants.kStatic;
+import static org.firstinspires.ftc.teamcode.Constants.kV;
 
 public class RoadRunnerDriveSystem extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(12, .3, .2);
@@ -264,6 +264,11 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         }
 
         return pathComplete;
+    }
+
+    public Pose2d getPositionEstimate() {
+        update();
+        return getPoseEstimate();
     }
 
     public void waitForIdle() {

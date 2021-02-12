@@ -55,22 +55,15 @@ public class ShootingSystem {
     /**
      * Starts the shooter
      */
-    private void start() {
-        switch (currentTarget) {
-            case POWER_SHOT:
-                motor.setPower(currentTarget.getPower());
-                break;
-
-            default:
-                motor.setPower(currentTarget.getPower());
-        }
+    public void start() {
+        motor.setPower(currentTarget.getPower());
     }
 
     //TODO implement stop shooter
     /**
      * Stops the shooter
      */
-    private void stop() {
+    public void stop() {
         setMotorPower(0);
     }
 

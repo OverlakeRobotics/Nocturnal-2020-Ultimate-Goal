@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class IntakeSystem {
-    private DcMotor motor;
+    private final DcMotor motor;
     private int rings;
 
     public IntakeSystem(DcMotor motor) {

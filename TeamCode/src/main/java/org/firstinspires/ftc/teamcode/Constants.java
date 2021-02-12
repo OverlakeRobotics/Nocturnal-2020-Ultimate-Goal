@@ -90,7 +90,7 @@ public class Constants {
 
     //Shooter Constants
     public static final float powerShotY = 78;
-    public static final Vector2d firstPowerShotCoordinates = new Vector2d(72 - (23.5f * 2 + 4.25f - ((44 * 10) / mmPerInch / 2)), powerShotY);
+    public static final Vector2d firstPowerShotCoordinates = new Vector2d(4 * fieldBoxWidth - (23.5f * 2 + 4.25f - ((44 * 10) / mmPerInch / 2)), powerShotY);
     public static final Vector2d secondPowerShotCoordinates = new Vector2d(firstPowerShotCoordinates.getX() - 6.75, 78);
     public static final Vector2d thirdPowerShotCoordinates = new Vector2d(secondPowerShotCoordinates.getX() - 8.5, powerShotY);
 

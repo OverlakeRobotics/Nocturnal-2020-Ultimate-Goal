@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.components;
 
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -15,8 +14,9 @@ import static org.firstinspires.ftc.teamcode.Constants.RIGHT_OPEN_POSITION;
 
 public class YeetSystem {
 
-    public enum Servos {
+    //TODO 2 Servos, arm to bottom right or robot, hardcode max and min angles for motor
 
+    public enum Servos {
         LEFT (LEFT_CLOSED_POSITION, LEFT_OPEN_POSITION, false), //values need to be changed
         RIGHT (RIGHT_CLOSED_POSITION, RIGHT_OPEN_POSITION, false); //values need to be changed
 

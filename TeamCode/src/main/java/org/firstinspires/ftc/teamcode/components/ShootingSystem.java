@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class ShootingSystem {
 
     //TODO Find out powers for each goal
+    //TODO 1 servo and 1 motor total
     public enum Target {
         POWER_SHOT (1.0),
         TOWER_GOAL (1.0);

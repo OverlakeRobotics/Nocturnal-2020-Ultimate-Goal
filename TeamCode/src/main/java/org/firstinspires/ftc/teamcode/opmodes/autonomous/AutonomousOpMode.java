@@ -12,8 +12,9 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 public class AutonomousOpMode extends BaseOpMode {
 
     // Variables
-    private State mCurrentState;                         // Current State Machine State.
-    public static Tensorflow.SquareState mTargetRegion;
+    private State currentState;                         // Current State Machine State.
+    public static Tensorflow.SquareState targetRegion;
+    private boolean deliveredFirstWobble;
 
     // Systems
     private Tensorflow tensorflow;
@@ -21,6 +22,7 @@ public class AutonomousOpMode extends BaseOpMode {
     @Override
     public void init() {
         super.init();
+        deliveredFirstWobble = false;
         tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         tensorflow.activate();
         newState(State.INITIAL);
@@ -28,7 +30,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
     @Override
     public void init_loop() {
-        mTargetRegion = tensorflow.getTargetRegion();
+        targetRegion = tensorflow.getTargetRegion();
     }
 
     @Override
@@ -40,29 +42,29 @@ public class AutonomousOpMode extends BaseOpMode {
     @Override
     public void loop() {
         vuforiaData();
-        telemetry.addData("State", mCurrentState);
+        telemetry.addData("State", currentState);
         telemetry.update();
         if (!trajectoryFinished && trajectory != null) {
             trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         }
 
-        switch (mCurrentState) { // TODO: This monstrosity.
+        switch (currentState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
             case INITIAL:
                 // Initialize
-                newState(State.DELIVER_FIRST_WOBBLE);
+                newState(State.DELIVER_WOBBLE);
                 break;
 
-            case DELIVER_FIRST_WOBBLE:
+            case DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                 yeetSystem.place();
-                roadRunnerDriveSystem.turn(-90);
-                newState(State.DRIVE_TO_SHOOTING_LOCATION);
+                newState(deliveredFirstWobble ? State.RETURN_TO_NEST : State.DRIVE_TO_SHOOTING_LOCATION);
                 break;
 
             case DRIVE_TO_SHOOTING_LOCATION:
                 // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
                 //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
+                deliveredFirstWobble = true;
                 if (trajectoryFinished) {
                     newState(State.POWERSHOT);
                 }
@@ -81,13 +83,7 @@ public class AutonomousOpMode extends BaseOpMode {
             case COLLECT_SECOND_WOBBLE:
                 //TODO position the robot and collect the second wobble goal
                 yeetSystem.pickup();
-                newState(State.DELIVER_SECOND_WOBBLE);
-                break;
-
-            case DELIVER_SECOND_WOBBLE:
-                //TODO drive to delivery location and drop off second wobble goal
-                yeetSystem.place();
-                newState(State.RETURN_TO_NEST);
+                newState(State.DELIVER_WOBBLE);
                 break;
 
             case RETURN_TO_NEST:
@@ -111,8 +107,8 @@ public class AutonomousOpMode extends BaseOpMode {
     }
 
     private void newState(State newState) {
-        mCurrentState = newState;
+        currentState = newState;
         Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
-        trajectory = Trajectories.getTrajectory(mCurrentState, posEstimate);
+        trajectory = Trajectories.getTrajectory(currentState, posEstimate);
     }
 }

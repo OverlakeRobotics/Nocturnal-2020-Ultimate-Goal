@@ -15,9 +15,9 @@ public class Trajectories {
      * @return Trajectory for currentState
      */
     public static Trajectory getTrajectory(State currentState, Pose2d posEstimate) {
-        TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d());
         //TODO Figure out the trajectories for each state, CODE REVIEW NEEDED
         //TODO figure out the initial movements of the robot from start
+        TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
         switch (currentState) {
             case DELIVER_WOBBLE:
                 switch (AutonomousOpMode.targetRegion) {

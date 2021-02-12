@@ -21,7 +21,7 @@ public class Trajectories {
      * @return Trajectory for currentState
      */
     public static Trajectory getTrajectory(State currentState, Pose2d posEstimate) {
-        TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d());
+        TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
         //TODO Figure out the trajectories for each state
         switch (currentState) {
             case DELIVER_FIRST_WOBBLE:

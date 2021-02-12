@@ -1,26 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+
+import org.firstinspires.ftc.teamcode.State;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AutonomousOpMode", group = "")
 public class AutonomousOpMode extends BaseOpMode {
-    public enum State {
-        STATE_INITIAL,//Game starts!
-        DRIVE_FORWARD, //Robot drives forward
-        //Robot uses vuforia with right side camera
-        STATE_SCAN_RINGS, //Scan stack of rings
-        DRIVE_TO_SHOOTING_LINE, //Robot drives forward to right behind shooting line
-        STATE_SHOOT, //Shoot power shots, strafing left to get all 3
-        STATE_DELIVER_WOBBLE, //Use roadrunner to go to specified target zone and drop off wobble goal
-        STATE_DRIVE_TO_WOBBLE,//Turn around and drive towards second wobble goal
-        STATE_COLLECT_WOBBLE,//Pick up second wobble goal
-        //Turn around and drive back to target zone (STATE_ROADRUNNER)
-        //Drop off second wobble goal (STATE_DELIVER_WOBBLE)
-        STATE_RETURN_TO_NEST,//Backup and park on line using vuforia
-        STATE_COMPLETE
-    }
 
     private State mCurrentState;                         // Current State Machine State.
     private Tensorflow mTensorflow;
@@ -34,7 +22,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
         //TODO add shooter and intakes system
         //mShooter = new Shooter(hardwareMap.get(DcMotor.class, "Shooter Motor"));
-        newState(State.STATE_INITIAL);
+        newState(State.INITIAL);
     }
 
     @Override
@@ -60,72 +48,56 @@ public class AutonomousOpMode extends BaseOpMode {
 
         switch (mCurrentState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
-            case STATE_INITIAL:
+            case INITIAL:
                 // Initialize
-                newState(State.STATE_DELIVER_WOBBLE);
+                newState(State.DELIVER_FIRST_WOBBLE);
                 break;
 
-            case DRIVE_FORWARD:
-                if (trajectoryFinished) {
-                    newState(State.STATE_SCAN_RINGS);
-                }
-                break;
-
-            case STATE_SCAN_RINGS:
-                newState(State.DRIVE_TO_SHOOTING_LINE);
-                break;
-
-            case DRIVE_TO_SHOOTING_LINE:
-                if (trajectoryFinished) {
-                    newState(State.STATE_SHOOT);
-                }
-                break;
-
-            case STATE_SHOOT:
-                //**Basic Version, stop at white line**
-                //DriveSystem.stop()
-                //mShooter.setMotorPower(**Whichever target it's going for**);
-                //mShooter.shoot();
-                //for (int i = 1; i < mTotalRings; i++){
-                //  if (sticks) {
-                //      DriveSystem.strafe(**Proper number to do it**)
-                //  }
-                //  mShooter.shoot();
-                //}
-                //mShooter.stop();
-                //mTotalRings = 0;
-
-                //**Advanced Version, from anywhere**
-                //DriveSystem.stop()
-                //mShooter.setMotorPower(**Whichever target it's going for**);
-                //mShooter.shoot();
-                //for (int i = 1; i < totalRings; i++) {
-                //  if (sticks) {
-                //      DriveSystem.strafe(**Proper number to do it**)
-                //  }
-                //  mShooter.shoot();
-                //}
-                //mShooter.stop();
-                //mTotalRings = 0;
-                newState(State.STATE_DELIVER_WOBBLE);
-                break;
-
-            case STATE_DELIVER_WOBBLE:
+            case DELIVER_FIRST_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
+                yeetSystem.place();
+                roadRunnerDriveSystem.turn(-90);
+                newState(State.DRIVE_TO_SHOOTING_LOCATION);
                 break;
 
-            case STATE_DRIVE_TO_WOBBLE:
+            case DRIVE_TO_SHOOTING_LOCATION:
+                // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
+                //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
+                if (trajectoryFinished) {
+                    newState(State.POWERSHOT);
+                }
                 break;
 
-            case STATE_COLLECT_WOBBLE:
-                newState(State.STATE_RETURN_TO_NEST);
+            case POWERSHOT:
+                powershotRoutine();
+                newState(State.DRIVE_TO_SECOND_WOBBLE);
                 break;
 
-            case STATE_RETURN_TO_NEST:
-                newState(State.STATE_COMPLETE);
+            case DRIVE_TO_SECOND_WOBBLE:
+                //TODO drive to the second wobble goal
+                newState(State.COLLECT_SECOND_WOBBLE);
                 break;
 
-            case STATE_COMPLETE:
+            case COLLECT_SECOND_WOBBLE:
+                //TODO position the robot and collect the second wobble goal
+                yeetSystem.pickup();
+                newState(State.DELIVER_SECOND_WOBBLE);
+                break;
+
+            case DELIVER_SECOND_WOBBLE:
+                //TODO drive to delivery location and drop off second wobble goal
+                yeetSystem.place();
+                newState(State.RETURN_TO_NEST);
+                break;
+
+            case RETURN_TO_NEST:
+                //TODO drive back to nest
+                newState(State.COMPLETE);
+                break;
+
+            case COMPLETE:
+                //TODO park the robot, shut down system, and release used resources
+                stop();
                 break;
         }
     }
@@ -140,7 +112,8 @@ public class AutonomousOpMode extends BaseOpMode {
 
     private void newState(State newState) {
         mCurrentState = newState;
-        trajectory = Trajectories.getTrajectory(mCurrentState);
+        Pose2d posEstimate = roadRunnerDriveSystem.getPoseEstimate();
+        trajectory = Trajectories.getTrajectory(mCurrentState, posEstimate);
         if (trajectory != null)
             trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
     }

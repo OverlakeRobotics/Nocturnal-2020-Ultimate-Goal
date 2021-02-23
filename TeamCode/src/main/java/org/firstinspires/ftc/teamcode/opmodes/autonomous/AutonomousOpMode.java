@@ -4,7 +4,9 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.State;
+import org.firstinspires.ftc.teamcode.components.Coordinates;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
@@ -76,6 +78,7 @@ public class AutonomousOpMode extends BaseOpMode {
                 break;
 
             case POWERSHOT:
+                //TODO do the powershot routine
                 powershotRoutine();
                 newState(State.DRIVE_TO_SECOND_WOBBLE);
                 break;
@@ -111,6 +114,10 @@ public class AutonomousOpMode extends BaseOpMode {
         }
     }
 
+    /**
+     * Updates the state of the system and updates RoadRunner trajectory
+     * @param newState to switch to
+     */
     private void newState(State newState) {
         currentState = newState;
         Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
@@ -120,9 +127,14 @@ public class AutonomousOpMode extends BaseOpMode {
         }
     }
 
+    /**
+     * Calibrates RoadRunner using Vuforia data
+     * Because camera is sideways, the x offset corresponds to y coordinates and visa versa
+     */
     private void calibrateLocation() {
-        Pose2d roadRunnerPos = roadRunnerDriveSystem.getPoseEstimate();
-        Pose2d updatedPos = new Pose2d(roadRunnerPos.getX() + vuforia.getXOffset(), roadRunnerPos.getY() + vuforia.getYOffset());
+        double xUpdate = Coordinates.CALIBRATION.getX() + (vuforia.getYOffset() - Constants.fieldBoxWidth);
+        double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset();
+        Pose2d updatedPos = new Pose2d(xUpdate, yUpdate);
         roadRunnerDriveSystem.setPoseEstimate(updatedPos);
     }
 }

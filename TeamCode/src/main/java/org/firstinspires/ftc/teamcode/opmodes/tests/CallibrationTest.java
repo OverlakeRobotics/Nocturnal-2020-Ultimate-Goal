@@ -46,7 +46,7 @@ public class CallibrationTest extends BaseOpMode {
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
         if (!trajectoryFinished && trajectory != null) {
-            trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
+            roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         }
         switch (currentGameState) { 
             

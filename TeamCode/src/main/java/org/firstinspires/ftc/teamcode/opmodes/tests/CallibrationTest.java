@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -8,8 +8,9 @@ import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
-@Autonomous(name = "AutonomousOpMode", group = "Autonomous")
-public class AutonomousOpMode extends BaseOpMode {
+@Autonomous(name = "CallibrationOpMode", group = "Autonomous")
+
+public class CallibrationTest extends BaseOpMode {
 
     // Variables
     private GameState currentGameState;                         // Current GameState Machine GameState.
@@ -47,21 +48,20 @@ public class AutonomousOpMode extends BaseOpMode {
         if (!trajectoryFinished && trajectory != null) {
             trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         }
-
-        switch (currentGameState) { // TODO: This monstrosity.
-            //TODO Do we need a trajectory as a field?
-            case INITIAL:
+        switch (currentGameState) { 
+            
+            case INIT:
                 // Initialize
                 newGameState(GameState.DELIVER_WOBBLE);
                 break;
 
-            case DELIVER_WOBBLE:
+            case TEST_ROADRUNNER:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                 yeetSystem.place();
                 newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.DRIVE_TO_SHOOTING_LOCATION);
                 break;
 
-            case DRIVE_TO_SHOOTING_LOCATION:
+            case TEST_IMU:
                 // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
                 //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
                 deliveredFirstWobble = true;
@@ -70,28 +70,34 @@ public class AutonomousOpMode extends BaseOpMode {
                 }
                 break;
 
-            case POWERSHOT:
+            case TEST_SHOOTING:
                 powershotRoutine();
                 newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
                 break;
 
-            case DRIVE_TO_SECOND_WOBBLE:
+            case TEST_INTAKE:
                 //TODO drive to the second wobble goal
+                intakeSystem.initMotors();
+                intakeSystem.suck();
+                intakeSystem.stop();
+                intakeSystem.getRingCount();
                 newGameState(GameState.COLLECT_SECOND_WOBBLE);
                 break;
 
-            case COLLECT_SECOND_WOBBLE:
+            case TEST_YEET:
                 //TODO position the robot and collect the second wobble goal
                 yeetSystem.pickup();
+                yeetSystem.place();
+                yeetSystem.yeet();
                 newGameState(GameState.DELIVER_WOBBLE);
                 break;
 
-            case RETURN_TO_NEST:
+            case TEST_VUFORIA:
                 //TODO drive back to nest
                 newGameState(GameState.COMPLETE);
                 break;
 
-            case COMPLETE:
+            case TERMINATE:
                 //TODO park the robot, shut down system, and release used resources
                 stop();
                 break;

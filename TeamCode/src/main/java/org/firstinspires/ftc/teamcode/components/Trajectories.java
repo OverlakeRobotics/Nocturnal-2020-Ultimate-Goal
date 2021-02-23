@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 
-import org.firstinspires.ftc.teamcode.State;
+import org.firstinspires.ftc.teamcode.GameState;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
 public class Trajectories {
@@ -14,7 +14,7 @@ public class Trajectories {
      * @param currentState to draw trajectory for
      * @return Trajectory for currentState
      */
-    public static Trajectory getTrajectory(State currentState, Pose2d posEstimate) {
+    public static Trajectory getTrajectory(GameState currentState, Pose2d posEstimate) {
         //TODO Figure out the trajectories for each state, CODE REVIEW NEEDED
         //TODO figure out the initial movements of the robot from start
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);

@@ -45,9 +45,7 @@ public class AutonomousOpMode extends BaseOpMode {
         vuforiaData();
         telemetry.addData("State", currentState);
         telemetry.update();
-        if (!trajectoryFinished && trajectory != null) {
-            trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
-        }
+        trajectoryFinished = roadRunnerDriveSystem.update();
 
         switch (currentState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
@@ -117,6 +115,9 @@ public class AutonomousOpMode extends BaseOpMode {
         currentState = newState;
         Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
         trajectory = Trajectories.getTrajectory(currentState, posEstimate);
+        if (trajectory != null) {
+            roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
+        }
     }
 
     private void calibrateLocation() {

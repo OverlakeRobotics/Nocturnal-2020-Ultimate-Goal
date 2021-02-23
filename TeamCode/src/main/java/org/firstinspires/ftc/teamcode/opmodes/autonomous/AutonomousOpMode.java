@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.teamcode.State;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
@@ -58,16 +59,22 @@ public class AutonomousOpMode extends BaseOpMode {
             case DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                 yeetSystem.place();
-                newState(deliveredFirstWobble ? State.RETURN_TO_NEST : State.DRIVE_TO_SHOOTING_LOCATION);
+                newState(deliveredFirstWobble ? State.RETURN_TO_NEST : State.CALIBRATE_LOCATION);
+                break;
+
+            case CALIBRATE_LOCATION:
+                //TODO calibrate location of robot using Vuforia and updates RoadRunner if Vuforia is more accurate
+                if (trajectoryFinished) {
+                    deliveredFirstWobble = true;
+                    calibrateLocation();
+                    newState(State.DRIVE_TO_SHOOTING_LOCATION);
+                }
                 break;
 
             case DRIVE_TO_SHOOTING_LOCATION:
                 // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
                 //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
-                deliveredFirstWobble = true;
-                if (trajectoryFinished) {
-                    newState(State.POWERSHOT);
-                }
+                if (trajectoryFinished) newState(State.POWERSHOT);
                 break;
 
             case POWERSHOT:
@@ -110,5 +117,11 @@ public class AutonomousOpMode extends BaseOpMode {
         currentState = newState;
         Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
         trajectory = Trajectories.getTrajectory(currentState, posEstimate);
+    }
+
+    private void calibrateLocation() {
+        Pose2d roadRunnerPos = roadRunnerDriveSystem.getPoseEstimate();
+        Pose2d updatedPos = new Pose2d(roadRunnerPos.getX() + vuforia.getXOffset(), roadRunnerPos.getY() + vuforia.getYOffset());
+        roadRunnerDriveSystem.setPoseEstimate(updatedPos);
     }
 }

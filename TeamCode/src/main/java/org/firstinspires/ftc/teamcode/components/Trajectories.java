@@ -38,6 +38,11 @@ public class Trajectories {
                 }
                 break;
 
+            case CALIBRATE_LOCATION:
+                //TODO drive to shooting line in front of the tower goal and update RoadRunner position
+                trajectoryBuilder.lineToConstantHeading(Coordinates.CALIBRATION.getCoordinates());
+                break;
+
             case DRIVE_TO_SHOOTING_LOCATION:
                 //TODO get coordinate and orientation of robot to fire first powershot
                 trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_1.getCoordinates());

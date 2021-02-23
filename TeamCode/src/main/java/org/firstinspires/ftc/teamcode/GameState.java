@@ -4,6 +4,7 @@ public enum GameState {
     INITIAL,//Game starts!
     //Robot uses vuforia with right side camera
     DELIVER_WOBBLE, //Use roadrunner to go to specified target zone and drop off wobble goal
+    CALIBRATE_LOCATION,
     DRIVE_TO_SHOOTING_LOCATION, //Robot drives forward to right behind shooting line
     POWERSHOT,
     SHOOT1, //Shoot the first power shot

@@ -14,6 +14,9 @@ public enum Coordinates {
     BOX_B(2.5 * Constants.fieldBoxWidth, 4.5 * Constants.fieldBoxWidth),
     BOX_C(3.5 * Constants.fieldBoxWidth, 5.5 * Constants.fieldBoxWidth),
 
+    //Calibration
+    CALIBRATION(2.5 * Constants.fieldBoxWidth, 3.5 * Constants.fieldBoxWidth),
+
     // Powershot
     POWERSHOT_1(Constants.firstPowerShotCoordinates.getX(), Constants.firstPowerShotCoordinates.getY()),
     POWERSHOT_2(Constants.secondPowerShotCoordinates.getX(), Constants.secondPowerShotCoordinates.getY()),

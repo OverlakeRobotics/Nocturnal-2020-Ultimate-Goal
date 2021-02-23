@@ -3,7 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.GameState;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.teamcode.State;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 public class AutonomousOpMode extends BaseOpMode {
 
     // Variables
-    private GameState currentGameState;                         // Current GameState Machine GameState.
+    private State currentState;                         // Current State Machine State.
     public static Tensorflow.SquareState targetRegion;
     private boolean deliveredFirstWobble;
 
@@ -25,7 +26,7 @@ public class AutonomousOpMode extends BaseOpMode {
         deliveredFirstWobble = false;
         tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         tensorflow.activate();
-        newGameState(GameState.INITIAL);
+        newState(State.INITIAL);
     }
 
     @Override
@@ -42,53 +43,57 @@ public class AutonomousOpMode extends BaseOpMode {
     @Override
     public void loop() {
         vuforiaData();
-        telemetry.addData("GameState", currentGameState);
+        telemetry.addData("State", currentState);
         telemetry.update();
-        if (!trajectoryFinished && trajectory != null) {
-            trajectoryFinished = roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
-        }
+        trajectoryFinished = roadRunnerDriveSystem.update();
 
-        switch (currentGameState) { // TODO: This monstrosity.
+        switch (currentState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
             case INITIAL:
                 // Initialize
-                newGameState(GameState.DELIVER_WOBBLE);
+                newState(State.DELIVER_WOBBLE);
                 break;
 
             case DELIVER_WOBBLE:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                 yeetSystem.place();
-                newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.DRIVE_TO_SHOOTING_LOCATION);
+                newState(deliveredFirstWobble ? State.RETURN_TO_NEST : State.CALIBRATE_LOCATION);
+                break;
+
+            case CALIBRATE_LOCATION:
+                //TODO calibrate location of robot using Vuforia and updates RoadRunner if Vuforia is more accurate
+                if (trajectoryFinished) {
+                    deliveredFirstWobble = true;
+                    calibrateLocation();
+                    newState(State.DRIVE_TO_SHOOTING_LOCATION);
+                }
                 break;
 
             case DRIVE_TO_SHOOTING_LOCATION:
                 // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
                 //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
-                deliveredFirstWobble = true;
-                if (trajectoryFinished) {
-                    newGameState(GameState.POWERSHOT);
-                }
+                if (trajectoryFinished) newState(State.POWERSHOT);
                 break;
 
             case POWERSHOT:
                 powershotRoutine();
-                newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
+                newState(State.DRIVE_TO_SECOND_WOBBLE);
                 break;
 
             case DRIVE_TO_SECOND_WOBBLE:
                 //TODO drive to the second wobble goal
-                newGameState(GameState.COLLECT_SECOND_WOBBLE);
+                newState(State.COLLECT_SECOND_WOBBLE);
                 break;
 
             case COLLECT_SECOND_WOBBLE:
                 //TODO position the robot and collect the second wobble goal
                 yeetSystem.pickup();
-                newGameState(GameState.DELIVER_WOBBLE);
+                newState(State.DELIVER_WOBBLE);
                 break;
 
             case RETURN_TO_NEST:
                 //TODO drive back to nest
-                newGameState(GameState.COMPLETE);
+                newState(State.COMPLETE);
                 break;
 
             case COMPLETE:
@@ -106,9 +111,18 @@ public class AutonomousOpMode extends BaseOpMode {
         }
     }
 
-    private void newGameState(GameState newGameState) {
-        currentGameState = newGameState;
+    private void newState(State newState) {
+        currentState = newState;
         Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
-        trajectory = Trajectories.getTrajectory(currentGameState, posEstimate);
+        trajectory = Trajectories.getTrajectory(currentState, posEstimate);
+        if (trajectory != null) {
+            roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
+        }
+    }
+
+    private void calibrateLocation() {
+        Pose2d roadRunnerPos = roadRunnerDriveSystem.getPoseEstimate();
+        Pose2d updatedPos = new Pose2d(roadRunnerPos.getX() + vuforia.getXOffset(), roadRunnerPos.getY() + vuforia.getYOffset());
+        roadRunnerDriveSystem.setPoseEstimate(updatedPos);
     }
 }

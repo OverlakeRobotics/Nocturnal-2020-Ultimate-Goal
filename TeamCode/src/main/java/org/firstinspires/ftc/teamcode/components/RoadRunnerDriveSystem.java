@@ -179,16 +179,9 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         waitForIdle();
     }
 
-    public boolean followTrajectoryAsync(Trajectory trajectory) {
-        if (mPathComplete) {
-            mPathComplete = false;
-            return true;
-        }
-
+    public void followTrajectoryAsync(Trajectory trajectory) {
         follower.followTrajectory(trajectory);
         mode = Mode.FOLLOW_TRAJECTORY;
-
-        return false;
     }
 
     public Pose2d getLastError() {
@@ -203,7 +196,9 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         throw new AssertionError();
     }
 
-    public void update() {
+    public boolean update() {
+        boolean mPathComplete = false;
+
         updatePoseEstimate();
 
         Pose2d currentPose = getPoseEstimate();
@@ -259,6 +254,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
             }
         }
 
+        return mPathComplete;
     }
 
     public Pose2d getPositionEstimate() {

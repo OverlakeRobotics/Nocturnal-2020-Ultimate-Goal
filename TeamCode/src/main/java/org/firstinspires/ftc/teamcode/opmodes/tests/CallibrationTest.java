@@ -1,17 +1,16 @@
-package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.components.Coordinates;
 import org.firstinspires.ftc.teamcode.GameState;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
-@Autonomous(name = "AutonomousOpMode", group = "Autonomous")
-public class AutonomousOpMode extends BaseOpMode {
+@Autonomous(name = "CallibrationOpMode", group = "Autonomous")
+
+public class CallibrationTest extends BaseOpMode {
 
     // Variables
     private GameState currentGameState;                         // Current GameState Machine GameState.
@@ -46,59 +45,59 @@ public class AutonomousOpMode extends BaseOpMode {
         vuforiaData();
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
-        trajectoryFinished = roadRunnerDriveSystem.update();
-
-        switch (currentGameState) { // TODO: This monstrosity.
-            //TODO Do we need a trajectory as a field?
-            case INITIAL:
+        if (!trajectoryFinished && trajectory != null) {
+            roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
+        }
+        switch (currentGameState) { 
+            
+            case INIT:
                 // Initialize
                 newGameState(GameState.DELIVER_WOBBLE);
                 break;
 
-            case DELIVER_WOBBLE:
+            case TEST_ROADRUNNER:
                 //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                 yeetSystem.place();
-                newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
+                newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.DRIVE_TO_SHOOTING_LOCATION);
                 break;
 
-            case CALIBRATE_LOCATION:
-                //TODO calibrate location of robot using Vuforia and updates RoadRunner if Vuforia is more accurate
+            case TEST_IMU:
+                // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
+                //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
+                deliveredFirstWobble = true;
                 if (trajectoryFinished) {
-                    deliveredFirstWobble = true;
-                    calibrateLocation();
-                    newGameState(GameState.DRIVE_TO_SHOOTING_LOCATION);
+                    newGameState(GameState.POWERSHOT);
                 }
                 break;
 
-            case DRIVE_TO_SHOOTING_LOCATION:
-                // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
-                //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
-                if (trajectoryFinished) newGameState(GameState.POWERSHOT);
-                break;
-
-            case POWERSHOT:
-                //TODO do the powershot routine
+            case TEST_SHOOTING:
                 powershotRoutine();
                 newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
                 break;
 
-            case DRIVE_TO_SECOND_WOBBLE:
+            case TEST_INTAKE:
                 //TODO drive to the second wobble goal
+                intakeSystem.initMotors();
+                intakeSystem.suck();
+                intakeSystem.stop();
+                intakeSystem.getRingCount();
                 newGameState(GameState.COLLECT_SECOND_WOBBLE);
                 break;
 
-            case COLLECT_SECOND_WOBBLE:
+            case TEST_YEET:
                 //TODO position the robot and collect the second wobble goal
                 yeetSystem.pickup();
+                yeetSystem.place();
+                yeetSystem.yeet();
                 newGameState(GameState.DELIVER_WOBBLE);
                 break;
 
-            case RETURN_TO_NEST:
+            case TEST_VUFORIA:
                 //TODO drive back to nest
                 newGameState(GameState.COMPLETE);
                 break;
 
-            case COMPLETE:
+            case TERMINATE:
                 //TODO park the robot, shut down system, and release used resources
                 stop();
                 break;
@@ -113,27 +112,9 @@ public class AutonomousOpMode extends BaseOpMode {
         }
     }
 
-    /**
-     * Updates the state of the system and updates RoadRunner trajectory
-     * @param newGameState to switch to
-     */
     private void newGameState(GameState newGameState) {
         currentGameState = newGameState;
         Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
         trajectory = Trajectories.getTrajectory(currentGameState, posEstimate);
-        if (trajectory != null) {
-            roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
-        }
-    }
-
-    /**
-     * Calibrates RoadRunner using Vuforia data
-     * Because camera is sideways, the x offset corresponds to y coordinates and visa versa
-     */
-    private void calibrateLocation() {
-        double xUpdate = Coordinates.CALIBRATION.getX() + (vuforia.getYOffset() - Constants.fieldBoxWidth);
-        double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset();
-        Pose2d updatedPos = new Pose2d(xUpdate, yUpdate);
-        roadRunnerDriveSystem.setPoseEstimate(updatedPos);
     }
 }

@@ -26,11 +26,45 @@ public class ShootingSystem {
 
     private DcMotor motor;
     private Servo servo;
+    private boolean closed;
+
+    private static final double CLOSED_POSITION = 0; // TODO, Find position values.
+    private static final double OPEN_POSITION = 0;
+
     private Target currentTarget;
 
-    public ShootingSystem(DcMotor motor) {
+    public ShootingSystem(DcMotor motor, Servo servo) {
         this.motor = motor;
+        this.servo = servo;
+        servo.setPosition(CLOSED_POSITION);
+        closed = true;
         initMotors();
+    }
+
+    private void open(){
+        if (closed){
+            servo.setPosition(OPEN_POSITION);
+            closed = false;
+        }
+        else{
+
+        }
+    }
+
+    private void close(){
+        if (!closed){
+            servo.setPosition(CLOSED_POSITION);
+            closed = true;
+        }
+    }
+
+    private void toggle(){
+        if (closed){
+            open();
+        }
+        else{
+            close();
+        }
     }
 
     /**

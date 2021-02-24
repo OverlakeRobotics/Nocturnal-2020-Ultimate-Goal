@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.teamcode.GameState;
-import org.firstinspires.ftc.teamcode.GameState;
 import org.firstinspires.ftc.teamcode.components.Coordinates;
 import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;

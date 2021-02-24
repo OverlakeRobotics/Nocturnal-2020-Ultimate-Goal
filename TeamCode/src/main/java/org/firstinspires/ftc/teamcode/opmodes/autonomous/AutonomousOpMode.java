@@ -129,11 +129,11 @@ public class AutonomousOpMode extends BaseOpMode {
     /**
      * Calibrates RoadRunner using Vuforia data
      * Because camera is sideways, the x offset corresponds to y coordinates and visa versa
+     * Vuforia is in millimeters and everything else is in inches
      */
     private void calibrateLocation() {
-        double xUpdate = Coordinates.CALIBRATION.getX() + (vuforia.getYOffset() - Constants.fieldBoxWidth);
-        double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset();
-        Pose2d updatedPos = new Pose2d(xUpdate, yUpdate);
-        roadRunnerDriveSystem.setPoseEstimate(updatedPos);
+        double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - Constants.fieldBoxWidth);
+        double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset() / Constants.mmPerInch;
+        roadRunnerDriveSystem.setPoseEstimate(new Pose2d(xUpdate, yUpdate));
     }
 }

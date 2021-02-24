@@ -46,8 +46,9 @@ public class AutonomousOpMode extends BaseOpMode {
         vuforiaData();
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
-        trajectoryFinished = roadRunnerDriveSystem.update();
 
+        // Makes sure the trajectory is finished before doing anything else
+        while (!trajectoryFinished) trajectoryFinished = roadRunnerDriveSystem.update();
         switch (currentGameState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
             case INITIAL:
@@ -63,11 +64,9 @@ public class AutonomousOpMode extends BaseOpMode {
 
             case CALIBRATE_LOCATION:
                 //TODO calibrate location of robot using Vuforia and updates RoadRunner if Vuforia is more accurate
-                if (trajectoryFinished) {
-                    deliveredFirstWobble = true;
-                    calibrateLocation();
-                    newGameState(GameState.DRIVE_TO_SHOOTING_LOCATION);
-                }
+                deliveredFirstWobble = true;
+                calibrateLocation();
+                newGameState(GameState.DRIVE_TO_SHOOTING_LOCATION);
                 break;
 
             case DRIVE_TO_SHOOTING_LOCATION:

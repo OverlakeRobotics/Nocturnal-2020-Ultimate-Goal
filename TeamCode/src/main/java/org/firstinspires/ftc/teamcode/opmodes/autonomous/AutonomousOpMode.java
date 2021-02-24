@@ -132,7 +132,7 @@ public class AutonomousOpMode extends BaseOpMode {
      * Vuforia is in millimeters and everything else is in inches
      */
     private void calibrateLocation() {
-        double xUpdate = Coordinates.CALIBRATION.getX() + (vuforia.getYOffset() / Constants.mmPerInch - Constants.fieldBoxWidth);
+        double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - Constants.fieldBoxWidth);
         double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset() / Constants.mmPerInch;
         roadRunnerDriveSystem.setPoseEstimate(new Pose2d(xUpdate, yUpdate));
     }

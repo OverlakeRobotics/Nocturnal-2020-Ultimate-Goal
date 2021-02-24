@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.GameState;
+import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
+import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
@@ -19,6 +23,7 @@ public class CalibrationTest extends BaseOpMode {
 
     // Systems
     private Tensorflow tensorflow;
+    private ShootingSystem shootingSystem;
 
     @Override
     public void init() {
@@ -56,14 +61,25 @@ public class CalibrationTest extends BaseOpMode {
                 break;
 
             case TEST_ROADRUNNER:
-                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
-                yeetSystem.place();
-                newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.DRIVE_TO_SHOOTING_LOCATION);
+                Trajectory trajectory = roadRunnerDriveSystem.trajectoryBuilder(new Pose2d())
+                        .forward(12)
+                        .splineTo(new Vector2d(0, 0), Math.toRadians(0)) // TODO - these numbers should be changed
+                        .strafeLeft(6)
+                        .strafeRight(6)
+                        .build();
+                roadRunnerDriveSystem.followTrajectory(trajectory);
+                roadRunnerDriveSystem.turn(-90);
+                roadRunnerDriveSystem.turn(90);
+                if (roadRunnerDriveSystem.getPositionEstimate() == new Pose2d(0, 0)){ // TODO - Pose2D needs coordinates to compare and calculate
+                    telemetry.addLine("RoadRunner: ✔");
+                } else{
+                    telemetry.addLine("RoadRunner: ❌");
+                }
+                newGameState(GameState.TEST_IMU);
                 break;
 
             case TEST_IMU:
-                // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
-                //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
+
                 deliveredFirstWobble = true;
                 if (trajectoryFinished) {
                     newGameState(GameState.POWERSHOT);
@@ -71,34 +87,31 @@ public class CalibrationTest extends BaseOpMode {
                 break;
 
             case TEST_SHOOTING:
-                powershotRoutine();
+
                 newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
                 break;
 
             case TEST_INTAKE:
-                //TODO drive to the second wobble goal
                 intakeSystem.initMotors();
                 intakeSystem.suck();
                 intakeSystem.stop();
                 intakeSystem.getRingCount();
-                newGameState(GameState.COLLECT_SECOND_WOBBLE);
+                newGameState(GameState.TEST_YEET);
                 break;
 
             case TEST_YEET:
-                //TODO position the robot and collect the second wobble goal
                 yeetSystem.pickup();
                 yeetSystem.place();
                 yeetSystem.yeet();
-                newGameState(GameState.DELIVER_WOBBLE);
+                newGameState(GameState.TEST_VUFORIA);
                 break;
 
             case TEST_VUFORIA:
-                //TODO drive back to nest
                 newGameState(GameState.COMPLETE);
                 break;
 
             case TERMINATE:
-                //TODO park the robot, shut down system, and release used resources
+
                 stop();
                 break;
         }

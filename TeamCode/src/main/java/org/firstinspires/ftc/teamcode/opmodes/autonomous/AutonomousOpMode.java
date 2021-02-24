@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.components.Coordinates;
 import org.firstinspires.ftc.teamcode.GameState;
+import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
@@ -70,9 +71,9 @@ public class AutonomousOpMode extends BaseOpMode {
                 break;
 
             case DRIVE_TO_SHOOTING_LOCATION:
-                // [TODO, NOCTURNAL] CHECK IF WE NEED THIS UNIVERSALLY OR
-                //  BELOW GIVEN ASYNC CAN BE PRETTY ANNOYING
-                if (trajectoryFinished) newGameState(GameState.POWERSHOT);
+                //TODO drive to shooting location, start up shooter motor
+                shootingSystem.init(ShootingSystem.Target.POWER_SHOT);
+                newGameState(GameState.POWERSHOT);
                 break;
 
             case POWERSHOT:

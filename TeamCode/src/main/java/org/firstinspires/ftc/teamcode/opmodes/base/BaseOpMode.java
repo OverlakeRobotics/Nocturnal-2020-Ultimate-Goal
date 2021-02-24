@@ -78,8 +78,6 @@ public abstract class BaseOpMode extends OpMode {
      * Powershot routine
      */
     protected void powershotRoutine() {
-        shootingSystem.setTarget(ShootingSystem.Target.POWER_SHOT);
-
         // Shoot 1
         singlePowershot(GameState.SHOOT1);
 

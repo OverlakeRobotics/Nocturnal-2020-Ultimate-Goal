@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class ShootingSystem {
 
@@ -24,6 +25,7 @@ public class ShootingSystem {
     public static final String TAG = "ShootingSystem";
 
     private DcMotor motor;
+    private Servo servo;
     private Target currentTarget;
 
     public ShootingSystem(DcMotor motor) {
@@ -34,7 +36,7 @@ public class ShootingSystem {
     /**
      * Initializes the motors
      */
-    public void initMotors() {
+    private void initMotors() {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -47,7 +49,7 @@ public class ShootingSystem {
      * Sets the target
      * @param target to shoot at
      */
-    public void setTarget(Target target) {
+    public void init(Target target) {
         currentTarget = target;
         start();
     }
@@ -56,7 +58,7 @@ public class ShootingSystem {
     /**
      * Starts the shooter
      */
-    public void start() {
+    private void start() {
         motor.setPower(currentTarget.getPower());
     }
 

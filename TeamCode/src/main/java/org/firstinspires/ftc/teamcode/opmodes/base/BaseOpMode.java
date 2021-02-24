@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.teamcode.State;
+import org.firstinspires.ftc.teamcode.GameState;
 import org.firstinspires.ftc.teamcode.components.Coordinates;
 import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
@@ -81,20 +81,20 @@ public abstract class BaseOpMode extends OpMode {
         shootingSystem.setTarget(ShootingSystem.Target.POWER_SHOT);
 
         // Shoot 1
-        singlePowershot(State.SHOOT1);
+        singlePowershot(GameState.SHOOT1);
 
         // Shoot 2
-        singlePowershot(State.SHOOT2);
+        singlePowershot(GameState.SHOOT2);
 
         // Shoot 3
-        singlePowershot(State.SHOOT3);
+        singlePowershot(GameState.SHOOT3);
     }
 
     /**
      * Assumes shooter is set to State Powershot
      * @param shot number to be performed
      */
-    private void singlePowershot(State shot) {
+    private void singlePowershot(GameState shot) {
         trajectory = Trajectories.getTrajectory(shot, currentPosition);
         trajectoryFinished = false;
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);

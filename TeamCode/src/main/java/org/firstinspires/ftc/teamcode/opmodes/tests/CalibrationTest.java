@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
-@Autonomous(name = "CallibrationOpMode", group = "Autonomous")
+@Autonomous(name = "CalibrationOpMode", group = "Autonomous")
 
-public class CallibrationTest extends BaseOpMode {
+public class CalibrationTest extends BaseOpMode {
 
     // Variables
     private GameState currentGameState;                         // Current GameState Machine GameState.

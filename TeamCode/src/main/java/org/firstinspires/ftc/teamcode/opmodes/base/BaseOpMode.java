@@ -20,6 +20,7 @@ public abstract class BaseOpMode extends OpMode {
     private static final float mmPerInch = 25.4f;
     protected boolean trajectoryFinished;
     protected Pose2d currentPosition;
+    protected static int ringCount;
 
     // Systems
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
@@ -33,9 +34,9 @@ public abstract class BaseOpMode extends OpMode {
     public void init() {
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
+        ringCount = 3;
 
         currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
-
         vuforia = VuforiaSystem.getInstance();
 
         //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
@@ -100,6 +101,28 @@ public abstract class BaseOpMode extends OpMode {
         shootingSystem.shoot();
     }
 
+    /**
+     * Gets the number of rings on the robot
+     * @return the number of rings on the robot
+     */
+    public static int getRingCount() {
+        return ringCount;
+    }
+
+    /**
+     * Adds a ring to the ring count
+     */
+    public static void addRingCount() {
+        ringCount++;
+    }
+
+    /**
+     * Subtracts a ring to the ring count
+     */
+    public static void subtractRingCount() {
+        ringCount--;
+    }
+
     @Override
     public void stop() {
         if (vuforia != null) {
@@ -107,7 +130,7 @@ public abstract class BaseOpMode extends OpMode {
         }
 
         if (shootingSystem != null) {
-            shootingSystem.stop();
+            shootingSystem.shutDown();
         }
 
         if (intakeSystem != null) {

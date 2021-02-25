@@ -72,7 +72,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
             case DRIVE_TO_SHOOTING_LOCATION:
                 //TODO drive to shooting location, start up shooter motor
-                shootingSystem.init(ShootingSystem.Target.POWER_SHOT);
+                shootingSystem.warmUp(ShootingSystem.Target.POWER_SHOT);
                 newGameState(GameState.POWERSHOT);
                 break;
 
@@ -119,8 +119,8 @@ public class AutonomousOpMode extends BaseOpMode {
      */
     private void newGameState(GameState newGameState) {
         currentGameState = newGameState;
-        Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
-        trajectory = Trajectories.getTrajectory(currentGameState, posEstimate);
+        currentPosition = roadRunnerDriveSystem.getPositionEstimate();
+        trajectory = Trajectories.getTrajectory(currentGameState, currentPosition);
         if (trajectory != null) {
             roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         }

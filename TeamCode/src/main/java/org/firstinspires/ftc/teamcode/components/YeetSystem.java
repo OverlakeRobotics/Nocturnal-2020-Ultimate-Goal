@@ -90,6 +90,7 @@ public class YeetSystem {
         while (motor.getCurrentPosition() != UP_POSITION){
             motor.setPower(0.75);
         }
+        motor.setPower(0);
     }
 
     private void down() {

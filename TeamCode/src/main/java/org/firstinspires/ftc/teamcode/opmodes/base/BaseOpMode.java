@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.base;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.teamcode.GameState;
@@ -41,12 +43,30 @@ public abstract class BaseOpMode extends OpMode {
 
         //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
         //Initialize RoadRunner
-//        roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
-//        roadRunnerDriveSystem.setPoseEstimate(currentPosition);
-//
-//        shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
-//        intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
-//        yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"));
+        try {
+            roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
+            roadRunnerDriveSystem.setPoseEstimate(currentPosition);
+        } catch (Exception e) {
+
+        }
+
+        try {
+            shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"), hardwareMap.get(Servo.class, "ShootingSystemServo"));
+        } catch (Exception e) {
+
+        }
+
+        try {
+            intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "IntakeSystem"));
+        } catch (Exception e) {
+
+        }
+
+        try {
+            yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"));
+        } catch (Exception e) {
+
+        }
     }
 
     @Override

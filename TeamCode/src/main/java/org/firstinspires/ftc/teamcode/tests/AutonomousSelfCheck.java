@@ -2,8 +2,12 @@ package org.firstinspires.ftc.teamcode.tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.components.IntakeSystem;
+import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
@@ -12,6 +16,9 @@ import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
 @Autonomous(name = "AutonomousOpMode", group = "Autonomous")
 public class AutonomousSelfCheck extends AutonomousOpMode {
+
+    private Pose2d oldPosEstimate;
+    private IntakeSystem intake = new IntakeSystem(hardwareMap.get(DcMotor.class, "IntakeSystem"));
 
     @Override
     public void loop() {
@@ -26,10 +33,12 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
                 newGameState(GameState.TEST_SHOOTING);
             case TEST_SHOOTING:
                 shootingSystem.warmUp(ShootingSystem.Target.POWER_SHOT);
-                powershotRoutine();
+                shootingSystem.shoot();
+                shootingSystem.shutDown();
                 newGameState(GameState.TEST_INTAKE);
             case TEST_INTAKE:
-//                intakeSystem.suck();
+                intake.suck();
+                intake.stop();
                 newGameState(GameState.TEST_VUFORIA);
             case TEST_VUFORIA:
                 vuforiaData();
@@ -42,15 +51,24 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
                 telemetry.update();
                 newGameState(GameState.TEST_ROADRUNNER);
             case TEST_ROADRUNNER:
-                Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
-                Vector2d negativeFirstPowerShotCoordinates = new Vector2d(-4 * Constants.fieldBoxWidth - (23.5f * 2 + 4.25f - ((44 * 10) / Constants.mmPerInch / 2)), Constants.powerShotY);
-                trajectory = Trajectories.getTrajectory(currentGameState, posEstimate);
+                TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(currentPosition);
+                trajectoryBuilder.strafeLeft(5);
                 if (trajectory != null) {
-                    roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
+                    roadRunnerDriveSystem.followTrajectory(trajectory);
+                    break;
                 }
+                trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(currentPosition);
+                trajectoryBuilder.strafeRight(5);
+                if (trajectory != null) {
+                    roadRunnerDriveSystem.followTrajectory(trajectory);
+                    break;
+                }
+                newGameState(GameState.COMPLETE);
+            case COMPLETE:
+                //TODO park the robot, shut down system, and release used resources
+                stop();
                 break;
         }
-        stop();
     }
 
     @Override
@@ -58,15 +76,6 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
         super.stop();
         if (tensorflow != null) {
             tensorflow.shutdown();
-        }
-    }
-
-    private void newGameState(GameState newGameState) {
-        currentGameState = newGameState;
-        Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
-        trajectory = Trajectories.getTrajectory(currentGameState, posEstimate);
-        if (trajectory != null) {
-            roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         }
     }
 }

@@ -4,11 +4,15 @@ import android.widget.Switch;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.components.Coordinates;
 import org.firstinspires.ftc.teamcode.GameState;
+import org.firstinspires.ftc.teamcode.components.IntakeSystem;
+import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
@@ -19,6 +23,9 @@ import static org.firstinspires.ftc.teamcode.Constants.powerShotY;
 
 @Autonomous(name = "AutonomousOpMode", group = "Autonomous")
 public class AutonomousSelfCheck extends AutonomousOpMode {
+
+    private Pose2d oldPosEstimate;
+    private IntakeSystem intake = new IntakeSystem(hardwareMap.get(DcMotor.class, "IntakeSystem"));
 
     @Override
     public void loop() {
@@ -32,11 +39,12 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
                 yeetSystem.place();
                 newGameState(GameState.TEST_SHOOTING);
             case TEST_SHOOTING:
-                shootingSystem.init(ShootingSystem.Target.POWER_SHOT);
-                powershotRoutine();
+                oldPosEstimate = roadRunnerDriveSystem.getPositionEstimate();
+                shootingSystem.warmUp(ShootingSystem.Target.POWER_SHOT);
+                shootingSystem.shoot();
                 newGameState(GameState.TEST_INTAKE);
             case TEST_INTAKE:
-                intakeSystem.suck();
+                intake.suck();
                 newGameState(GameState.TEST_VUFORIA);
             case TEST_VUFORIA:
                 vuforiaData();
@@ -49,15 +57,24 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
                 telemetry.update();
                 newGameState(GameState.TEST_ROADRUNNER);
             case TEST_ROADRUNNER:
-                Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
-                Vector2d negativeFirstPowerShotCoordinates = new Vector2d(-4 * fieldBoxWidth - (23.5f * 2 + 4.25f - ((44 * 10) / Constants.mmPerInch / 2)), powerShotY);
-                trajectory = Trajectories.getTrajectory(currentGameState, posEstimate);
+                TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(currentPosition);
+                trajectoryBuilder.strafeLeft(5);
                 if (trajectory != null) {
-                    roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
+                    roadRunnerDriveSystem.followTrajectory(trajectory);
+                    break;
                 }
+                trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(currentPosition);
+                trajectoryBuilder.strafeRight(5);
+                if (trajectory != null) {
+                    roadRunnerDriveSystem.followTrajectory(trajectory);
+                    break;
+                }
+                newGameState(GameState.COMPLETE);
+            case COMPLETE:
+                //TODO park the robot, shut down system, and release used resources
+                stop();
                 break;
         }
-        stop();
     }
 
     @Override
@@ -65,15 +82,6 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
         super.stop();
         if (tensorflow != null) {
             tensorflow.shutdown();
-        }
-    }
-
-    private void newGameState(GameState newGameState) {
-        currentGameState = newGameState;
-        Pose2d posEstimate = roadRunnerDriveSystem.getPositionEstimate();
-        trajectory = Trajectories.getTrajectory(currentGameState, posEstimate);
-        if (trajectory != null) {
-            roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         }
     }
 }

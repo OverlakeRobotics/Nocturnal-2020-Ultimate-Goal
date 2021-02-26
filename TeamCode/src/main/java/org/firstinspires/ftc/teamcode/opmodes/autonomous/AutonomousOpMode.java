@@ -117,7 +117,7 @@ public class AutonomousOpMode extends BaseOpMode {
      * Updates the state of the system and updates RoadRunner trajectory
      * @param newGameState to switch to
      */
-    private void newGameState(GameState newGameState) {
+    protected void newGameState(GameState newGameState) {
         currentGameState = newGameState;
         currentPosition = roadRunnerDriveSystem.getPositionEstimate();
         trajectory = Trajectories.getTrajectory(currentGameState, currentPosition);

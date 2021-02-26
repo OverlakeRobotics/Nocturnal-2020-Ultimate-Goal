@@ -66,7 +66,6 @@ public class Trajectories {
             case RETURN_TO_NEST:
                 trajectoryBuilder.lineToConstantHeading(Coordinates.PARKING_POSITION.getCoordinates());
                 break;
-
             default:
                 return null;
         }

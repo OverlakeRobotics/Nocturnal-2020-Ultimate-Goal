@@ -15,9 +15,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.teamcode.Constants.halfField;
-import static org.firstinspires.ftc.teamcode.Constants.mmPerInch;
-import static org.firstinspires.ftc.teamcode.Constants.mmTargetHeight;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.halfField;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.mmPerInch;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.mmTargetHeight;
 
 /** Teddy, trust my code, you blasphemer. */
 public class VuforiaSystem {

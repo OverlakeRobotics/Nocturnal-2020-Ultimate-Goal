@@ -30,7 +30,7 @@ public class IntakeSystem {
      */
     public void suck() {
         if (BaseOpMode.getRingCount() < 3) {
-            //TODO implement motor
+            //TODO implement suck ring
             BaseOpMode.addRingCount();
         }
     }

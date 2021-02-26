@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.helpers;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -6,8 +6,10 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 
 public class Constants {
 
-    private final static int CPS_STEP = 0x10000;
+    // Debugging captions
+    public static final String ROBOT_SYSTEM_ERROR = "ROBOTSYSTEMERROR";
 
+    private final static int CPS_STEP = 0x10000;
 
     public static double TICKS_PER_REV = 2400;
     public static double WHEEL_RADIUS = 1; // in

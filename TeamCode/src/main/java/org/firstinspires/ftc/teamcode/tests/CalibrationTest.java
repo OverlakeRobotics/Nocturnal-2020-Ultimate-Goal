@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.tests;
+package org.firstinspires.ftc.teamcode.tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -91,9 +91,10 @@ public class CalibrationTest extends BaseOpMode {
                 break;
 
             case TEST_INTAKE:
-                intakeSystem.initMotors();
-                intakeSystem.suck();
-                intakeSystem.stop();
+                // Intake system is moved to teleop only so no need to test this anymore
+//                intakeSystem.initMotors();
+//                intakeSystem.suck();
+//                intakeSystem.stop();
                 newGameState(GameState.TEST_YEET);
                 break;
 

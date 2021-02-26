@@ -15,12 +15,12 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 public class AutonomousOpMode extends BaseOpMode {
 
     // Variables
-    private GameState currentGameState;                         // Current GameState Machine GameState.
+    protected GameState currentGameState;                         // Current GameState Machine GameState.
     public static Tensorflow.SquareState targetRegion;
-    private boolean deliveredFirstWobble;
+    protected boolean deliveredFirstWobble;
 
     // Systems
-    private Tensorflow tensorflow;
+    protected Tensorflow tensorflow;
 
     @Override
     public void init() {

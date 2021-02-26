@@ -9,17 +9,16 @@ import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
 public class Trajectories {
 
-    private static Trajectory previousTrajectory = RoadRunnerDriveSystem.trajectoryBuilder(new Pose2d()).build();
-
     /**
      * Gets the trajectory for a given state
      * @param currentState to draw trajectory for
+     * @param posEstimate current position estimate
      * @return Trajectory for currentState
      */
     public static Trajectory getTrajectory(GameState currentState, Pose2d posEstimate) {
         //TODO Figure out the trajectories for each state, CODE REVIEW NEEDED
         //TODO figure out the initial movements of the robot from start
-        TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(previousTrajectory.end());
+        TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
         switch (currentState) {
             case DELIVER_WOBBLE:
                 switch (AutonomousOpMode.targetRegion) {
@@ -72,7 +71,6 @@ public class Trajectories {
                 return null;
         }
 
-        previousTrajectory = trajectoryBuilder.build();
-        return previousTrajectory;
+        return trajectoryBuilder.build();
     }
 }

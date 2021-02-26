@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.base;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.teamcode.GameState;
@@ -20,6 +22,7 @@ public abstract class BaseOpMode extends OpMode {
     private static final float mmPerInch = 25.4f;
     protected boolean trajectoryFinished;
     protected Pose2d currentPosition;
+    protected static int ringCount;
 
     // Systems
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
@@ -33,19 +36,37 @@ public abstract class BaseOpMode extends OpMode {
     public void init() {
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
+        ringCount = 3;
 
         currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
-
         vuforia = VuforiaSystem.getInstance();
 
         //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
         //Initialize RoadRunner
-//        roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
-//        roadRunnerDriveSystem.setPoseEstimate(currentPosition);
-//
-//        shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
-//        intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"));
-//        yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"));
+        try {
+            roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
+            roadRunnerDriveSystem.setPoseEstimate(currentPosition);
+        } catch (Exception e) {
+
+        }
+
+        try {
+            shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"), hardwareMap.get(Servo.class, "ShootingSystemServo"));
+        } catch (Exception e) {
+
+        }
+
+        try {
+            intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "IntakeSystem"));
+        } catch (Exception e) {
+
+        }
+
+        try {
+            yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"));
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
@@ -100,6 +121,28 @@ public abstract class BaseOpMode extends OpMode {
         shootingSystem.shoot();
     }
 
+    /**
+     * Gets the number of rings on the robot
+     * @return the number of rings on the robot
+     */
+    public static int getRingCount() {
+        return ringCount;
+    }
+
+    /**
+     * Adds a ring to the ring count
+     */
+    public static void addRingCount() {
+        ringCount++;
+    }
+
+    /**
+     * Subtracts a ring to the ring count
+     */
+    public static void subtractRingCount() {
+        ringCount--;
+    }
+
     @Override
     public void stop() {
         if (vuforia != null) {
@@ -107,7 +150,7 @@ public abstract class BaseOpMode extends OpMode {
         }
 
         if (shootingSystem != null) {
-            shootingSystem.stop();
+            shootingSystem.shutDown();
         }
 
         if (intakeSystem != null) {

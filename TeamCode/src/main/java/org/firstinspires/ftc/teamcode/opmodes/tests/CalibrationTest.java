@@ -95,7 +95,6 @@ public class CalibrationTest extends BaseOpMode {
                 intakeSystem.initMotors();
                 intakeSystem.suck();
                 intakeSystem.stop();
-                intakeSystem.getRingCount();
                 newGameState(GameState.TEST_YEET);
                 break;
 

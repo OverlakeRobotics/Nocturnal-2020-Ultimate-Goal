@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.teamcode.GameState;
-import org.firstinspires.ftc.teamcode.components.Coordinates;
-import org.firstinspires.ftc.teamcode.components.IntakeSystem;
+import org.firstinspires.ftc.teamcode.helpers.Constants;
+import org.firstinspires.ftc.teamcode.helpers.GameState;
+import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
@@ -29,7 +29,6 @@ public abstract class BaseOpMode extends OpMode {
     protected VuforiaSystem vuforia;
     protected Trajectory trajectory;
     protected ShootingSystem shootingSystem;
-    protected IntakeSystem intakeSystem;
     protected YeetSystem yeetSystem;
 
     @Override
@@ -47,25 +46,19 @@ public abstract class BaseOpMode extends OpMode {
             roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
             roadRunnerDriveSystem.setPoseEstimate(currentPosition);
         } catch (Exception e) {
-
+            telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
         }
 
         try {
             shootingSystem = new ShootingSystem(hardwareMap.get(DcMotor.class, "ShootingSystem"), hardwareMap.get(Servo.class, "ShootingSystemServo"));
         } catch (Exception e) {
-
-        }
-
-        try {
-            intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "IntakeSystem"));
-        } catch (Exception e) {
-
+            telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
         }
 
         try {
             yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"));
         } catch (Exception e) {
-
+            telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
         }
     }
 
@@ -151,10 +144,6 @@ public abstract class BaseOpMode extends OpMode {
 
         if (shootingSystem != null) {
             shootingSystem.shutDown();
-        }
-
-        if (intakeSystem != null) {
-            intakeSystem.stop();
         }
     }
 }

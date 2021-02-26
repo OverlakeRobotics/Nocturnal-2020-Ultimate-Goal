@@ -3,14 +3,14 @@ package org.firstinspires.ftc.teamcode.components;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.helpers.Constants;
 
 import java.util.EnumMap;
 
-import static org.firstinspires.ftc.teamcode.Constants.LEFT_CLOSED_POSITION;
-import static org.firstinspires.ftc.teamcode.Constants.LEFT_OPEN_POSITION;
-import static org.firstinspires.ftc.teamcode.Constants.RIGHT_CLOSED_POSITION;
-import static org.firstinspires.ftc.teamcode.Constants.RIGHT_OPEN_POSITION;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.LEFT_CLOSED_POSITION;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.LEFT_OPEN_POSITION;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.RIGHT_CLOSED_POSITION;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.RIGHT_OPEN_POSITION;
 
 public class YeetSystem {
 

@@ -106,7 +106,7 @@ public abstract class BaseOpMode extends OpMode {
      * Assumes shooter is set to State Powershot
      * @param shot number to be performed
      */
-    private void singlePowershot(GameState shot) {
+    protected void singlePowershot(GameState shot) {
         trajectory = Trajectories.getTrajectory(shot, currentPosition);
         trajectoryFinished = false;
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);

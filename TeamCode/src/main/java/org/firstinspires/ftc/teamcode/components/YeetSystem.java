@@ -17,17 +17,15 @@ public class YeetSystem {
     //TODO 2 Servos, arm to bottom right or robot, hardcode max and min angles for motor
 
     public enum Servos {
-        LEFT (LEFT_CLOSED_POSITION, LEFT_OPEN_POSITION, false), //values need to be changed
-        RIGHT (RIGHT_CLOSED_POSITION, RIGHT_OPEN_POSITION, false); //values need to be changed
+        LEFT (LEFT_CLOSED_POSITION, LEFT_OPEN_POSITION), //values need to be changed
+        RIGHT (RIGHT_CLOSED_POSITION, RIGHT_OPEN_POSITION); //values need to be changed
 
         private final double openPosition;
         private final double closedPosition;
-        private boolean closed;
 
-        Servos(double closedPosition, double openPosition, boolean closed) {
+        Servos(double closedPosition, double openPosition) {
             this.closedPosition = closedPosition;
             this.openPosition = openPosition;
-            this.closed = closed;
         }
 
         public double getOpenPosition() {
@@ -36,14 +34,6 @@ public class YeetSystem {
 
         public double getClosedPosition() {
             return closedPosition;
-        }
-
-        public boolean isClosed() {
-            return closed;
-        }
-
-        private void setLatched(boolean isClosed) {
-            closed = isClosed;
         }
     }
 
@@ -59,33 +49,39 @@ public class YeetSystem {
 
     public YeetSystem(DcMotor motor) { //constructor
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
-        init();
+        grab();
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    private void init() {
-        down();
-        release();
-    }
-
+    /**
+     * Places the wobble goal down and releases it
+     */
     public void place() {
-        down();
+        armDown();
         release();
     }
 
+    /**
+     * Yeets the wobble goal over the fence
+     */
     public void yeet() {
-        up();
+        pickup();
         release();
         // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
     }
 
+    /**
+     * Grabs the wobble goal and raises it to the up position
+     */
     public void pickup() {
         grab();
-        up();
+        armUp();
     }
 
-    private void up() {
-        grab();
+    /**
+     * Raises the arm to the up position
+     */
+    private void armUp() {
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         while (motor.getCurrentPosition() != UP_POSITION){
             motor.setPower(0.75);
@@ -93,7 +89,10 @@ public class YeetSystem {
         motor.setPower(0);
     }
 
-    private void down() {
+    /**
+     * Lowers the arm to the down position
+     */
+    private void armDown() {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (motor.getCurrentPosition() != DEFAULT) {
             motor.setTargetPosition(DEFAULT);
@@ -101,16 +100,18 @@ public class YeetSystem {
         motor.setPower(0.0);
     }
 
+    /**
+     * Closes the servos to grab the wobble goal
+     */
     private void grab() {
-        servoMap.forEach((name, servo) -> {
-            servo.setPosition(name.getClosedPosition());
-        });
+        servoMap.forEach((name, servo) -> servo.setPosition(name.getClosedPosition()));
     }
 
+    /**
+     * Opens the servos to release the wobble goal
+     */
     private void release() {
-        servoMap.forEach((name, servo) -> {
-            servo.setPosition(name.getOpenPosition());
-        });
+        servoMap.forEach((name, servo) -> servo.setPosition(name.getOpenPosition()));
     }
 }
 

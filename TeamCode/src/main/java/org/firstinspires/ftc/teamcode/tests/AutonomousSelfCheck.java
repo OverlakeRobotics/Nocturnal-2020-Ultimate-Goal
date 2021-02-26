@@ -29,7 +29,6 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
                 powershotRoutine();
                 newGameState(GameState.TEST_INTAKE);
             case TEST_INTAKE:
-                // Moved to teleop only, no need to test
 //                intakeSystem.suck();
                 newGameState(GameState.TEST_VUFORIA);
             case TEST_VUFORIA:

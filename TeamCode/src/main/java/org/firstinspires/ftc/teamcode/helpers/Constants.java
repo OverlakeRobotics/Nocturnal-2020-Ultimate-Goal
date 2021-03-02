@@ -92,6 +92,9 @@ public class Constants {
 
     //Shooter Constants
     public static final float powerShotY = 78;
+    // TODO, Find position values.
+    public static final double SHOOTING_SERVO_CLOSED_POSITION = 0;
+    public static final double SHOOTING_SERVO_OPEN_POSITION = 0;
 
     Vector2d negativeFirstPowerShotCoordinates = new Vector2d(-4 * fieldBoxWidth - (23.5f * 2 + 4.25f - ((44 * 10) / Constants.mmPerInch / 2)), powerShotY);
     public static final Vector2d firstPowerShotCoordinates = new Vector2d(4 * fieldBoxWidth - (23.5f * 2 + 4.25f - ((44 * 10) / mmPerInch / 2)), powerShotY);
@@ -99,8 +102,13 @@ public class Constants {
     public static final Vector2d thirdPowerShotCoordinates = new Vector2d(secondPowerShotCoordinates.getX() - 8.5, powerShotY);
 
     //YeetSystem
-    public static final double LEFT_CLOSED_POSITION = 0.715;
-    public static final double RIGHT_CLOSED_POSITION = 0.189;
-    public static final double LEFT_OPEN_POSITION = 0.446;
-    public static final double RIGHT_OPEN_POSITION = 0.456;
+    //TODO Change these numbers
+    public static final double ARM_MOTOR_NUM_REVOLUTIONS = 0.8; // THIS NEEDS TO BE CHANGED - the number is num of revolutions
+    public static final double ARM_MOTOR_UP_POSITION = Constants.TICKS_PER_REV * ARM_MOTOR_NUM_REVOLUTIONS;
+    public static final int ARM_MOTOR_DOWN_POSITION = 0; // this needs to be changed
+    public static final double ARM_MOTOR_RAW_POWER = 0.75;
+    public static final double LEFT_ARM_SERVO_CLOSED_POSITION = 0.715;
+    public static final double RIGHT_ARM_SERVO_CLOSED_POSITION = 0.189;
+    public static final double LEFT_ARM_SERVO_OPEN_POSITION = 0.446;
+    public static final double RIGHT_ARM_SERVO_OPEN_POSITION = 0.456;
 }

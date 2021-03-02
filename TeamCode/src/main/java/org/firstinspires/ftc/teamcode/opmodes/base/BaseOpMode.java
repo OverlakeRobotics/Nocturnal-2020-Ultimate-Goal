@@ -56,7 +56,7 @@ public abstract class BaseOpMode extends OpMode {
         }
 
         try {
-            yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"));
+            yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"), hardwareMap.get(Servo.class, "LeftArmServo"), hardwareMap.get(Servo.class, "RightArmServo"));
         } catch (Exception e) {
             telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
         }

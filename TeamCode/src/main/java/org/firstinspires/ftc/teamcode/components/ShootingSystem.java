@@ -4,34 +4,22 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
+
+import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_CLOSED_POSITION;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_OPEN_POSITION;
 
 public class ShootingSystem {
 
-    //TODO Find out powers for each goal
-    public enum Target {
-        POWER_SHOT (1.0),
-        TOWER_GOAL (1.0);
-
-        private final double power;
-        Target(double power) {
-            this.power = power;
-        }
-
-        double getPower() {
-            return power;
-        }
-    }
-
     public static final String TAG = "ShootingSystem";
 
+    // Systems
     private final DcMotor motor;
     private final Servo servo;
     private boolean servoClosed;
 
-    private static final double CLOSED_POSITION = 0; // TODO, Find position values.
-    private static final double OPEN_POSITION = 0;
-
+    // Target
     private Target currentTarget;
 
     public ShootingSystem(DcMotor motor, Servo servo) {
@@ -52,8 +40,8 @@ public class ShootingSystem {
         motor.setDirection(DcMotorSimple.Direction.REVERSE);
         setMotorPower(0);
 
-        // Servo
-        servo.setPosition(CLOSED_POSITION);
+        // Servos
+        servo.setPosition(SHOOTING_SERVO_CLOSED_POSITION);
         servoClosed = true;
     }
 
@@ -99,7 +87,7 @@ public class ShootingSystem {
      * Opens servo
      */
     private void open() {
-        servo.setPosition(OPEN_POSITION);
+        servo.setPosition(SHOOTING_SERVO_OPEN_POSITION);
         servoClosed = false;
     }
 
@@ -107,7 +95,7 @@ public class ShootingSystem {
      * Closes servo
      */
     private void close() {
-        servo.setPosition(CLOSED_POSITION);
+        servo.setPosition(SHOOTING_SERVO_CLOSED_POSITION);
         servoClosed = true;
     }
 }

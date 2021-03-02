@@ -1,17 +1,14 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
-import org.firstinspires.ftc.teamcode.components.ShootingSystem;
-import org.firstinspires.ftc.teamcode.components.Trajectories;
-import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
+import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
 @Autonomous(name = "AutonomousOpMode", group = "Autonomous")
@@ -34,7 +31,7 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
                 yeetSystem.place();
                 newGameState(GameState.TEST_SHOOTING);
             case TEST_SHOOTING:
-                shootingSystem.warmUp(ShootingSystem.Target.POWER_SHOT);
+                shootingSystem.warmUp(Target.POWER_SHOT);
                 shootingSystem.shoot();
                 shootingSystem.shutDown();
                 newGameState(GameState.TEST_INTAKE);

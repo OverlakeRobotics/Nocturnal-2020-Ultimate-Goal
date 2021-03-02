@@ -133,6 +133,15 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         setLocalizer(standardTrackingWheelLocalizer);
     }
 
+    public ArrayList<DcMotorEx> getMotors(){
+        ArrayList<DcMotorEx> list = new ArrayList<DcMotorEx>();
+        list.add(leftFront);
+        list.add(rightFront);
+        list.add(rightRear);
+        list.add(leftRear);
+        return list;
+    }
+
     public ArrayList<Double> getEncoders() {
         return new ArrayList<Double>(
                 Arrays.asList(standardTrackingWheelLocalizer.leftEncoderValue(),

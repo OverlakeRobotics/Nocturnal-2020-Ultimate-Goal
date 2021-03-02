@@ -24,5 +24,6 @@ public enum GameState {
     TEST_VUFORIA, //Pick up second wobble goal
     TEST_YEET,//Backup and park on line using vuforia
     TEST_TENSORFLOW,
+    TEST_ENCODERS,
     TERMINATE
 }

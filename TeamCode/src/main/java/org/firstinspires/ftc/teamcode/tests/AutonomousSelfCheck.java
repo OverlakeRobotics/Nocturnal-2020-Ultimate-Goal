@@ -19,6 +19,8 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
 
     private Pose2d oldPosEstimate;
     private IntakeSystem intake = new IntakeSystem(hardwareMap.get(DcMotor.class, "IntakeSystem"));
+    private boolean first = true;
+    TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(currentPosition);
 
     @Override
     public void loop() {
@@ -51,11 +53,14 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
                 telemetry.update();
                 newGameState(GameState.TEST_ROADRUNNER);
             case TEST_ROADRUNNER:
-                TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(currentPosition);
-                trajectoryBuilder.strafeLeft(5);
-                if (trajectory != null) {
-                    roadRunnerDriveSystem.followTrajectory(trajectory);
-                    break;
+                if (first) {
+                    trajectoryBuilder.strafeLeft(5);
+                    if (trajectory != null) {
+                        roadRunnerDriveSystem.followTrajectory(trajectory);
+                    }
+                    if (roadRunnerDriveSystem.update()){
+                        first = false;
+                    }
                 }
                 trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(currentPosition);
                 trajectoryBuilder.strafeRight(5);
@@ -63,7 +68,9 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
                     roadRunnerDriveSystem.followTrajectory(trajectory);
                     break;
                 }
-                newGameState(GameState.COMPLETE);
+                if (roadRunnerDriveSystem.update()) {
+                    newGameState(GameState.COMPLETE);
+                }
             case COMPLETE:
                 //TODO park the robot, shut down system, and release used resources
                 stop();

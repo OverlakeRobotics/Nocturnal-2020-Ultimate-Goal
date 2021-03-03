@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
+import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 @Autonomous(name = "AutonomousOpMode", group = "Autonomous")
@@ -72,7 +73,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
             case DRIVE_TO_SHOOTING_LOCATION:
                 //TODO drive to shooting location, start up shooter motor
-                shootingSystem.warmUp(ShootingSystem.Target.POWER_SHOT);
+                shootingSystem.warmUp(Target.POWER_SHOT);
                 newGameState(GameState.POWERSHOT);
                 break;
 

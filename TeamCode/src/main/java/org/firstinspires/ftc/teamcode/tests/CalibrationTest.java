@@ -95,16 +95,21 @@ public class CalibrationTest extends BaseOpMode {
 //                intakeSystem.initMotors();
 //                intakeSystem.suck();
 //                intakeSystem.stop();
-                newGameState(GameState.TEST_YEET);
+                newGameState(GameState.TEST_YEET_UP);
                 break;
 
-            case TEST_YEET:
+            case TEST_YEET_UP:
                 yeetSystem.pickup();
+                if (yeetSystem.updateUp()) {
+                    yeetSystem.powerDown();
+                    newGameState(GameState.TEST_YEET_DOWN);
+                }
+            case TEST_YEET_DOWN:
                 yeetSystem.place();
-                yeetSystem.yeet();
-                newGameState(GameState.TEST_VUFORIA);
-                break;
-
+                if (yeetSystem.updateDown()) {
+                    yeetSystem.powerDown();
+                    newGameState(GameState.TEST_VUFORIA);
+                }
             case TEST_VUFORIA:
                 newGameState(GameState.COMPLETE);
                 break;

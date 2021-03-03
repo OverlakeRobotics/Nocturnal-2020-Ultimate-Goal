@@ -19,10 +19,10 @@ import org.firstinspires.ftc.teamcode.components.YeetSystem;
 public abstract class BaseOpMode extends OpMode {
 
     // Variables
-    private static final float mmPerInch = 25.4f;
     protected boolean trajectoryFinished;
     protected Pose2d currentPosition;
     protected static int ringCount;
+    private boolean hasFired;
 
     // Systems
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
@@ -36,6 +36,7 @@ public abstract class BaseOpMode extends OpMode {
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
         ringCount = 3;
+        hasFired = false;
 
         currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
         vuforia = VuforiaSystem.getInstance();
@@ -76,10 +77,10 @@ public abstract class BaseOpMode extends OpMode {
         // only one of these two will be used
         if (translation != null) {
             telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                    translation.get(0) / Constants.mmPerInch, translation.get(1) / Constants.mmPerInch, translation.get(2) / Constants.mmPerInch);
         }
         telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                vuforia.getXOffset() / mmPerInch, vuforia.getYOffset() / mmPerInch, vuforia.getZOffset() / mmPerInch);
+                vuforia.getXOffset() / Constants.mmPerInch, vuforia.getYOffset() / Constants.mmPerInch, vuforia.getZOffset() / Constants.mmPerInch);
 
         if (translation != null) {
             telemetry.addLine("null");
@@ -110,8 +111,11 @@ public abstract class BaseOpMode extends OpMode {
         trajectory = Trajectories.getTrajectory(shot, currentPosition);
         trajectoryFinished = false;
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
-        while (!trajectoryFinished) trajectoryFinished = roadRunnerDriveSystem.update();
-        shootingSystem.shoot();
+        trajectoryFinished = roadRunnerDriveSystem.update();
+        if (trajectoryFinished) {
+            shootingSystem.shoot();
+            hasFired = true;
+        }
     }
 
     /**

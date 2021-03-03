@@ -23,11 +23,6 @@ public abstract class BaseOpMode extends OpMode {
     protected Pose2d currentPosition;
     protected static int ringCount;
 
-    // Power shots
-    private boolean fired1;
-    private boolean fired2;
-    private boolean fired3;
-
     // Systems
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
     protected VuforiaSystem vuforia;
@@ -40,9 +35,6 @@ public abstract class BaseOpMode extends OpMode {
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
         ringCount = 3;
-        fired1 = false;
-        fired2 = false;
-        fired3 = false;
 
         currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
         vuforia = VuforiaSystem.getInstance();
@@ -99,7 +91,6 @@ public abstract class BaseOpMode extends OpMode {
      * Powershot routine
      */
     protected void powershotRoutine() {
-
         switch (ringCount) {
             case 3:
                 singlePowershot(GameState.SHOOT1);
@@ -114,14 +105,13 @@ public abstract class BaseOpMode extends OpMode {
      * Assumes shooter is set to State Powershot
      * @param shot number to be performed
      */
-    private boolean singlePowershot(GameState shot) {
+    private void singlePowershot(GameState shot) {
         trajectory = Trajectories.getTrajectory(shot, currentPosition);
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         trajectoryFinished = roadRunnerDriveSystem.update();
         if (trajectoryFinished) {
             shootingSystem.shoot();
         }
-        return false;
     }
 
     /**

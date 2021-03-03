@@ -22,7 +22,11 @@ public abstract class BaseOpMode extends OpMode {
     protected boolean trajectoryFinished;
     protected Pose2d currentPosition;
     protected static int ringCount;
-    private boolean hasFired;
+
+    // Power shots
+    private boolean fired1;
+    private boolean fired2;
+    private boolean fired3;
 
     // Systems
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
@@ -36,7 +40,9 @@ public abstract class BaseOpMode extends OpMode {
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
         ringCount = 3;
-        hasFired = false;
+        fired1 = false;
+        fired2 = false;
+        fired3 = false;
 
         currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
         vuforia = VuforiaSystem.getInstance();
@@ -94,28 +100,41 @@ public abstract class BaseOpMode extends OpMode {
      */
     protected void powershotRoutine() {
         // Shoot 1
-        singlePowershot(GameState.SHOOT1);
+        if (!fired1) fired1 = singlePowershot(GameState.SHOOT1);
 
         // Shoot 2
-        singlePowershot(GameState.SHOOT2);
+        if (!fired2 && fired1) fired2 = singlePowershot(GameState.SHOOT2);
 
         // Shoot 3
-        singlePowershot(GameState.SHOOT3);
+        if (!fired3 && fired2 && fired1) fired3 = singlePowershot(GameState.SHOOT3);
     }
 
     /**
      * Assumes shooter is set to State Powershot
      * @param shot number to be performed
      */
-    private void singlePowershot(GameState shot) {
+    private boolean singlePowershot(GameState shot) {
         trajectory = Trajectories.getTrajectory(shot, currentPosition);
         trajectoryFinished = false;
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         trajectoryFinished = roadRunnerDriveSystem.update();
         if (trajectoryFinished) {
             shootingSystem.shoot();
-            hasFired = true;
+            switch (shot) {
+                case SHOOT1:
+                    fired1 = true;
+                    return fired1;
+
+                case SHOOT2:
+                    fired2 = true;
+                    return fired2;
+
+                case SHOOT3:
+                    fired3 = true;
+                    return fired3;
+            }
         }
+        return false;
     }
 
     /**

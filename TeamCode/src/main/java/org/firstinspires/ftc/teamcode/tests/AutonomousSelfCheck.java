@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
-@Autonomous(name = "AutonomousOpMode", group = "Autonomous")
+@Autonomous(name = "AutonomousSelfCheck", group = "Autonomous")
 public class AutonomousSelfCheck extends AutonomousOpMode {
 
     private Pose2d oldPosEstimate;

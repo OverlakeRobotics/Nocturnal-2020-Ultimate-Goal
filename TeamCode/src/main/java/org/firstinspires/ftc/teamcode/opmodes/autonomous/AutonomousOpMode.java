@@ -48,6 +48,7 @@ public class AutonomousOpMode extends BaseOpMode {
         vuforiaData();
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
+
         trajectoryFinished = roadRunnerDriveSystem.update();
 
         // Makes sure the trajectory is finished before doing anything else

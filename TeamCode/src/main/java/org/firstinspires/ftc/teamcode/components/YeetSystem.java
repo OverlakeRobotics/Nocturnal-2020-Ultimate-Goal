@@ -53,7 +53,7 @@ public class YeetSystem {
         while (motor.getCurrentPosition() != Constants.ARM_MOTOR_UP_POSITION) {
             motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
         }
-        motor.setPower(0);
+
     }
 
     /**

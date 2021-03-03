@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
-import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.helpers.Target;
@@ -81,8 +80,8 @@ public class AutonomousOpMode extends BaseOpMode {
 
                 case POWERSHOT:
                     //TODO do the powershot routine
-                    powershotRoutine();
-                    newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
+                    finishedPowerShots = powerShotRoutine();
+                    if (finishedPowerShots) newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
                     break;
 
                 case DRIVE_TO_SECOND_WOBBLE:

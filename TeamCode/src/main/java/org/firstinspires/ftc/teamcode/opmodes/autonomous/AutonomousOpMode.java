@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.Trajectories;
+import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 @Autonomous(name = "AutonomousOpMode", group = "Autonomous")
@@ -47,61 +48,63 @@ public class AutonomousOpMode extends BaseOpMode {
         vuforiaData();
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
+        trajectoryFinished = roadRunnerDriveSystem.update();
 
         // Makes sure the trajectory is finished before doing anything else
-        while (!trajectoryFinished) trajectoryFinished = roadRunnerDriveSystem.update();
-        switch (currentGameState) { // TODO: This monstrosity.
-            //TODO Do we need a trajectory as a field?
-            case INITIAL:
-                // Initialize
-                newGameState(GameState.DELIVER_WOBBLE);
-                break;
+        if (trajectoryFinished) {
+            switch (currentGameState) {
+               //TODO Do we need a trajectory as a field?
+                case INITIAL:
+                   // Initialize
+                    newGameState(GameState.DELIVER_WOBBLE);
+                    break;
 
-            case DELIVER_WOBBLE:
-                //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
-                yeetSystem.place();
-                newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
-                break;
+                case DELIVER_WOBBLE:
+                   //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
+                    yeetSystem.place();
+                    newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
+                    break;
 
-            case CALIBRATE_LOCATION:
-                //TODO calibrate location of robot using Vuforia and updates RoadRunner if Vuforia is more accurate
-                deliveredFirstWobble = true;
-                calibrateLocation();
-                newGameState(GameState.DRIVE_TO_SHOOTING_LOCATION);
-                break;
+                case CALIBRATE_LOCATION:
+                    //TODO calibrate location of robot using Vuforia and updates RoadRunner if Vuforia is more accurate
+                    deliveredFirstWobble = true;
+                    calibrateLocation();
+                    newGameState(GameState.DRIVE_TO_SHOOTING_LOCATION);
+                    break;
 
-            case DRIVE_TO_SHOOTING_LOCATION:
-                //TODO drive to shooting location, start up shooter motor
-                shootingSystem.warmUp(ShootingSystem.Target.POWER_SHOT);
-                newGameState(GameState.POWERSHOT);
-                break;
+                case DRIVE_TO_SHOOTING_LOCATION:
+                    //TODO drive to shooting location, start up shooter motor
+                    shootingSystem.warmUp(Target.POWER_SHOT);
+                    newGameState(GameState.POWERSHOT);
+                    break;
 
-            case POWERSHOT:
-                //TODO do the powershot routine
-                powershotRoutine();
-                newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
-                break;
+                case POWERSHOT:
+                    //TODO do the powershot routine
+                    powershotRoutine();
+                    newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
+                    break;
 
-            case DRIVE_TO_SECOND_WOBBLE:
-                //TODO drive to the second wobble goal
-                newGameState(GameState.COLLECT_SECOND_WOBBLE);
-                break;
+                case DRIVE_TO_SECOND_WOBBLE:
+                    //TODO drive to the second wobble goal
+                    newGameState(GameState.COLLECT_SECOND_WOBBLE);
+                    break;
 
-            case COLLECT_SECOND_WOBBLE:
-                //TODO position the robot and collect the second wobble goal
-                yeetSystem.pickup();
-                newGameState(GameState.DELIVER_WOBBLE);
-                break;
+                case COLLECT_SECOND_WOBBLE:
+                    //TODO position the robot and collect the second wobble goal
+                    yeetSystem.pickup();
+                    newGameState(GameState.DELIVER_WOBBLE);
+                    break;
 
-            case RETURN_TO_NEST:
-                //TODO drive back to nest
-                newGameState(GameState.COMPLETE);
-                break;
+                case RETURN_TO_NEST:
+                    //TODO drive back to nest
+                    newGameState(GameState.COMPLETE);
+                    break;
 
-            case COMPLETE:
-                //TODO park the robot, shut down system, and release used resources
-                stop();
-                break;
+                case COMPLETE:
+                    //TODO park the robot, shut down system, and release used resources
+                    stop();
+                    break;
+            }
         }
     }
 

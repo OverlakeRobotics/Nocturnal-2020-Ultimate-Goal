@@ -48,7 +48,7 @@ public class YeetSystem {
 
     public void releaseUp(){
         if (!updateUp()){
-            updateUp();
+            releaseUp();
         }
         else{
             release();

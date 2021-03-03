@@ -25,7 +25,7 @@ public class YeetSystem {
      */
     public void place() {
         armDown();
-        release();
+        releaseDown();
     }
 
     /**
@@ -33,9 +33,28 @@ public class YeetSystem {
      */
     public void yeet() {
         pickup();
-        release();
+        releaseUp();
         // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
     }
+
+    public void releaseDown(){
+        if (!updateDown()){
+            releaseDown();
+        }
+        else{
+            release();
+        }
+    }
+
+    public void releaseUp(){
+        if (!updateUp()){
+            updateUp();
+        }
+        else{
+            release();
+        }
+    }
+
 
     /**
      * Grabs the wobble goal and raises it to the up position

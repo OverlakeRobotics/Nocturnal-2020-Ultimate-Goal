@@ -99,14 +99,15 @@ public abstract class BaseOpMode extends OpMode {
      * Powershot routine
      */
     protected void powershotRoutine() {
-        // Shoot 1
-        if (!fired1) fired1 = singlePowershot(GameState.SHOOT1);
 
-        // Shoot 2
-        if (!fired2 && fired1) fired2 = singlePowershot(GameState.SHOOT2);
-
-        // Shoot 3
-        if (!fired3 && fired2 && fired1) fired3 = singlePowershot(GameState.SHOOT3);
+        switch (ringCount) {
+            case 3:
+                singlePowershot(GameState.SHOOT1);
+            case 2:
+                singlePowershot(GameState.SHOOT2);
+            case 1:
+                singlePowershot(GameState.SHOOT3);
+        }
     }
 
     /**
@@ -115,24 +116,10 @@ public abstract class BaseOpMode extends OpMode {
      */
     private boolean singlePowershot(GameState shot) {
         trajectory = Trajectories.getTrajectory(shot, currentPosition);
-        trajectoryFinished = false;
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         trajectoryFinished = roadRunnerDriveSystem.update();
         if (trajectoryFinished) {
             shootingSystem.shoot();
-            switch (shot) {
-                case SHOOT1:
-                    fired1 = true;
-                    return fired1;
-
-                case SHOOT2:
-                    fired2 = true;
-                    return fired2;
-
-                case SHOOT3:
-                    fired3 = true;
-                    return fired3;
-            }
         }
         return false;
     }

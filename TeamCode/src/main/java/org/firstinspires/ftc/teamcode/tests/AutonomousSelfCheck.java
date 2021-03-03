@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
+import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
@@ -25,11 +26,18 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
         int i = 0;
         switch (currentGameState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
-            case TEST_YEET:
+            case TEST_YEET_UP:
                 yeetSystem.pickup();
-                yeetSystem.yeet();
+                if (yeetSystem.updateUp()) {
+                    yeetSystem.powerDown();
+                    newGameState(GameState.TEST_YEET_DOWN);
+                }
+            case TEST_YEET_DOWN:
                 yeetSystem.place();
-                newGameState(GameState.TEST_SHOOTING);
+                if (yeetSystem.updateDown()) {
+                    yeetSystem.powerDown();
+                    newGameState(GameState.TEST_SHOOTING);
+                }
             case TEST_SHOOTING:
                 shootingSystem.warmUp(Target.POWER_SHOT);
                 shootingSystem.shoot();

@@ -45,15 +45,24 @@ public class YeetSystem {
         armUp();
     }
 
+    public boolean updateDown () {
+        return (motor.getCurrentPosition() >= Constants.ARM_MOTOR_DOWN_POSITION);
+    }
+
+    public boolean updateUp () {
+        return (motor.getCurrentPosition() <= Constants.ARM_MOTOR_UP_POSITION);
+    }
+
+    public void powerDown() {
+        motor.setPower(0.0);
+    }
+
     /**
      * Raises the arm to the up position
      */
     private void armUp() {
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while (motor.getCurrentPosition() != Constants.ARM_MOTOR_UP_POSITION) {
-            motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
-        }
-        motor.setPower(0);
+        motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
     }
 
     /**
@@ -61,10 +70,7 @@ public class YeetSystem {
      */
     private void armDown() {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (motor.getCurrentPosition() != Constants.ARM_MOTOR_DOWN_POSITION) {
-            motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
-        }
-        motor.setPower(0.0);
+        motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
     }
 
     /**

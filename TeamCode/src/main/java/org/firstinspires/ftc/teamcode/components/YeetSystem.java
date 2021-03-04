@@ -11,11 +11,13 @@ public class YeetSystem {
     private final DcMotor motor; //one motor that we need
     private Servo leftServo;
     private Servo rightServo;
+    private boolean isRunning;
 
     public YeetSystem(DcMotor motor, Servo leftServo, Servo rightServo) { //constructor
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
         this.leftServo = leftServo;
         this.rightServo = rightServo;
+        this.isRunning = false;
         grab();
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
@@ -24,35 +26,32 @@ public class YeetSystem {
      * Places the wobble goal down and releases it
      */
     public void place() {
-        armDown();
-        releaseDown();
+        if (!isRunning) {
+            armDown();
+            isRunning = true;
+        }
+        if (!isDown()){
+            release();
+            powerDown();
+            isRunning = false;
+        }
     }
 
     /**
      * Yeets the wobble goal over the fence
      */
     public void yeet() {
-        pickup();
-        releaseUp();
+        grab();
+        if (!isRunning) {
+            armUp();
+            isRunning = true;
+        }
+        if (!isUp()){
+            release();
+            powerDown();
+            isRunning = false;
+        }
         // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
-    }
-
-    public void releaseDown(){
-        if (!updateDown()){
-            releaseDown();
-        }
-        else{
-            release();
-        }
-    }
-
-    public void releaseUp(){
-        if (!updateUp()){
-            releaseUp();
-        }
-        else{
-            release();
-        }
     }
 
 
@@ -64,11 +63,11 @@ public class YeetSystem {
         armUp();
     }
 
-    public boolean updateDown () {
+    public boolean isDown () {
         return (motor.getCurrentPosition() >= Constants.ARM_MOTOR_DOWN_POSITION);
     }
 
-    public boolean updateUp () {
+    public boolean isUp () {
         return (motor.getCurrentPosition() <= Constants.ARM_MOTOR_UP_POSITION);
     }
 

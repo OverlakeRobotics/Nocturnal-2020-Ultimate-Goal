@@ -94,7 +94,7 @@ public abstract class BaseOpMode extends OpMode {
     /**
      * Powershot routine
      */
-    protected boolean powerShotRoutine() {
+    protected void powerShotRoutine() {
         switch (ringCount) {
             case 3:
                 singlePowerShot(GameState.SHOOT1);
@@ -103,7 +103,7 @@ public abstract class BaseOpMode extends OpMode {
             case 1:
                 singlePowerShot(GameState.SHOOT3);
         }
-        return ringCount == 0;
+        finishedPowerShots = ringCount == 0;
     }
 
     /**

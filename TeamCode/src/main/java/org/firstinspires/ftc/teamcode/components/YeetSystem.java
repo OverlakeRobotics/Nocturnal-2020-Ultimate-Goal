@@ -11,13 +11,12 @@ public class YeetSystem {
     private final DcMotor motor; //one motor that we need
     private Servo leftServo;
     private Servo rightServo;
-    private boolean isRunning;
+    private double targetPosition;
 
     public YeetSystem(DcMotor motor, Servo leftServo, Servo rightServo) { //constructor
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
         this.leftServo = leftServo;
         this.rightServo = rightServo;
-        this.isRunning = false;
         grab();
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
@@ -26,14 +25,11 @@ public class YeetSystem {
      * Places the wobble goal down and releases it
      */
     public void place() {
-        if (!isRunning) {
+        if (!isDown()) {
             armDown();
-            isRunning = true;
         }
         if (!isDown()){
             release();
-            powerDown();
-            isRunning = false;
         }
     }
 
@@ -41,26 +37,23 @@ public class YeetSystem {
      * Yeets the wobble goal over the fence
      */
     public void yeet() {
-        grab();
-        if (!isRunning) {
+        if (!isRunning()) {
+            grab();
             armUp();
-            isRunning = true;
         }
         if (!isUp()){
             release();
-            powerDown();
-            isRunning = false;
         }
         // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
     }
 
+    //Either Constants.ARM_MOTOR_UP_POSITION or Constants.ARM_MOTOR_DOWN_POSITION
+    public void setTargetPosition(double targetPosition) {
+        this.targetPosition = targetPosition;
+    }
 
-    /**
-     * Grabs the wobble goal and raises it to the up position
-     */
-    public void pickup() {
-        grab();
-        armUp();
+    public boolean isRunning () {
+        return (Math.abs(targetPosition - motor.getCurrentPosition()) > 50);
     }
 
     public boolean isDown () {
@@ -79,8 +72,11 @@ public class YeetSystem {
      * Raises the arm to the up position
      */
     private void armUp() {
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
+        if (isUp()) {
+            powerDown();
+        }
     }
 
     /**
@@ -89,6 +85,9 @@ public class YeetSystem {
     private void armDown() {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
+        if (isDown()){
+            powerDown();
+        }
     }
 
     /**

@@ -84,6 +84,11 @@ public class VuforiaSystem {
         redAllianceTarget.setLocation(OpenGLMatrix
                 .translation(0, 0, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+
+        OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener()).getUpdatedRobotLocation();
+        if (robotLocationTransform != null) {
+            lastLocation = robotLocationTransform;
+        }
     }
 
     public VuforiaLocalizer getVuforiaLocalizer() {
@@ -128,10 +133,6 @@ public class VuforiaSystem {
     }
 
     public VectorF vector() {
-        OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener()).getUpdatedRobotLocation();
-        if (robotLocationTransform != null) {
-            lastLocation = robotLocationTransform;
-        }
         if (lastLocation == null) {
             return null;
         }

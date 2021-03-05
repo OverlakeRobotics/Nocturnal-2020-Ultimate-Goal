@@ -25,8 +25,8 @@ public class YeetSystem {
      * Places the wobble goal down and releases it
      */
     public void place() {
-        if (!isDown()) {
-            armDown();
+        if (!isRunning()) {
+            moveArm();
         }
         if (!isDown()){
             release();
@@ -39,7 +39,7 @@ public class YeetSystem {
     public void yeet() {
         if (!isRunning()) {
             grab();
-            armUp();
+            moveArm();
         }
         if (!isUp()){
             release();
@@ -71,11 +71,14 @@ public class YeetSystem {
     /**
      * Raises the arm to the up position
      */
-    private void armUp() {
+    private void moveArm() {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
-        if (isUp()) {
-            powerDown();
+        if (motor.getCurrentPosition() > Constants.ARM_MOTOR_UP_POSITION / 2){
+            this.targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
+            motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
+        } else {
+            this.targetPosition = Constants.ARM_MOTOR_UP_POSITION;
+            motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
         }
     }
 

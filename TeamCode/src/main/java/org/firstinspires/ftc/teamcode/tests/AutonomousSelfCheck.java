@@ -27,17 +27,17 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
         switch (currentGameState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
             case TEST_YEET_UP:
-                yeetSystem.pickup();
-                if (yeetSystem.isUp()) {
-                    yeetSystem.powerDown();
-                    newGameState(GameState.TEST_YEET_DOWN);
-                }
+//                yeetSystem.pickup();
+//                if (yeetSystem.isUp()) {
+//                    yeetSystem.powerDown();
+//                    newGameState(GameState.TEST_YEET_DOWN);
+//                }
             case TEST_YEET_DOWN:
                 yeetSystem.place();
-                if (yeetSystem.isDown()) {
-                    yeetSystem.powerDown();
-                    newGameState(GameState.TEST_SHOOTING);
-                }
+//                if (yeetSystem.isDown()) {
+//                    yeetSystem.powerDown();
+//                    newGameState(GameState.TEST_SHOOTING);
+//                }
             case TEST_SHOOTING:
                 shootingSystem.warmUp(Target.POWER_SHOT);
                 shootingSystem.shoot();

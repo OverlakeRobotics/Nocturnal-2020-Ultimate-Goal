@@ -25,14 +25,28 @@ public class YeetSystem {
     /**
      * Places the wobble goal down and releases it
      */
-    public void place() {
+    public boolean place() {
+        moveArm(Constants.ARM_MOTOR_DOWN_POSITION);
+        return isComplete();
+    }
 
+    /**
+     * Picks up the wobble goal
+     */
+    public boolean pickUp() {
+        moveArm(Constants.ARM_MOTOR_UP_POSITION);
+        return isComplete();
     }
 
     /**
      * Yeets the wobble goal over the fence
      */
-    public void yeet() {
+    public boolean yeet() {
+        pickUp();
+        if (!isComplete()) {
+            release();
+        }
+        return isComplete();
         // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
     }
 
@@ -40,8 +54,15 @@ public class YeetSystem {
      * Checks if the system still needs to run
      * @return if the system still needs to run
      */
-    public boolean isRunning() {
+    public boolean isComplete() {
         return (Math.abs(targetPosition - motor.getCurrentPosition()) > 50);
+    }
+
+    /**
+     * Checks if motor is currently running
+     */
+    public boolean isRunning() {
+        return motor.getPower() != 0;
     }
 
     /**
@@ -56,8 +77,8 @@ public class YeetSystem {
      */
     private void moveArm(double targetPosition) {
         this.targetPosition = targetPosition;
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        if (!isRunning()) {
+        if (!isComplete() && !isRunning()) {
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             if (targetPosition == Constants.ARM_MOTOR_DOWN_POSITION) {
                 motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
             } else {

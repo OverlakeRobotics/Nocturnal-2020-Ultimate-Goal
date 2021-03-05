@@ -17,6 +17,7 @@ public class YeetSystem {
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
         this.leftServo = leftServo;
         this.rightServo = rightServo;
+        this.targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
         grab();
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
@@ -47,10 +48,7 @@ public class YeetSystem {
         // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
     }
 
-    //Either Constants.ARM_MOTOR_UP_POSITION or Constants.ARM_MOTOR_DOWN_POSITION
-    public void setTargetPosition(double targetPosition) {
-        this.targetPosition = targetPosition;
-    }
+
 
     public boolean isRunning () {
         return (Math.abs(targetPosition - motor.getCurrentPosition()) > 50);

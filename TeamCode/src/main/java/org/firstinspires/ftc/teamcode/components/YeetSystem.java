@@ -26,7 +26,7 @@ public class YeetSystem {
      */
     public void place() {
         if (!isRunning()) {
-            moveArm();
+            moveArm(Constants.ARM_MOTOR_DOWN_POSITION);
         }
         if (!isDown()){
             release();
@@ -39,7 +39,7 @@ public class YeetSystem {
     public void yeet() {
         if (!isRunning()) {
             grab();
-            moveArm();
+            moveArm(Constants.ARM_MOTOR_UP_POSITION);
         }
         if (!isUp()){
             release();
@@ -69,27 +69,17 @@ public class YeetSystem {
     }
 
     /**
-     * Raises the arm to the up position
+     * Moves arm either up or down
      */
-    private void moveArm() {
+    private void moveArm(double targetPosition) {
+        this.targetPosition = targetPosition;
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        if (motor.getCurrentPosition() > Constants.ARM_MOTOR_UP_POSITION / 2){
-            this.targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
-            motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
-        } else {
-            this.targetPosition = Constants.ARM_MOTOR_UP_POSITION;
-            motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
-        }
-    }
-
-    /**
-     * Lowers the arm to the down position
-     */
-    private void armDown() {
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
-        if (isDown()){
-            powerDown();
+        if (!isRunning()) {
+            if (targetPosition == Constants.ARM_MOTOR_DOWN_POSITION) {
+                motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
+            } else {
+                motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
+            }
         }
     }
 

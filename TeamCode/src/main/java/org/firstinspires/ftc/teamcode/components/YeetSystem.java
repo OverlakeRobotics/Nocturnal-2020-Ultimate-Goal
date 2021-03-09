@@ -11,7 +11,10 @@ public class YeetSystem {
     private final DcMotor motor; //one motor that we need
     private Servo leftServo;
     private Servo rightServo;
+
+    // Tracker fields
     private double targetPosition;
+    private boolean isRunning;
 
     public YeetSystem(DcMotor motor, Servo leftServo, Servo rightServo) { //constructor
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
@@ -27,7 +30,9 @@ public class YeetSystem {
     public boolean place() {
         if (!isComplete()) {
             moveArm(Constants.ARM_MOTOR_DOWN_POSITION);
+        } else {
             release();
+            powerDown();
         }
         return isComplete();
     }
@@ -39,6 +44,8 @@ public class YeetSystem {
         if (!isComplete()) {
             grab();
             moveArm(Constants.ARM_MOTOR_UP_POSITION);
+        } else {
+            powerDown();
         }
         return isComplete();
     }
@@ -67,6 +74,7 @@ public class YeetSystem {
      */
     private void powerDown() {
         motor.setPower(0.0);
+        isRunning = false;
     }
 
     /**
@@ -74,15 +82,14 @@ public class YeetSystem {
      */
     private void moveArm(double targetPosition) {
         this.targetPosition = targetPosition;
-        if (!isComplete()) {
+        if (!isRunning) {
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             if (targetPosition == Constants.ARM_MOTOR_DOWN_POSITION) {
                 motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
             } else {
                 motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
             }
-        } else {
-            powerDown();
+            isRunning = true;
         }
     }
 

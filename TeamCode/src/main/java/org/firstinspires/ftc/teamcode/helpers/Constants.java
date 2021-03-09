@@ -107,8 +107,8 @@ public class Constants {
     public static final double ARM_MOTOR_UP_POSITION = Constants.TICKS_PER_REV * ARM_MOTOR_NUM_REVOLUTIONS;
     public static final int ARM_MOTOR_DOWN_POSITION = 0; // this needs to be changed
     public static final double ARM_MOTOR_RAW_POWER = 0.75;
-    public static final double LEFT_ARM_SERVO_CLOSED_POSITION = 0.715;
-    public static final double RIGHT_ARM_SERVO_CLOSED_POSITION = 0.189;
-    public static final double LEFT_ARM_SERVO_OPEN_POSITION = 0.446;
-    public static final double RIGHT_ARM_SERVO_OPEN_POSITION = 0.456;
+    public static final double LEFT_ARM_SERVO_CLOSED_POSITION = 0.0;
+    public static final double RIGHT_ARM_SERVO_CLOSED_POSITION = 0.48;
+    public static final double LEFT_ARM_SERVO_OPEN_POSITION = 0.4;
+    public static final double RIGHT_ARM_SERVO_OPEN_POSITION = 0.1;
 }

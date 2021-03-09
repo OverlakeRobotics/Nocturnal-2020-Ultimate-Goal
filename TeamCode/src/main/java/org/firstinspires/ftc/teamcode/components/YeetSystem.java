@@ -47,9 +47,8 @@ public class YeetSystem {
      * Yeets the wobble goal over the fence
      */
     public boolean yeet() {
-        if (!isComplete()) {
-            grab();
-            moveArm(Constants.ARM_MOTOR_UP_POSITION);
+        if (pickUp()) {
+            release();
         }
         return isComplete();
         // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
@@ -59,15 +58,14 @@ public class YeetSystem {
      * Checks if the system still needs to run
      * @return if the system still needs to run
      */
-    public boolean isComplete() {
+    private boolean isComplete() {
         return (Math.abs(targetPosition - motor.getCurrentPosition()) < 50);
     }
-
 
     /**
      * Shuts down the motor
      */
-    public void powerDown() {
+    private void powerDown() {
         motor.setPower(0.0);
     }
 

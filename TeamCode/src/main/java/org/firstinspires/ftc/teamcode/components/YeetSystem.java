@@ -26,11 +26,9 @@ public class YeetSystem {
      * Places the wobble goal down and releases it
      */
     public boolean place() {
-        if (!isComplete()) {
+        if (isComplete()) {
             moveArm(Constants.ARM_MOTOR_DOWN_POSITION);
             release();
-        } else {
-            powerDown();
         }
         return isComplete();
     }
@@ -39,11 +37,9 @@ public class YeetSystem {
      * Picks up the wobble goal
      */
     public boolean pickUp() {
-        if (!isComplete()) {
+        if (isComplete()) {
             grab();
             moveArm(Constants.ARM_MOTOR_UP_POSITION);
-        } else {
-            powerDown();
         }
         return isComplete();
     }
@@ -52,7 +48,10 @@ public class YeetSystem {
      * Yeets the wobble goal over the fence
      */
     public boolean yeet() {
-
+        if (isComplete()) {
+            grab();
+            moveArm(Constants.ARM_MOTOR_UP_POSITION);
+        }
         return isComplete();
         // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
     }
@@ -85,6 +84,8 @@ public class YeetSystem {
             } else {
                 motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
             }
+        } else {
+            powerDown();
         }
     }
 

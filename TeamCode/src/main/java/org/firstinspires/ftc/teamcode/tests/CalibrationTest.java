@@ -99,15 +99,11 @@ public class CalibrationTest extends BaseOpMode {
                 break;
 
             case TEST_YEET_UP:
-                yeetSystem.pickup();
-                if (yeetSystem.updateUp()) {
-                    yeetSystem.powerDown();
+                if (yeetSystem.pickUp()) {
                     newGameState(GameState.TEST_YEET_DOWN);
                 }
             case TEST_YEET_DOWN:
-                yeetSystem.place();
-                if (yeetSystem.updateDown()) {
-                    yeetSystem.powerDown();
+                if (yeetSystem.place()) {
                     newGameState(GameState.TEST_VUFORIA);
                 }
             case TEST_VUFORIA:

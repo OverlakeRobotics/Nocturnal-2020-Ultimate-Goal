@@ -17,7 +17,6 @@ public class YeetSystem {
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
         this.leftServo = leftServo;
         this.rightServo = rightServo;
-        this.targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
         grab();
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
@@ -26,7 +25,7 @@ public class YeetSystem {
      * Places the wobble goal down and releases it
      */
     public boolean place() {
-        if (isComplete()) {
+        if (!isComplete()) {
             moveArm(Constants.ARM_MOTOR_DOWN_POSITION);
             release();
         }
@@ -37,7 +36,7 @@ public class YeetSystem {
      * Picks up the wobble goal
      */
     public boolean pickUp() {
-        if (isComplete()) {
+        if (!isComplete()) {
             grab();
             moveArm(Constants.ARM_MOTOR_UP_POSITION);
         }
@@ -48,7 +47,7 @@ public class YeetSystem {
      * Yeets the wobble goal over the fence
      */
     public boolean yeet() {
-        if (isComplete()) {
+        if (!isComplete()) {
             grab();
             moveArm(Constants.ARM_MOTOR_UP_POSITION);
         }

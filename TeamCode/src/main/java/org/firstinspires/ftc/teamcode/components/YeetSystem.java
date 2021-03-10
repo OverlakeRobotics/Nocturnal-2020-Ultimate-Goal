@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 
@@ -13,6 +14,7 @@ public class YeetSystem {
     private final DcMotor motor; //one motor that we need
     private final Servo leftServo;
     private final Servo rightServo;
+    private final ElapsedTime elapsedTime = new ElapsedTime();
 
     // Tracker fields
     private int targetPosition;
@@ -48,8 +50,12 @@ public class YeetSystem {
         } else if (!motor.isBusy()) {
             targetPosition = Constants.ARM_MOTOR_UP_POSITION;
             grab();
+
+            //TODO implement time wait
             massTimesGravity();
-            moveArm();
+            if (elapsedTime.milliseconds() > Constants.SERVO_WAIT_TIME) {
+                moveArm();
+            }
         }
         return false;
     }
@@ -70,11 +76,7 @@ public class YeetSystem {
      * Waits a certain amount of time in milliseconds
      */
     private void massTimesGravity() {
-        try {
-            TimeUnit.MILLISECONDS.sleep(Constants.SERVO_WAIT_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        elapsedTime.reset();
     }
 
     /**

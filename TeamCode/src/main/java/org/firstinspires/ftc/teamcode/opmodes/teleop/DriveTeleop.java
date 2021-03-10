@@ -35,12 +35,10 @@ public class DriveTeleop extends BaseOpMode {
         float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
         roadRunnerDriveSystem.slowDrive(gamepad1.left_trigger > 0.3f);
         roadRunnerDriveSystem.drive(rx, lx, ly);
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
-        if (intakeSystem != null) {
+        if (isSuckButtonDown) {
+            intakeSystem.suck();
+        }
+        else {
             intakeSystem.stop();
         }
     }

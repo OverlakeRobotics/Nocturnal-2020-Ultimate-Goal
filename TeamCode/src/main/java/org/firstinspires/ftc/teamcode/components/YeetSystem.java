@@ -20,7 +20,6 @@ public class YeetSystem {
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
         this.leftServo = leftServo;
         this.rightServo = rightServo;
-        grab();
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 

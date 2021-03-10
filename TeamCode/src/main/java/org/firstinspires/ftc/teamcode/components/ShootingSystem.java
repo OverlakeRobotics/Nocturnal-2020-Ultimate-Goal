@@ -12,8 +12,6 @@ import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_OP
 
 public class ShootingSystem {
 
-    public static final String TAG = "ShootingSystem";
-
     // Systems
     private final DcMotor motor;
     private final Servo servo;
@@ -32,11 +30,7 @@ public class ShootingSystem {
      * Initializes the motor and servo
      */
     private void initMotors() {
-        // Motor
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        //TODO Figure out what direction is forward and set it
+        // Motors
         motor.setDirection(DcMotorSimple.Direction.REVERSE);
         setMotorPower(0);
 

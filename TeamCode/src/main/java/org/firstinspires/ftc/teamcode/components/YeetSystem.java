@@ -2,19 +2,22 @@ package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.helpers.Constants;
+
+import java.util.concurrent.TimeUnit;
 
 public class YeetSystem {
 
     // Systems
     private final DcMotor motor; //one motor that we need
-    private Servo leftServo;
-    private Servo rightServo;
+    private final Servo leftServo;
+    private final Servo rightServo;
+    private final ElapsedTime elapsedTime = new ElapsedTime();
 
     // Tracker fields
-    private double targetPosition;
-    private boolean isRunning;
+    private int targetPosition;
 
     public YeetSystem(DcMotor motor, Servo leftServo, Servo rightServo) { //constructor
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
@@ -29,12 +32,12 @@ public class YeetSystem {
     public boolean placed() {
         if (isComplete()) {
             release();
-            powerDown();
-        } else if (!isRunning) {
+            return true;
+        } else if (!motor.isBusy()) {
             targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
             moveArm();
         }
-        return isComplete();
+        return false;
     }
 
     /**
@@ -43,14 +46,18 @@ public class YeetSystem {
     public boolean pickUp() {
         if (isComplete()) {
             powerDown();
-        } else if (!isRunning) {
+            return true;
+        } else if (!motor.isBusy()) {
             targetPosition = Constants.ARM_MOTOR_UP_POSITION;
-
-            //TODO test if the grab finishes before moveArm() is called
             grab();
-            moveArm();
+
+            //TODO implement time wait
+            massTimesGravity();
+            if (elapsedTime.milliseconds() > Constants.SERVO_WAIT_TIME) {
+                moveArm();
+            }
         }
-        return isComplete();
+        return false;
     }
 
     /**
@@ -66,6 +73,13 @@ public class YeetSystem {
     }
 
     /**
+     * Waits a certain amount of time in milliseconds
+     */
+    private void massTimesGravity() {
+        elapsedTime.reset();
+    }
+
+    /**
      * Checks if the system still needs to run
      * @return if the system still needs to run
      */
@@ -78,7 +92,6 @@ public class YeetSystem {
      */
     private void powerDown() {
         motor.setPower(0.0);
-        isRunning = false;
     }
 
     /**
@@ -86,12 +99,14 @@ public class YeetSystem {
      */
     private void moveArm() {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setTargetPosition(targetPosition);
         if (targetPosition == Constants.ARM_MOTOR_DOWN_POSITION) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
         } else {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
         }
-        isRunning = true;
     }
 
     /**

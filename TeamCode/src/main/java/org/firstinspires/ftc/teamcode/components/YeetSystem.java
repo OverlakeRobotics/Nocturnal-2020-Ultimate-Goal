@@ -26,12 +26,13 @@ public class YeetSystem {
     /**
      * Places the wobble goal down and releases it
      */
-    public boolean place() {
-        if (!isComplete()) {
-            moveArm(Constants.ARM_MOTOR_DOWN_POSITION);
-        } else {
+    public boolean placed() {
+        if (isComplete()) {
             release();
             powerDown();
+        } else if (!isRunning) {
+            targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
+            moveArm();
         }
         return isComplete();
     }
@@ -40,11 +41,14 @@ public class YeetSystem {
      * Picks up the wobble goal
      */
     public boolean pickUp() {
-        if (!isComplete()) {
-            grab();
-            moveArm(Constants.ARM_MOTOR_UP_POSITION);
-        } else {
+        if (isComplete()) {
             powerDown();
+        } else if (!isRunning) {
+            targetPosition = Constants.ARM_MOTOR_UP_POSITION;
+
+            //TODO test if the grab finishes before moveArm() is called
+            grab();
+            moveArm();
         }
         return isComplete();
     }
@@ -55,8 +59,9 @@ public class YeetSystem {
     public boolean yeet() {
         if (pickUp()) {
             release();
+            return true;
         }
-        return isComplete();
+        return false;
         // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
     }
 
@@ -79,17 +84,14 @@ public class YeetSystem {
     /**
      * Moves arm either up or down
      */
-    private void moveArm(double targetPosition) {
-        this.targetPosition = targetPosition;
-        if (!isRunning) {
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            if (targetPosition == Constants.ARM_MOTOR_DOWN_POSITION) {
-                motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
-            } else {
-                motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
-            }
-            isRunning = true;
+    private void moveArm() {
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if (targetPosition == Constants.ARM_MOTOR_DOWN_POSITION) {
+            motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
+        } else {
+            motor.setPower(Constants.ARM_MOTOR_RAW_POWER);
         }
+        isRunning = true;
     }
 
     /**

@@ -103,7 +103,7 @@ public class CalibrationTest extends BaseOpMode {
                     newGameState(GameState.TEST_YEET_DOWN);
                 }
             case TEST_YEET_DOWN:
-                if (yeetSystem.place()) {
+                if (yeetSystem.placed()) {
                     newGameState(GameState.TEST_VUFORIA);
                 }
             case TEST_VUFORIA:

@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
-import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
@@ -33,7 +32,7 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
 //                    newGameState(GameState.TEST_YEET_DOWN);
 //                }
             case TEST_YEET_DOWN:
-                yeetSystem.place();
+                yeetSystem.placed();
 //                if (yeetSystem.isDown()) {
 //                    yeetSystem.powerDown();
 //                    newGameState(GameState.TEST_SHOOTING);

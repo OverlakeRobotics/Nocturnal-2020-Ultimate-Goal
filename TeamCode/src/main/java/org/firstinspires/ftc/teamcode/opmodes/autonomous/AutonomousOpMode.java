@@ -62,7 +62,7 @@ public class AutonomousOpMode extends BaseOpMode {
                 case DELIVER_WOBBLE:
                    //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                     if (yeetSystem.placed()) {
-                        yeetSystem.pickUp();
+                        yeetSystem.pickedUp();
                         newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
                     }
                     break;
@@ -93,7 +93,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
                 case COLLECT_SECOND_WOBBLE:
                     //TODO position the robot and collect the second wobble goal
-                    if (yeetSystem.pickUp()) {
+                    if (yeetSystem.pickedUp()) {
                         newGameState(GameState.DELIVER_WOBBLE);
                     }
                     break;

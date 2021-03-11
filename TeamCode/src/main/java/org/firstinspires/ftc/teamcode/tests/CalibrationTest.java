@@ -99,7 +99,7 @@ public class CalibrationTest extends BaseOpMode {
                 break;
 
             case TEST_YEET_UP:
-                if (yeetSystem.pickUp()) {
+                if (yeetSystem.pickedUp()) {
                     newGameState(GameState.TEST_YEET_DOWN);
                 }
             case TEST_YEET_DOWN:

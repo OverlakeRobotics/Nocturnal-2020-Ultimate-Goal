@@ -4,57 +4,75 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 
 import java.util.concurrent.TimeUnit;
 
 public class YeetSystem {
 
+    // Arm State
+    private enum ArmState {
+        GRAB,
+        RELEASE,
+        MOVE_ARM
+    }
+
     // Systems
     private final DcMotor motor; //one motor that we need
     private final Servo leftServo;
     private final Servo rightServo;
-    private final ElapsedTime elapsedTime = new ElapsedTime();
+    private final Deadline elapsedTime;
 
     // Tracker fields
-    private int targetPosition;
+    private ArmState currentState;
+    private Integer targetPosition;
 
     public YeetSystem(DcMotor motor, Servo leftServo, Servo rightServo) { //constructor
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
         this.leftServo = leftServo;
         this.rightServo = rightServo;
+        elapsedTime = new Deadline(Constants.SERVO_WAIT_TIME, TimeUnit.MILLISECONDS);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     /**
      * Places the wobble goal down and releases it
+     * @return if the wobble goal is placed on the ground
      */
     public boolean placed() {
         if (isComplete()) {
             release();
+            targetPosition = null;
             return true;
         } else if (!motor.isBusy()) {
             targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
             moveArm();
+            currentState = ArmState.MOVE_ARM;
         }
         return false;
     }
 
     /**
      * Picks up the wobble goal
+     * @return If the wobble goal is picked up
      */
-    public boolean pickUp() {
+    public boolean pickedUp() {
+        //TODO check for the else if statement
         if (isComplete()) {
             powerDown();
+            targetPosition = null;
             return true;
         } else if (!motor.isBusy()) {
             targetPosition = Constants.ARM_MOTOR_UP_POSITION;
-            grab();
 
             //TODO implement time wait
-            massTimesGravity();
+            currentState = ArmState.GRAB;
+            grab();
+
             if (elapsedTime.milliseconds() > Constants.SERVO_WAIT_TIME) {
                 moveArm();
+                currentState = ArmState.MOVE_ARM;
             }
         }
         return false;
@@ -62,9 +80,10 @@ public class YeetSystem {
 
     /**
      * Yeets the wobble goal over the fence
+     * @return if the wobble goal is yeeted over the fence
      */
     public boolean yeet() {
-        if (pickUp()) {
+        if (pickedUp()) {
             release();
             return true;
         }
@@ -84,6 +103,9 @@ public class YeetSystem {
      * @return if the system still needs to run
      */
     private boolean isComplete() {
+        if (targetPosition == null) {
+            return false;
+        }
         return (Math.abs(targetPosition - motor.getCurrentPosition()) < 50);
     }
 

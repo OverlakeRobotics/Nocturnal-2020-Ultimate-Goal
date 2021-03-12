@@ -13,8 +13,8 @@ public class YeetSystem {
 
     // Arm State
     private enum ArmState {
+        IDLE,
         GRAB,
-        RELEASE,
         MOVE_ARM
     }
 
@@ -33,6 +33,7 @@ public class YeetSystem {
         this.leftServo = leftServo;
         this.rightServo = rightServo;
         elapsedTime = new Deadline(Constants.SERVO_WAIT_TIME, TimeUnit.MILLISECONDS);
+        currentState = ArmState.IDLE;
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
@@ -44,11 +45,11 @@ public class YeetSystem {
         if (isComplete()) {
             release();
             targetPosition = null;
+            currentState = ArmState.IDLE;
             return true;
         } else if (!motor.isBusy()) {
             targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
             moveArm();
-            currentState = ArmState.MOVE_ARM;
         }
         return false;
     }
@@ -62,17 +63,20 @@ public class YeetSystem {
         if (isComplete()) {
             powerDown();
             targetPosition = null;
+            currentState = ArmState.IDLE;
             return true;
         } else if (!motor.isBusy()) {
-            targetPosition = Constants.ARM_MOTOR_UP_POSITION;
 
             //TODO implement time wait
-            currentState = ArmState.GRAB;
-            grab();
+            if (currentState != ArmState.GRAB) {
+                currentState = ArmState.GRAB;
+                grab();
+                elapsedTime.reset();
+            }
 
-            if (elapsedTime.milliseconds() > Constants.SERVO_WAIT_TIME) {
+            if (elapsedTime.hasExpired()) {
+                targetPosition = Constants.ARM_MOTOR_UP_POSITION;
                 moveArm();
-                currentState = ArmState.MOVE_ARM;
             }
         }
         return false;
@@ -89,13 +93,6 @@ public class YeetSystem {
         }
         return false;
         // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
-    }
-
-    /**
-     * Waits a certain amount of time in milliseconds
-     */
-    private void massTimesGravity() {
-        elapsedTime.reset();
     }
 
     /**
@@ -120,6 +117,7 @@ public class YeetSystem {
      * Moves arm either up or down
      */
     private void moveArm() {
+        currentState = ArmState.MOVE_ARM;
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setTargetPosition(targetPosition);
         if (targetPosition == Constants.ARM_MOTOR_DOWN_POSITION) {

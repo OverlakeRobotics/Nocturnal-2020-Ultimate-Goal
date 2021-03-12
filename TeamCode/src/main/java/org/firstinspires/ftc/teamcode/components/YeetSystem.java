@@ -47,9 +47,11 @@ public class YeetSystem {
             targetPosition = null;
             currentState = ArmState.IDLE;
             return true;
-        } else if (!motor.isBusy()) {
-            targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
-            moveArm();
+        } else {
+            if (currentState == ArmState.IDLE) {
+                targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
+                moveArm();
+            }
         }
         return false;
     }
@@ -65,19 +67,39 @@ public class YeetSystem {
             targetPosition = null;
             currentState = ArmState.IDLE;
             return true;
-        } else if (!motor.isBusy()) {
+        } else {
+            switch (currentState) {
+                case IDLE:
+                    elapsedTime.reset();
+                    currentState = ArmState.GRAB;
+                    grab();
+                    break;
 
-            //TODO implement time wait
-            if (currentState != ArmState.GRAB) {
-                currentState = ArmState.GRAB;
-                grab();
-                elapsedTime.reset();
-            }
+                case GRAB:
+                    if (elapsedTime.hasExpired()) {
+                        currentState = ArmState.MOVE_ARM;
+                    }
+                    break;
 
-            if (elapsedTime.hasExpired()) {
-                targetPosition = Constants.ARM_MOTOR_UP_POSITION;
-                moveArm();
+                case MOVE_ARM:
+                    targetPosition = Constants.ARM_MOTOR_UP_POSITION;
+                    moveArm();
             }
+            //TODO top and bottom are 2 versions that should do the same thing
+//            if (currentState == ArmState.IDLE) {
+//
+//                //TODO implement time wait
+//                if (currentState != ArmState.GRAB) {
+//                    currentState = ArmState.GRAB;
+//                    grab();
+//                    elapsedTime.reset();
+//                }
+//
+//                if (elapsedTime.hasExpired()) {
+//                    targetPosition = Constants.ARM_MOTOR_UP_POSITION;
+//                    moveArm();
+//                }
+//            }
         }
         return false;
     }
@@ -117,7 +139,6 @@ public class YeetSystem {
      * Moves arm either up or down
      */
     private void moveArm() {
-        currentState = ArmState.MOVE_ARM;
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setTargetPosition(targetPosition);
         if (targetPosition == Constants.ARM_MOTOR_DOWN_POSITION) {

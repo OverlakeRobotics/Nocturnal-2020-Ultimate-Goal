@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.helpers;
 
 public enum Target {
     //TODO Find out powers for each goal
-    POWER_SHOT (1.0),
-    TOWER_GOAL (1.0);
+    POWER_SHOT (0.75),
+    TOWER_GOAL (0.81);
 
     private final double power;
     Target(double power) {

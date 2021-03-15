@@ -23,13 +23,14 @@ public abstract class BaseOpMode extends OpMode {
     protected Pose2d currentPosition;
 
     // Powershot
-    protected enum PowerShotState {
+    private enum PowerShotState {
+        IDLE,
         ONE,
         TWO,
         THREE,
         FINISHED
     }
-    protected PowerShotState powerShotState;
+    private PowerShotState powerShotState;
 
     // Systems
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
@@ -45,6 +46,7 @@ public abstract class BaseOpMode extends OpMode {
 
         currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
         vuforia = VuforiaSystem.getInstance();
+        powerShotState = PowerShotState.IDLE;
 
         //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
         //Initialize RoadRunner
@@ -97,21 +99,48 @@ public abstract class BaseOpMode extends OpMode {
     /**
      * Powershot routine
      */
-    protected void powerShotRoutine() {
+    protected boolean powerShotRoutine() {
+        switch (powerShotState) {
+            case IDLE:
+                powerShotState = PowerShotState.ONE;
+                break;
 
+            case ONE:
+                if (droveToPosition(GameState.SHOOT1)) {
+                    shootingSystem.shoot();
+                    powerShotState = PowerShotState.TWO;
+                }
+                break;
+
+            case TWO:
+                if (droveToPosition(GameState.SHOOT2)) {
+                    shootingSystem.shoot();
+                    powerShotState = PowerShotState.THREE;
+                }
+                break;
+
+            case THREE:
+                if (droveToPosition(GameState.SHOOT3)) {
+                    shootingSystem.shoot();
+                    powerShotState = PowerShotState.FINISHED;
+                }
+                break;
+
+            case FINISHED:
+                return true;
+        }
+        return false;
     }
 
     /**
      * Assumes shooter is set to State Powershot
      * @param shot number to be performed
      */
-    private void singlePowerShot(GameState shot) {
+    private boolean droveToPosition(GameState shot) {
         trajectory = Trajectories.getTrajectory(shot, currentPosition);
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         trajectoryFinished = roadRunnerDriveSystem.update();
-        if (trajectoryFinished) {
-            shootingSystem.shoot();
-        }
+        return trajectoryFinished;
     }
 
     @Override

@@ -82,8 +82,9 @@ public class AutonomousOpMode extends BaseOpMode {
 
                 case POWERSHOT:
                     //TODO do the powershot routine
-                    if (powerShotState == PowerShotState.FINISHED) newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
-                    else powerShotRoutine();
+                    if (powerShotRoutine()) {
+                        newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
+                    }
                     break;
 
                 case DRIVE_TO_SECOND_WOBBLE:

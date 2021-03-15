@@ -17,7 +17,6 @@ public class ShootingSystem {
     // Systems
     private final DcMotor motor;
     public final Servo servo;
-    private boolean servoClosed;
     private ElapsedTime elapsedTime;
 
     private enum ShootingState {
@@ -49,8 +48,7 @@ public class ShootingSystem {
         setMotorPower(0);
 
         // Servos
-        servo.setPosition(SHOOTING_SERVO_CLOSED_POSITION);
-        servoClosed = true;
+        close();
     }
 
     /**
@@ -68,7 +66,7 @@ public class ShootingSystem {
      */
     public void shutDown() {
         setMotorPower(0);
-        if (!servoClosed) close();
+        close();
     }
 
     //TODO implement the shooting method
@@ -116,7 +114,6 @@ public class ShootingSystem {
      */
     private void open() {
         servo.setPosition(SHOOTING_SERVO_OPEN_POSITION);
-        servoClosed = false;
     }
 
     /**
@@ -124,6 +121,5 @@ public class ShootingSystem {
      */
     private void close() {
         servo.setPosition(SHOOTING_SERVO_CLOSED_POSITION);
-        servoClosed = true;
     }
 }

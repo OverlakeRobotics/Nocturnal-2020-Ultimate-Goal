@@ -62,11 +62,8 @@ public class ShootingSystem {
      * Shoots a ring
      */
     public void shoot() {
-        if (BaseOpMode.getRingCount() > 0) {
-            open();
-            close();
-            BaseOpMode.subtractRingCount();
-        }
+        open();
+        close();
     }
 
     /**

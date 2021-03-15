@@ -21,10 +21,15 @@ public abstract class BaseOpMode extends OpMode {
     // Variables
     protected boolean trajectoryFinished;
     protected Pose2d currentPosition;
-    protected static int ringCount;
 
     // Powershot
-    protected boolean finishedPowerShots;
+    protected enum PowerShotState {
+        ONE,
+        TWO,
+        THREE,
+        FINISHED
+    }
+    protected PowerShotState powerShotState;
 
     // Systems
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
@@ -37,8 +42,6 @@ public abstract class BaseOpMode extends OpMode {
     public void init() {
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
-        ringCount = 3;
-        finishedPowerShots = false;
 
         currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
         vuforia = VuforiaSystem.getInstance();
@@ -95,15 +98,7 @@ public abstract class BaseOpMode extends OpMode {
      * Powershot routine
      */
     protected void powerShotRoutine() {
-        switch (ringCount) {
-            case 3:
-                singlePowerShot(GameState.SHOOT1);
-            case 2:
-                singlePowerShot(GameState.SHOOT2);
-            case 1:
-                singlePowerShot(GameState.SHOOT3);
-        }
-        finishedPowerShots = ringCount == 0;
+
     }
 
     /**
@@ -117,28 +112,6 @@ public abstract class BaseOpMode extends OpMode {
         if (trajectoryFinished) {
             shootingSystem.shoot();
         }
-    }
-
-    /**
-     * Gets the number of rings on the robot
-     * @return the number of rings on the robot
-     */
-    public static int getRingCount() {
-        return ringCount;
-    }
-
-    /**
-     * Adds a ring to the ring count
-     */
-    public static void addRingCount() {
-        ringCount++;
-    }
-
-    /**
-     * Subtracts a ring to the ring count
-     */
-    public static void subtractRingCount() {
-        ringCount--;
     }
 
     @Override

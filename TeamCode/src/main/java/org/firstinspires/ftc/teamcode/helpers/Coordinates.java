@@ -9,6 +9,9 @@ public enum Coordinates {
     // Starting position
     STARTING_POSITION(2.5 * Constants.fieldBoxWidth, 0.5 * Constants.fieldBoxWidth),
 
+    // Spline position to the left to avoid rings
+    DETOUR_POSITION(0.5 * Constants.fieldBoxWidth, 2 * Constants.fieldBoxWidth),
+
     // Wobblegoal dropoff boxes
     BOX_A(3.5 * Constants.fieldBoxWidth, 3.5 * Constants.fieldBoxWidth),
     BOX_B(2.5 * Constants.fieldBoxWidth, 4.5 * Constants.fieldBoxWidth),

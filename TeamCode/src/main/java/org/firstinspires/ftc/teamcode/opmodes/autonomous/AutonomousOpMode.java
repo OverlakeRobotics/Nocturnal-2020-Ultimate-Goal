@@ -56,7 +56,13 @@ public class AutonomousOpMode extends BaseOpMode {
                //TODO Do we need a trajectory as a field?
                 case INITIAL:
                    // Initialize
-                    newGameState(GameState.DELIVER_WOBBLE);
+                    newGameState(GameState.AVOID_RINGS);
+                    break;
+
+                case AVOID_RINGS:
+                    if (trajectoryFinished) {
+                        newGameState(GameState.DELIVER_WOBBLE);
+                    }
                     break;
 
                 case DELIVER_WOBBLE:

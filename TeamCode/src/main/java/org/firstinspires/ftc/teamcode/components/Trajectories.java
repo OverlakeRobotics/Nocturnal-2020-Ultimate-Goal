@@ -21,6 +21,10 @@ public class Trajectories {
         //TODO figure out the initial movements of the robot from start
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
         switch (currentState) {
+            case AVOID_RINGS:
+                trajectoryBuilder.lineToConstantHeading(Coordinates.DETOUR_POSITION.getCoordinates());
+                break;
+
             case DELIVER_WOBBLE:
                 switch (AutonomousOpMode.targetRegion) {
                     case BOX_A:

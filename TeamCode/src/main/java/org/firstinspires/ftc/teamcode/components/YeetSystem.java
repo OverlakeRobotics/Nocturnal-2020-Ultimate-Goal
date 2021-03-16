@@ -94,7 +94,7 @@ public class YeetSystem {
      * Yeets the wobble goal over the fence
      * @return if the wobble goal is yeeted over the fence
      */
-    public boolean yeet() {
+    public boolean yeeted() {
         if (pickedUp()) {
             release();
             return true;

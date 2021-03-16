@@ -3,12 +3,12 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
-import org.firstinspires.ftc.teamcode.components.Tensorflow;
-import org.firstinspires.ftc.teamcode.components.Trajectories;
 import org.firstinspires.ftc.teamcode.helpers.Target;
+import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 @Autonomous(name = "AutonomousOpMode", group = "Autonomous")

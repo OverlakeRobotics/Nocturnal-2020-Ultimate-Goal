@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.components;
+package org.firstinspires.ftc.teamcode.helpers;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 
-import org.firstinspires.ftc.teamcode.helpers.Coordinates;
-import org.firstinspires.ftc.teamcode.helpers.GameState;
+import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
 public class Trajectories {

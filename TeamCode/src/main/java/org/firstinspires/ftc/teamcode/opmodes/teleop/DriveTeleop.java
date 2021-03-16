@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 public class DriveTeleop extends BaseOpMode {
 
     // Variables
-    private boolean isSuckButtonDown;
+    private boolean suckButtonDown;
 
     // Systems
     private IntakeSystem intakeSystem;
@@ -35,7 +35,7 @@ public class DriveTeleop extends BaseOpMode {
         float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
         roadRunnerDriveSystem.slowDrive(gamepad1.left_trigger > 0.3f);
         roadRunnerDriveSystem.drive(rx, lx, ly);
-        if (isSuckButtonDown) {
+        if (suckButtonDown) {
             intakeSystem.suck();
         }
         else {

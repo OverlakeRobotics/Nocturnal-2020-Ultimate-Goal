@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
-import org.firstinspires.ftc.teamcode.components.Trajectories;
+import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 @Autonomous(name = "CalibrationOpMode", group = "Autonomous")

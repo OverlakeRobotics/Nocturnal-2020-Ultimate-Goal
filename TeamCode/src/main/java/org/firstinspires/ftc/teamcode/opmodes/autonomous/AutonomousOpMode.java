@@ -53,7 +53,6 @@ public class AutonomousOpMode extends BaseOpMode {
         // Makes sure the trajectory is finished before doing anything else
         if (trajectoryFinished) {
             switch (currentGameState) {
-               //TODO Do we need a trajectory as a field?
                 case INITIAL:
                    // Initialize
                     newGameState(GameState.AVOID_RINGS);
@@ -64,7 +63,6 @@ public class AutonomousOpMode extends BaseOpMode {
                     break;
 
                 case DELIVER_WOBBLE:
-                   //TODO Search for goal? Drop off goal? (something).dropWobbleGoal() maybe pickup wobblegoal
                     if (yeetSystem.placed()) {
                         yeetSystem.pickedUp();
                         newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
@@ -72,44 +70,33 @@ public class AutonomousOpMode extends BaseOpMode {
                     break;
 
                 case CALIBRATE_LOCATION:
-                    //TODO calibrate location of robot using Vuforia and updates RoadRunner if Vuforia is more accurate
                     deliveredFirstWobble = true;
                     calibrateLocation();
                     newGameState(GameState.DRIVE_TO_SHOOTING_LOCATION);
                     break;
 
                 case DRIVE_TO_SHOOTING_LOCATION:
-                    //TODO drive to shooting location, start up shooter motor
                     shootingSystem.warmUp(Target.POWER_SHOT);
                     newGameState(GameState.POWERSHOT);
                     break;
 
                 case POWERSHOT:
-                    //TODO do the powershot routine
                     if (powerShotRoutine()) {
-                        newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
+                        newGameState(GameState.DELIVER_SECOND_WOBBLE);
                     }
                     break;
 
-                case DRIVE_TO_SECOND_WOBBLE:
-                    //TODO drive to the second wobble goal
-                    newGameState(GameState.COLLECT_SECOND_WOBBLE);
-                    break;
-
-                case COLLECT_SECOND_WOBBLE:
-                    //TODO position the robot and collect the second wobble goal
+                case DELIVER_SECOND_WOBBLE:
                     if (yeetSystem.pickedUp()) {
                         newGameState(GameState.DELIVER_WOBBLE);
                     }
                     break;
 
                 case RETURN_TO_NEST:
-                    //TODO drive back to nest
                     newGameState(GameState.COMPLETE);
                     break;
 
                 case COMPLETE:
-                    //TODO park the robot, shut down system, and release used resources
                     stop();
                     break;
             }

@@ -62,7 +62,7 @@ public class YeetSystem {
      */
     public boolean pickedUp() {
         if (isComplete()) {
-            powerDown();
+            shutDown();
             targetPosition = null;
             currentState = ArmState.IDLE;
             return true;
@@ -116,7 +116,7 @@ public class YeetSystem {
     /**
      * Shuts down the motor
      */
-    private void powerDown() {
+    public void shutDown() {
         motor.setPower(0.0);
     }
 

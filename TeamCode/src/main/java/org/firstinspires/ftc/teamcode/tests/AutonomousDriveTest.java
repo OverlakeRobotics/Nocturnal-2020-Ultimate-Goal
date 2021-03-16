@@ -1,20 +1,13 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
-import org.firstinspires.ftc.teamcode.components.Tensorflow;
-import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
-import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
@@ -109,10 +102,10 @@ public class AutonomousDriveTest extends OpMode {
 
             case POWERSHOT:
                 //TODO do the powershot routine
-                newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
+                newGameState(GameState.DELIVER_SECOND_WOBBLE);
                 break;
 
-            case DRIVE_TO_SECOND_WOBBLE:
+            case DELIVER_SECOND_WOBBLE:
                 //TODO drive to the second wobble goal
                 newGameState(GameState.COLLECT_SECOND_WOBBLE);
                 break;

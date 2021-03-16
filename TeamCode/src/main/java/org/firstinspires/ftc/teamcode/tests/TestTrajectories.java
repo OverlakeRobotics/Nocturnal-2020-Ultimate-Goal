@@ -8,7 +8,6 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
-import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
 public class TestTrajectories {
 
@@ -45,7 +44,7 @@ public class TestTrajectories {
                 trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_3.getCoordinates());
                 break;
 
-            case DRIVE_TO_SECOND_WOBBLE:
+            case DELIVER_SECOND_WOBBLE:
                 trajectoryBuilder.lineToConstantHeading(Coordinates.SECOND_WOBBLE.getCoordinates());
                 break;
 

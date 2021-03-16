@@ -11,7 +11,7 @@ public enum GameState {
     SHOOT1, //Shoot the first power shot
     SHOOT2, //Shoot the first power shot
     SHOOT3, //Shoot the first power shot
-    DRIVE_TO_SECOND_WOBBLE, //Drive to second wobble goal
+    DELIVER_SECOND_WOBBLE, //Drive to second wobble goal
     COLLECT_SECOND_WOBBLE, //Pick up second wobble goal
     RETURN_TO_NEST,//Backup and park on line using vuforia
     COMPLETE,

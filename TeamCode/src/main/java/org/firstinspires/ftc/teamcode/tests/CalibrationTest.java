@@ -87,7 +87,7 @@ public class CalibrationTest extends BaseOpMode {
 
             case TEST_SHOOTING:
 
-                newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
+                newGameState(GameState.DELIVER_SECOND_WOBBLE);
                 break;
 
             case TEST_INTAKE:

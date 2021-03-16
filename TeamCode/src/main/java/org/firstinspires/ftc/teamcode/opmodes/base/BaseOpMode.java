@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 public abstract class BaseOpMode extends OpMode {
 
     // Variables
+    protected Trajectory trajectory;
     protected boolean trajectoryFinished;
     protected Pose2d currentPosition;
 
@@ -36,7 +37,6 @@ public abstract class BaseOpMode extends OpMode {
     // Systems
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
     protected VuforiaSystem vuforia;
-    protected Trajectory trajectory;
     protected ShootingSystem shootingSystem;
     protected YeetSystem yeetSystem;
 
@@ -50,7 +50,6 @@ public abstract class BaseOpMode extends OpMode {
         powerShotState = PowerShotState.IDLE;
 
         //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
-        //Initialize RoadRunner
         try {
             roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
             roadRunnerDriveSystem.setPoseEstimate(currentPosition);
@@ -99,6 +98,7 @@ public abstract class BaseOpMode extends OpMode {
 
     /**
      * Powershot routine
+     * @return if all 3 powershots have been fired
      */
     protected boolean powerShotRoutine() {
         switch (powerShotState) {
@@ -107,21 +107,21 @@ public abstract class BaseOpMode extends OpMode {
                 break;
 
             case ONE:
-                if (droveToPosition(GameState.SHOOT1)) {
+                if (atShootingPosition(GameState.SHOOT1)) {
                     shootingSystem.shoot();
                     powerShotState = PowerShotState.TWO;
                 }
                 break;
 
             case TWO:
-                if (droveToPosition(GameState.SHOOT2)) {
+                if (atShootingPosition(GameState.SHOOT2)) {
                     shootingSystem.shoot();
                     powerShotState = PowerShotState.THREE;
                 }
                 break;
 
             case THREE:
-                if (droveToPosition(GameState.SHOOT3)) {
+                if (atShootingPosition(GameState.SHOOT3)) {
                     shootingSystem.shoot();
                     powerShotState = PowerShotState.FINISHED;
                 }
@@ -137,7 +137,7 @@ public abstract class BaseOpMode extends OpMode {
      * Assumes shooter is set to State Powershot
      * @param shot number to be performed
      */
-    private boolean droveToPosition(GameState shot) {
+    private boolean atShootingPosition(GameState shot) {
         trajectory = Trajectories.getTrajectory(shot, currentPosition);
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         trajectoryFinished = roadRunnerDriveSystem.update();
@@ -152,6 +152,10 @@ public abstract class BaseOpMode extends OpMode {
 
         if (shootingSystem != null) {
             shootingSystem.shutDown();
+        }
+
+        if (yeetSystem != null) {
+            yeetSystem.shutDown();
         }
     }
 }

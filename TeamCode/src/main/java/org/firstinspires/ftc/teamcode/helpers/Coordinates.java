@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.helpers;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
-import org.firstinspires.ftc.teamcode.helpers.Constants;
-
 public enum Coordinates {
     //TODO check and correct these coordinates
     // Starting position

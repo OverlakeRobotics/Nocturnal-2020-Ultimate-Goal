@@ -93,8 +93,8 @@ public class Constants {
     //Shooter Constants
     public static final float powerShotY = 78;
     // TODO, Find position values.
-    public static final double SHOOTING_SERVO_CLOSED_POSITION = 0.5;
-    public static final double SHOOTING_SERVO_OPEN_POSITION = 0.7;
+    public static final double SHOOTING_SERVO_IDLE_POSITION = 0.5;
+    public static final double SHOOTING_SERVO_SHOOT_POSITION = 0.7;
 
     Vector2d negativeFirstPowerShotCoordinates = new Vector2d(-4 * fieldBoxWidth - (23.5f * 2 + 4.25f - ((44 * 10) / Constants.mmPerInch / 2)), powerShotY);
     public static final Vector2d firstPowerShotCoordinates = new Vector2d(4 * fieldBoxWidth - (23.5f * 2 + 4.25f - ((44 * 10) / mmPerInch / 2)), powerShotY);

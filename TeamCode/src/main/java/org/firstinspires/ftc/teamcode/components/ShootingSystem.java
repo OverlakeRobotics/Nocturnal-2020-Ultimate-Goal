@@ -1,17 +1,15 @@
 package org.firstinspires.ftc.teamcode.components;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.helpers.Target;
 
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SERVO_WAIT_TIME;
-import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_CLOSED_POSITION;
-import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_OPEN_POSITION;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_IDLE_POSITION;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_SHOOT_POSITION;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.TICKS_PER_REV;
 
 public class ShootingSystem {
@@ -19,7 +17,7 @@ public class ShootingSystem {
     // Systems
     private final DcMotorEx motor;
     public final Servo servo;
-    private ElapsedTime elapsedTime;
+    private final ElapsedTime elapsedTime;
 
     private enum ShootingState {
         IDLE,
@@ -27,14 +25,14 @@ public class ShootingSystem {
         CLOSE
     }
 
-    private ShootingState shootingState;
+    private ShootingState currentShootingState;
 
     // Target
     private Target currentTarget;
 
     public ShootingSystem(DcMotorEx motor, Servo servo) {
         elapsedTime = new ElapsedTime();
-        shootingState = ShootingState.IDLE;
+        currentShootingState = ShootingState.IDLE;
 
         this.motor = motor;
         this.servo = servo;
@@ -50,7 +48,7 @@ public class ShootingSystem {
         setMotorRpm(0);
 
         // Servos
-        close();
+        servoIdle();
     }
 
     /**
@@ -62,41 +60,40 @@ public class ShootingSystem {
         setMotorRpm(currentTarget.getRpm());
     }
 
-    //TODO implement stop shooter
     /**
      * Shuts down the shooter
      */
     public void shutDown() {
         setMotorRpm(0);
-        close();
+        servoIdle();
     }
 
-    //TODO implement the shooting method
+    //TODO Code Review
     /**
      * Shoots a ring
      */
     public boolean shoot() {
-        switch (shootingState) {
+        switch (currentShootingState) {
             case IDLE:
                 elapsedTime.reset();
-                shootingState = ShootingState.OPEN;
-                open();
+                currentShootingState = ShootingState.OPEN;
+                servoShoot();
                 break;
+
             case OPEN:
                 if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
                     elapsedTime.reset();
-                    close();
-                    shootingState = ShootingState.CLOSE;
+                    servoIdle();
+                    currentShootingState = ShootingState.CLOSE;
                 }
                 break;
-            case CLOSE:
 
+            case CLOSE:
                 if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
                     elapsedTime.reset();
-                    shootingState = ShootingState.IDLE;
+                    currentShootingState = ShootingState.IDLE;
                 }
                 return true;
-
         }
 
         return false;
@@ -111,16 +108,16 @@ public class ShootingSystem {
     }
 
     /**
-     * Opens servo
+     * Moves servo to push ring into the motor
      */
-    private void open() {
-        servo.setPosition(SHOOTING_SERVO_OPEN_POSITION);
+    private void servoShoot() {
+        servo.setPosition(SHOOTING_SERVO_SHOOT_POSITION);
     }
 
     /**
-     * Closes servo
+     * Resets servo to be ready for the next shot
      */
-    private void close() {
-        servo.setPosition(SHOOTING_SERVO_CLOSED_POSITION);
+    private void servoIdle() {
+        servo.setPosition(SHOOTING_SERVO_IDLE_POSITION);
     }
 }

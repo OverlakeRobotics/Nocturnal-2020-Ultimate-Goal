@@ -1,21 +1,24 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SERVO_WAIT_TIME;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_CLOSED_POSITION;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_OPEN_POSITION;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.TICKS_PER_REV;
 
 public class ShootingSystem {
 
     // Systems
-    private final DcMotor motor;
+    private final DcMotorEx motor;
     public final Servo servo;
     private boolean servoClosed;
     private ElapsedTime elapsedTime;
@@ -31,7 +34,7 @@ public class ShootingSystem {
     // Target
     private Target currentTarget;
 
-    public ShootingSystem(DcMotor motor, Servo servo) {
+    public ShootingSystem(DcMotorEx motor, Servo servo) {
         elapsedTime = new ElapsedTime();
         shootingState = ShootingState.IDLE;
 
@@ -46,7 +49,7 @@ public class ShootingSystem {
     private void initMotors() {
         // Motors
         motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        setMotorPower(0);
+        setMotorRpm(0);
 
         // Servos
         servo.setPosition(SHOOTING_SERVO_CLOSED_POSITION);
@@ -59,7 +62,7 @@ public class ShootingSystem {
      */
     public void warmUp(Target target) {
         currentTarget = target;
-        setMotorPower(currentTarget.getPower());
+        setMotorRpm(currentTarget.getRpm());
     }
 
     //TODO implement stop shooter
@@ -67,7 +70,7 @@ public class ShootingSystem {
      * Shuts down the shooter
      */
     public void shutDown() {
-        setMotorPower(0);
+        setMotorRpm(0);
         if (!servoClosed) close();
     }
 
@@ -105,10 +108,10 @@ public class ShootingSystem {
 
     /**
      * Method to set motor power manually rather than using given constants
-     * @param power the motor will be set to
+     * @param rpm the motor will be set to
      */
-    private void setMotorPower(double power) {
-        motor.setPower(power);
+    private void setMotorRpm(double rpm) {
+        motor.setVelocity(rpm / 60.0 * TICKS_PER_REV);
     }
 
     /**

@@ -2,15 +2,15 @@ package org.firstinspires.ftc.teamcode.helpers;
 
 public enum Target {
     //TODO Find out powers for each goal
-    POWER_SHOT (0.75),
-    TOWER_GOAL (0.81);
+    POWER_SHOT (1000),
+    TOWER_GOAL (1000);
 
-    private final double power;
-    Target(double power) {
-        this.power = power;
+    private final double rpm;
+    Target(double rpm) {
+        this.rpm = rpm;
     }
 
-    public double getPower() {
-        return power;
+    public double getRpm() {
+        return rpm;
     }
 }

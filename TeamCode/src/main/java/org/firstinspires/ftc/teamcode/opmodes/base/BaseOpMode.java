@@ -22,10 +22,16 @@ public abstract class BaseOpMode extends OpMode {
     // Variables
     protected boolean trajectoryFinished;
     protected Pose2d currentPosition;
-    protected static int ringCount;
 
     // Powershot
-    protected boolean finishedPowerShots;
+    private enum PowerShotState {
+        IDLE,
+        ONE,
+        TWO,
+        THREE,
+        FINISHED
+    }
+    private PowerShotState powerShotState;
 
     // Systems
     protected RoadRunnerDriveSystem roadRunnerDriveSystem;
@@ -38,11 +44,10 @@ public abstract class BaseOpMode extends OpMode {
     public void init() {
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
-        ringCount = 3;
-        finishedPowerShots = false;
 
         currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
         vuforia = VuforiaSystem.getInstance();
+        powerShotState = PowerShotState.IDLE;
 
         //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
         //Initialize RoadRunner
@@ -95,51 +100,48 @@ public abstract class BaseOpMode extends OpMode {
     /**
      * Powershot routine
      */
-    protected void powerShotRoutine() {
-        switch (ringCount) {
-            case 3:
-                singlePowerShot(GameState.SHOOT1);
-            case 2:
-                singlePowerShot(GameState.SHOOT2);
-            case 1:
-                singlePowerShot(GameState.SHOOT3);
+    protected boolean powerShotRoutine() {
+        switch (powerShotState) {
+            case IDLE:
+                powerShotState = PowerShotState.ONE;
+                break;
+
+            case ONE:
+                if (droveToPosition(GameState.SHOOT1)) {
+                    shootingSystem.shoot();
+                    powerShotState = PowerShotState.TWO;
+                }
+                break;
+
+            case TWO:
+                if (droveToPosition(GameState.SHOOT2)) {
+                    shootingSystem.shoot();
+                    powerShotState = PowerShotState.THREE;
+                }
+                break;
+
+            case THREE:
+                if (droveToPosition(GameState.SHOOT3)) {
+                    shootingSystem.shoot();
+                    powerShotState = PowerShotState.FINISHED;
+                }
+                break;
+
+            case FINISHED:
+                return true;
         }
-        finishedPowerShots = ringCount == 0;
+        return false;
     }
 
     /**
      * Assumes shooter is set to State Powershot
      * @param shot number to be performed
      */
-    private void singlePowerShot(GameState shot) {
+    private boolean droveToPosition(GameState shot) {
         trajectory = Trajectories.getTrajectory(shot, currentPosition);
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         trajectoryFinished = roadRunnerDriveSystem.update();
-        if (trajectoryFinished) {
-            shootingSystem.shoot();
-        }
-    }
-
-    /**
-     * Gets the number of rings on the robot
-     * @return the number of rings on the robot
-     */
-    public static int getRingCount() {
-        return ringCount;
-    }
-
-    /**
-     * Adds a ring to the ring count
-     */
-    public static void addRingCount() {
-        ringCount++;
-    }
-
-    /**
-     * Subtracts a ring to the ring count
-     */
-    public static void subtractRingCount() {
-        ringCount--;
+        return trajectoryFinished;
     }
 
     @Override

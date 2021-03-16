@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.helpers.Target;
-import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SERVO_WAIT_TIME;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_CLOSED_POSITION;
@@ -20,7 +19,6 @@ public class ShootingSystem {
     // Systems
     private final DcMotorEx motor;
     public final Servo servo;
-    private boolean servoClosed;
     private ElapsedTime elapsedTime;
 
     private enum ShootingState {
@@ -52,8 +50,7 @@ public class ShootingSystem {
         setMotorRpm(0);
 
         // Servos
-        servo.setPosition(SHOOTING_SERVO_CLOSED_POSITION);
-        servoClosed = true;
+        close();
     }
 
     /**
@@ -71,7 +68,7 @@ public class ShootingSystem {
      */
     public void shutDown() {
         setMotorRpm(0);
-        if (!servoClosed) close();
+        close();
     }
 
     //TODO implement the shooting method
@@ -98,7 +95,6 @@ public class ShootingSystem {
                     elapsedTime.reset();
                     shootingState = ShootingState.IDLE;
                 }
-                BaseOpMode.subtractRingCount();
                 return true;
 
         }
@@ -119,7 +115,6 @@ public class ShootingSystem {
      */
     private void open() {
         servo.setPosition(SHOOTING_SERVO_OPEN_POSITION);
-        servoClosed = false;
     }
 
     /**
@@ -127,6 +122,5 @@ public class ShootingSystem {
      */
     private void close() {
         servo.setPosition(SHOOTING_SERVO_CLOSED_POSITION);
-        servoClosed = true;
     }
 }

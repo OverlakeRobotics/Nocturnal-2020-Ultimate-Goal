@@ -56,6 +56,10 @@ public class AutonomousOpMode extends BaseOpMode {
                //TODO Do we need a trajectory as a field?
                 case INITIAL:
                    // Initialize
+                    newGameState(GameState.AVOID_RINGS);
+                    break;
+
+                case AVOID_RINGS:
                     newGameState(GameState.DELIVER_WOBBLE);
                     break;
 
@@ -82,8 +86,9 @@ public class AutonomousOpMode extends BaseOpMode {
 
                 case POWERSHOT:
                     //TODO do the powershot routine
-                    if (finishedPowerShots) newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
-                    else powerShotRoutine();
+                    if (powerShotRoutine()) {
+                        newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
+                    }
                     break;
 
                 case DRIVE_TO_SECOND_WOBBLE:

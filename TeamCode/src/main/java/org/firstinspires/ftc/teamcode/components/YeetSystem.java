@@ -14,7 +14,8 @@ public class YeetSystem {
     private enum ArmState {
         IDLE,
         GRAB,
-        MOVE_ARM
+        START_ARM,
+        MOVING_ARM
     }
 
     // Systems
@@ -32,8 +33,8 @@ public class YeetSystem {
         this.leftServo = leftServo;
         this.rightServo = rightServo;
         elapsedTime = new Deadline(Constants.SERVO_WAIT_TIME, TimeUnit.MILLISECONDS);
-        currentState = ArmState.IDLE;
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        currentState = ArmState.IDLE;
     }
 
     /**
@@ -46,11 +47,11 @@ public class YeetSystem {
             targetPosition = null;
             currentState = ArmState.IDLE;
             return true;
-        } else {
-            if (currentState == ArmState.IDLE) {
-                targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
-                moveArm();
-            }
+        }
+
+        if (currentState == ArmState.IDLE) {
+            targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
+            moveArm();
         }
         return false;
     }
@@ -60,45 +61,31 @@ public class YeetSystem {
      * @return If the wobble goal is picked up
      */
     public boolean pickedUp() {
-        //TODO check for the else if statement
         if (isComplete()) {
             powerDown();
             targetPosition = null;
             currentState = ArmState.IDLE;
             return true;
-        } else {
-            switch (currentState) {
-                case IDLE:
-                    elapsedTime.reset();
-                    currentState = ArmState.GRAB;
-                    grab();
-                    break;
+        }
 
-                case GRAB:
-                    if (elapsedTime.hasExpired()) {
-                        currentState = ArmState.MOVE_ARM;
-                    }
-                    break;
+        switch (currentState) {
+            case IDLE:
+                elapsedTime.reset();
+                currentState = ArmState.GRAB;
+                grab();
+                break;
 
-                case MOVE_ARM:
-                    targetPosition = Constants.ARM_MOTOR_UP_POSITION;
-                    moveArm();
-            }
-            //TODO top and bottom are 2 versions that should do the same thing
-//            if (currentState == ArmState.IDLE) {
-//
-//                //TODO implement time wait
-//                if (currentState != ArmState.GRAB) {
-//                    currentState = ArmState.GRAB;
-//                    grab();
-//                    elapsedTime.reset();
-//                }
-//
-//                if (elapsedTime.hasExpired()) {
-//                    targetPosition = Constants.ARM_MOTOR_UP_POSITION;
-//                    moveArm();
-//                }
-//            }
+            case GRAB:
+                if (elapsedTime.hasExpired()) {
+                    currentState = ArmState.START_ARM;
+                }
+                break;
+
+            case START_ARM:
+                targetPosition = Constants.ARM_MOTOR_UP_POSITION;
+                moveArm();
+                currentState = ArmState.MOVING_ARM;
+                break;
         }
         return false;
     }
@@ -113,7 +100,6 @@ public class YeetSystem {
             return true;
         }
         return false;
-        // [TODO, AC] figure this out because if you release it it'll just fall rather than yeet.
     }
 
     /**

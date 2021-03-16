@@ -60,9 +60,7 @@ public class AutonomousOpMode extends BaseOpMode {
                     break;
 
                 case AVOID_RINGS:
-                    if (trajectoryFinished) {
-                        newGameState(GameState.DELIVER_WOBBLE);
-                    }
+                    newGameState(GameState.DELIVER_WOBBLE);
                     break;
 
                 case DELIVER_WOBBLE:

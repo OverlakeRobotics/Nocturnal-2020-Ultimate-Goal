@@ -56,24 +56,24 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     public Mode mode;
 
-    private PIDFController turnController;
+    private final PIDFController turnController;
     private MotionProfile turnProfile;
     private double turnStart;
 
     private static DriveConstraints constraints;
-    private TrajectoryFollower follower;
+    private final TrajectoryFollower follower;
 
-    private List<Pose2d> poseHistory;
+    private final List<Pose2d> poseHistory;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
-    private List<DcMotorEx> motors;
+    private final DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    private final List<DcMotorEx> motors;
 
     private Pose2d lastPoseOnTurn;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
-    private StandardTrackingWheelLocalizer standardTrackingWheelLocalizer;
+    private final StandardTrackingWheelLocalizer standardTrackingWheelLocalizer;
     private boolean mSlowDrive;
     private boolean mPathComplete = false;
     public static final double SLOW_DRIVE_COEFF = 0.4;

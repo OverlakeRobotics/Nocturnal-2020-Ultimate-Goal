@@ -115,6 +115,23 @@ public class YeetSystem {
         return (Math.abs(targetPosition - motor.getCurrentPosition()) < 50 && motor.getVelocity() < 20);
     }
 
+    public boolean isGrabbed(){
+        if (leftServo.getPosition() == Constants.LEFT_ARM_SERVO_CLOSED_POSITION && rightServo.getPosition() == Constants.RIGHT_ARM_SERVO_CLOSED_POSITION){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public boolean isOpen(){
+        if (leftServo.getPosition() == Constants.LEFT_ARM_SERVO_OPEN_POSITION && rightServo.getPosition() == Constants.RIGHT_ARM_SERVO_OPEN_POSITION){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     /**
      * Shuts down the motor
      */
@@ -140,7 +157,7 @@ public class YeetSystem {
     /**
      * Closes the servos to grab the wobble goal
      */
-    private void grab() {
+    public void grab() {
         leftServo.setPosition(Constants.LEFT_ARM_SERVO_CLOSED_POSITION);
         rightServo.setPosition(Constants.RIGHT_ARM_SERVO_CLOSED_POSITION);
     }
@@ -148,8 +165,9 @@ public class YeetSystem {
     /**
      * Opens the servos to release the wobble goal
      */
-    private void release() {
+    public void release() {
         leftServo.setPosition(Constants.LEFT_ARM_SERVO_OPEN_POSITION);
         rightServo.setPosition(Constants.RIGHT_ARM_SERVO_OPEN_POSITION);
     }
 }
+

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.components.IntakeSystem;
+import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
@@ -15,6 +16,7 @@ public class DriveTeleop extends BaseOpMode {
 
     // Systems
     private IntakeSystem intakeSystem;
+    private YeetSystem yeetSystem;
 
     @Override
     public void init() {
@@ -41,5 +43,19 @@ public class DriveTeleop extends BaseOpMode {
         else {
             intakeSystem.stop();
         }
+
+        if (gamepad1.a){
+            if (yeetSystem.isOpen()){
+                yeetSystem.grab();
+            }
+            else if (yeetSystem.isGrabbed()){
+                yeetSystem.release();
+            }
+            else{
+
+            }
+        }
+
+
     }
 }

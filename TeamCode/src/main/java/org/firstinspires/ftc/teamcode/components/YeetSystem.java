@@ -19,7 +19,7 @@ public class YeetSystem {
     }
 
     // Systems
-    private final DcMotor motor; //one motor that we need
+    public final DcMotor motor; //one motor that we need
     private final Servo leftServo;
     private final Servo rightServo;
     private final Deadline elapsedTime;

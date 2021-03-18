@@ -19,12 +19,12 @@ public class ShootingSystem {
     public final Servo servo;
     private final ElapsedTime elapsedTime;
 
+    // ShootingState
     private enum ShootingState {
         IDLE,
         OPEN,
         CLOSE
     }
-
     private ShootingState currentShootingState;
 
     // Target

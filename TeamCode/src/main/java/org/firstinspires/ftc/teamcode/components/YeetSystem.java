@@ -93,18 +93,6 @@ public class YeetSystem {
     }
 
     /**
-     * Yeets the wobble goal over the fence
-     * @return if the wobble goal is yeeted over the fence
-     */
-    public boolean yeeted() {
-        if (pickedUp()) {
-            release();
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Checks if the system still needs to run
      * @return if the system still needs to run
      */
@@ -115,23 +103,6 @@ public class YeetSystem {
         return (Math.abs(targetPosition - motor.getCurrentPosition()) < 50 && motor.getVelocity() < 20);
     }
 
-    public boolean isGrabbed(){
-        if (leftServo.getPosition() == Constants.LEFT_ARM_SERVO_CLOSED_POSITION && rightServo.getPosition() == Constants.RIGHT_ARM_SERVO_CLOSED_POSITION){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
-    public boolean isOpen(){
-        if (leftServo.getPosition() == Constants.LEFT_ARM_SERVO_OPEN_POSITION && rightServo.getPosition() == Constants.RIGHT_ARM_SERVO_OPEN_POSITION){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
     /**
      * Shuts down the motor
      */

@@ -59,6 +59,7 @@ public class AutonomousOpMode extends BaseOpMode {
                     break;
 
                 case AVOID_RINGS:
+                    roadRunnerDriveSystem.turnAsync(-Math.PI / 2);
                     newGameState(GameState.DELIVER_WOBBLE);
                     break;
 

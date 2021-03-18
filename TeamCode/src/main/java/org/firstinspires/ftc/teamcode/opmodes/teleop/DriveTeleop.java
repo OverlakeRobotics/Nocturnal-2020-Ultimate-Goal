@@ -18,7 +18,6 @@ public class DriveTeleop extends BaseOpMode {
 
     // Systems
     private IntakeSystem intakeSystem;
-    private YeetSystem yeetSystem;
     private boolean up;
     private boolean down;
 
@@ -27,7 +26,6 @@ public class DriveTeleop extends BaseOpMode {
         super.init();
         try {
             intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "IntakeSystem"));
-            yeetSystem = new YeetSystem(hardwareMap.get(DcMotorEx.class, "YeetSystem"),hardwareMap.get(Servo.class, "YeetSystemLeft"), hardwareMap.get(Servo.class, "YeetSystemRight"));
         } catch (Exception e) {
             telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
         }
@@ -42,39 +40,13 @@ public class DriveTeleop extends BaseOpMode {
         float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
         roadRunnerDriveSystem.slowDrive(gamepad1.left_trigger > 0.3f);
         roadRunnerDriveSystem.drive(rx, lx, ly);
+
         if (suckButtonDown) {
             intakeSystem.suck();
         }
         else {
             intakeSystem.stop();
         }
-
-        if (gamepad1.a){
-            if (yeetSystem.isOpen()){
-                yeetSystem.grab();
-            }
-            else if (yeetSystem.isGrabbed()){
-                yeetSystem.release();
-            }
-            else{
-
-            }
-        }
-
-        if (gamepad1.dpad_up && !up) {
-            yeetSystem.motor.setTargetPosition(yeetSystem.motor.getCurrentPosition() + 1);
-            up = true;
-        } else if (!gamepad1.right_bumper) {
-            up = false;
-        }
-
-        if (gamepad1.dpad_down && !down) {
-            yeetSystem.motor.setTargetPosition(yeetSystem.motor.getCurrentPosition() - 1);
-            down = true;
-        } else if (!gamepad1.left_bumper) {
-            down = false;
-        }
-
 
     }
 }

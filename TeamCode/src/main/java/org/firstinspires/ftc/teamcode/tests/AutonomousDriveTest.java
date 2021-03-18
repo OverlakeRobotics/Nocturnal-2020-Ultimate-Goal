@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.tests;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
+import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
@@ -25,7 +27,8 @@ public class AutonomousDriveTest extends OpMode {
     // Systems
 //    protected RoadRunnerDriveSystem roadRunnerDriveSystem;
 //    protected YeetSystem yeetSystem;
-    ShootingSystem shootingSystem;
+    protected ShootingSystem shootingSystem;
+    protected YeetSystem yeetSystem;
     protected ElapsedTime elapsedTime;
 
     @Override
@@ -46,7 +49,7 @@ public class AutonomousDriveTest extends OpMode {
 
         shootingSystem = new ShootingSystem(hardwareMap.get(DcMotorEx.class, "ShootingSystem"), hardwareMap.get(Servo.class, "ShootingSystemServo"));
 
-//        yeetSystem = new YeetSystem(hardwareMap.get(DcMotor.class, "YeetSystem"), hardwareMap.get(Servo.class, "LeftArmServo"), hardwareMap.get(Servo.class, "RightArmServo"));
+        yeetSystem = new YeetSystem(hardwareMap.get(DcMotorEx.class, "YeetSystem"), hardwareMap.get(Servo.class, "LeftArmServo"), hardwareMap.get(Servo.class, "RightArmServo"));
         newGameState(GameState.INITIAL);
     }
 
@@ -77,12 +80,10 @@ public class AutonomousDriveTest extends OpMode {
             case INITIAL:
                 // Initialize
                 newGameState(GameState.DELIVER_WOBBLE);
-                elapsedTime.reset();
                 break;
 
             case DELIVER_WOBBLE:
-                shootingSystem.warmUp(Target.POWER_SHOT);
-                if (elapsedTime.seconds() > 2) {
+                if (yeetSystem.pickedUp()) {
                     elapsedTime.reset();
                     newGameState(GameState.CALIBRATE_LOCATION);
                 }
@@ -90,14 +91,15 @@ public class AutonomousDriveTest extends OpMode {
                 break;
 
             case CALIBRATE_LOCATION:
-                shootingSystem.warmUp(Target.POWER_SHOT);
-                if (shootingSystem.shoot()) {
-                    newGameState(GameState.COMPLETE);
+                if (elapsedTime.seconds() > 2) {
+                    newGameState(GameState.DRIVE_TO_SHOOTING_LOCATION);
                 }
                 break;
 
             case DRIVE_TO_SHOOTING_LOCATION:
-
+                if (yeetSystem.placed()) {
+                    newGameState(GameState.COMPLETE);
+                }
                 break;
 
             case POWERSHOT:

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
@@ -19,7 +20,7 @@ public class YeetSystem {
     }
 
     // Systems
-    private final DcMotor motor; //one motor that we need
+    private final DcMotorEx motor; //one motor that we need
     private final Servo leftServo;
     private final Servo rightServo;
     private final Deadline elapsedTime;
@@ -28,13 +29,14 @@ public class YeetSystem {
     private ArmState currentState;
     private Integer targetPosition;
 
-    public YeetSystem(DcMotor motor, Servo leftServo, Servo rightServo) { //constructor
+    public YeetSystem(DcMotorEx motor, Servo leftServo, Servo rightServo) { //constructor
         this.motor = motor; //setting ArmSystem motor to whatever motor that is
         this.leftServo = leftServo;
         this.rightServo = rightServo;
         elapsedTime = new Deadline(Constants.SERVO_WAIT_TIME, TimeUnit.MILLISECONDS);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         currentState = ArmState.IDLE;
+        release();
     }
 
     /**
@@ -110,7 +112,7 @@ public class YeetSystem {
         if (targetPosition == null) {
             return false;
         }
-        return (Math.abs(targetPosition - motor.getCurrentPosition()) < 50);
+        return (Math.abs(targetPosition - motor.getCurrentPosition()) < 50 && motor.getVelocity() < 20);
     }
 
     /**
@@ -124,8 +126,8 @@ public class YeetSystem {
      * Moves arm either up or down
      */
     private void moveArm() {
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setTargetPosition(targetPosition);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if (targetPosition == Constants.ARM_MOTOR_DOWN_POSITION) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);

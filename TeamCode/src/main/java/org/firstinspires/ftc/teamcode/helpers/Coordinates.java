@@ -4,19 +4,19 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 public enum Coordinates {
     //TODO check and correct these coordinates
-    // Starting position
-    STARTING_POSITION(2.5 * Constants.fieldBoxWidth, 0.5 * Constants.fieldBoxWidth),
+    // Starting position adjust for starging at back wall
+    STARTING_POSITION(2.5 * Constants.tileWidth, 0.5 * Constants.tileWidth),
 
     // Spline position to the left to avoid rings
-    DETOUR_POSITION(0.5 * Constants.fieldBoxWidth, 2 * Constants.fieldBoxWidth),
+    DETOUR_POSITION(0.5 * Constants.tileWidth, 2 * Constants.tileWidth),
 
     // Wobblegoal dropoff boxes
-    BOX_A(3.5 * Constants.fieldBoxWidth, 3.5 * Constants.fieldBoxWidth),
-    BOX_B(2.5 * Constants.fieldBoxWidth, 4.5 * Constants.fieldBoxWidth),
-    BOX_C(3.5 * Constants.fieldBoxWidth, 5.5 * Constants.fieldBoxWidth),
+    BOX_A(3.5 * Constants.tileWidth, 3.5 * Constants.tileWidth),
+    BOX_B(2.5 * Constants.tileWidth, 4.5 * Constants.tileWidth),
+    BOX_C(3.5 * Constants.tileWidth, 5.5 * Constants.tileWidth),
 
     //Calibration
-    CALIBRATION(2.5 * Constants.fieldBoxWidth, 3 * Constants.fieldBoxWidth),
+    CALIBRATION(2.5 * Constants.tileWidth, 3 * Constants.tileWidth),
 
     // Powershot
     POWERSHOT_1(Constants.firstPowerShotCoordinates.getX(), Constants.firstPowerShotCoordinates.getY()),
@@ -24,10 +24,10 @@ public enum Coordinates {
     POWERSHOT_3(Constants.thirdPowerShotCoordinates.getX(), Constants.thirdPowerShotCoordinates.getY()),
 
     // Second wobble
-    SECOND_WOBBLE(2.5 * Constants.fieldBoxWidth, Constants.fieldBoxWidth),
+    SECOND_WOBBLE(2.5 * Constants.tileWidth, Constants.tileWidth),
 
     // Parking position
-    PARKING_POSITION(2.5 * Constants.fieldBoxWidth, 3.5 * Constants.fieldBoxWidth);
+    PARKING_POSITION(2.5 * Constants.tileWidth, 3.5 * Constants.tileWidth);
 
     private final double x;
     private final double y;

@@ -39,11 +39,11 @@ public class DriveTeleop extends BaseOpMode {
             telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
         }
         calledFunctions = new ArrayList<>();
-        //TODO implement gamepad mechanics
     }
 
     @Override
     public void loop() {
+        //TODO implement gamepad mechanics
         float rx = (float) Math.pow(gamepad1.right_stick_x, 3);
         float lx = (float) Math.pow(gamepad1.left_stick_x, 3);
         float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
@@ -76,10 +76,6 @@ public class DriveTeleop extends BaseOpMode {
         }
 
         if (gamepad1.a) {
-            suckButtonDown = !suckButtonDown;
-        }
-
-        if (suckButtonDown) {
             intakeSystem.suck();
         } else {
             intakeSystem.stop();

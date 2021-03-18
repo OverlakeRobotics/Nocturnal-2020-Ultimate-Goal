@@ -16,7 +16,7 @@ public class Trajectories {
      * @return Trajectory for currentState
      */
     public static Trajectory getTrajectory(GameState currentState, Pose2d posEstimate) {
-        //TODO Figure out the trajectories for each state, CODE REVIEW NEEDED
+        //TODO Add turns to the trajectories as needed
         //TODO figure out the initial movements of the robot from start
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
         switch (currentState) {

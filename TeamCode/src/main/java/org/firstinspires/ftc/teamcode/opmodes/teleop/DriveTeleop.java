@@ -24,7 +24,6 @@ public class DriveTeleop extends BaseOpMode {
     }
 
     // Variables
-    private boolean suckButtonDown;
     private List<Functions> calledFunctions;
 
     // Systems
@@ -44,12 +43,14 @@ public class DriveTeleop extends BaseOpMode {
     @Override
     public void loop() {
         //TODO implement gamepad mechanics
+        // Drive
         float rx = (float) Math.pow(gamepad1.right_stick_x, 3);
         float lx = (float) Math.pow(gamepad1.left_stick_x, 3);
         float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
         roadRunnerDriveSystem.slowDrive(gamepad1.left_trigger > 0.3f);
         roadRunnerDriveSystem.drive(rx, lx, ly);
 
+        // Executes loaded functions
         for (int i = 0; i < calledFunctions.size(); i++) {
             switch (calledFunctions.get(i)) {
                 case RAISE_ARM:
@@ -75,12 +76,14 @@ public class DriveTeleop extends BaseOpMode {
             }
         }
 
-        if (gamepad1.a) {
+        // IntakeSystem
+        if (gamepad1.a && intakeSystem.isSucking()) {
             intakeSystem.suck();
-        } else {
+        } else if (intakeSystem.isSucking()) {
             intakeSystem.stop();
         }
 
+        // YeetSystem
         if (gamepad1.left_bumper) {
             calledFunctions.add(Functions.RAISE_ARM);
         }
@@ -89,6 +92,7 @@ public class DriveTeleop extends BaseOpMode {
             calledFunctions.add(Functions.LOWER_ARM);
         }
 
+        // ShootingSystem
         if (gamepad1.b) {
             calledFunctions.add(Functions.SHOOT);
         }

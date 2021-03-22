@@ -55,18 +55,21 @@ public abstract class BaseOpMode extends OpMode {
             roadRunnerDriveSystem.setPoseEstimate(currentPosition);
         } catch (Exception e) {
             telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
+            telemetry.addData("Road Runner", e.getStackTrace());
         }
 
         try {
             shootingSystem = new ShootingSystem(hardwareMap.get(DcMotorEx.class, "ShootingSystem"), hardwareMap.get(Servo.class, "ShootingSystemServo"));
         } catch (Exception e) {
             telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
+            telemetry.addData("Shooting System", e.getStackTrace());
         }
 
         try {
             yeetSystem = new YeetSystem(hardwareMap.get(DcMotorEx.class, "YeetSystem"), hardwareMap.get(Servo.class, "LeftArmServo"), hardwareMap.get(Servo.class, "RightArmServo"));
         } catch (Exception e) {
             telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
+            telemetry.addData("Yeet System", e.getStackTrace());
         }
     }
 

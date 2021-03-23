@@ -99,27 +99,19 @@ public abstract class BaseOpMode extends OpMode {
         switch (powerShotState) {
             case IDLE:
                 powerShotState = PowerShotState.ONE;
+                updateShotTrajectory();
                 break;
 
             case ONE:
-                if (atShootingPosition(PowerShotState.ONE)) {
-                    shootingSystem.shoot();
-                    powerShotState = PowerShotState.TWO;
-                }
+                updateStatus(PowerShotState.TWO);
                 break;
 
             case TWO:
-                if (atShootingPosition(PowerShotState.TWO)) {
-                    shootingSystem.shoot();
-                    powerShotState = PowerShotState.THREE;
-                }
+                updateStatus(PowerShotState.THREE);
                 break;
 
             case THREE:
-                if (atShootingPosition(PowerShotState.THREE)) {
-                    shootingSystem.shoot();
-                    powerShotState = PowerShotState.FINISHED;
-                }
+                updateStatus(PowerShotState.FINISHED);
                 break;
 
             case FINISHED:
@@ -129,12 +121,30 @@ public abstract class BaseOpMode extends OpMode {
     }
 
     /**
-     * Assumes shooter is set to State Powershot
-     * @param shot number to be performed
+     * Checks if the robot is at shooting position. If it is, shoots and updates the shot number and the shooting state.
+     * @param nextState if an update of status is needed
      */
-    private boolean atShootingPosition(PowerShotState shot) {
-        trajectory = Trajectories.getTrajectory(shot, currentPosition);
+    private void updateStatus(PowerShotState nextState) {
+        if (atShootingPosition()) {
+            shootingSystem.shoot();
+            powerShotState = nextState;
+            updateShotTrajectory();
+        }
+    }
+
+    /**
+     * Updates the shot trajectory based on the current shot state
+     */
+    private void updateShotTrajectory() {
+        trajectory = Trajectories.getTrajectory(powerShotState, currentPosition);
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
+    }
+
+    /**
+     * Assumes shooter is set to State PowerShot
+     * @return if the robot has finished its current trajectory
+     */
+    private boolean atShootingPosition() {
         trajectoryFinished = roadRunnerDriveSystem.update();
         return trajectoryFinished;
     }

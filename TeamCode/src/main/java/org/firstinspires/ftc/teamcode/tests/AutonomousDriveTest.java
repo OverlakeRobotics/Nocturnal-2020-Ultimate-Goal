@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.tests;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,7 +12,7 @@ import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
-import org.firstinspires.ftc.teamcode.helpers.Target;
+import org.firstinspires.ftc.teamcode.helpers.PowerShotState;
 
 @Autonomous(name = "AutonomousDriveTest", group = "Autonomous")
 public class AutonomousDriveTest extends OpMode {
@@ -92,30 +91,21 @@ public class AutonomousDriveTest extends OpMode {
 
             case CALIBRATE_LOCATION:
                 if (elapsedTime.seconds() > 2) {
-                    newGameState(GameState.DRIVE_TO_SHOOTING_LOCATION);
+                    newGameState(GameState.POWERSHOT);
                 }
                 break;
 
-            case DRIVE_TO_SHOOTING_LOCATION:
-                if (yeetSystem.placed()) {
-                    newGameState(GameState.COMPLETE);
-                }
-                break;
 
             case POWERSHOT:
                 //TODO do the powershot routine
-                newGameState(GameState.DELIVER_SECOND_WOBBLE);
+                newGameState(GameState.PICK_UP_SECOND_WOBBLE);
                 break;
 
-            case DELIVER_SECOND_WOBBLE:
+            case PICK_UP_SECOND_WOBBLE:
                 //TODO drive to the second wobble goal
-                newGameState(GameState.COLLECT_SECOND_WOBBLE);
+                newGameState(GameState.RETURN_TO_NEST);
                 break;
 
-            case COLLECT_SECOND_WOBBLE:
-                //TODO position the robot and collect the second wobble goal
-                newGameState(GameState.DELIVER_WOBBLE);
-                break;
 
             case RETURN_TO_NEST:
                 //TODO drive back to nest

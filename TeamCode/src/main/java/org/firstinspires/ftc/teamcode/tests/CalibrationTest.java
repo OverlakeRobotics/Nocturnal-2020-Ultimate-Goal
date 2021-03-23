@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
+import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
 import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
@@ -17,7 +18,7 @@ public class CalibrationTest extends BaseOpMode {
 
     // Variables
     private GameState currentGameState;                         // Current GameState Machine GameState.
-    public static Tensorflow.SquareState targetRegion;
+    public static TargetDropBox targetRegion;
     private boolean deliveredFirstWobble;
 
     // Systems
@@ -87,7 +88,7 @@ public class CalibrationTest extends BaseOpMode {
 
             case TEST_SHOOTING:
 
-                newGameState(GameState.DELIVER_SECOND_WOBBLE);
+                newGameState(GameState.PICK_UP_SECOND_WOBBLE);
                 break;
 
             case TEST_INTAKE:

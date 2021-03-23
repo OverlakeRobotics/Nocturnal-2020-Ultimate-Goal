@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
+import org.firstinspires.ftc.teamcode.helpers.PowerShotState;
 import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 
 public abstract class BaseOpMode extends OpMode {
@@ -25,13 +26,6 @@ public abstract class BaseOpMode extends OpMode {
     protected Pose2d currentPosition;
 
     // Powershot
-    private enum PowerShotState {
-        IDLE,
-        ONE,
-        TWO,
-        THREE,
-        FINISHED
-    }
     private PowerShotState powerShotState;
 
     // Systems
@@ -107,21 +101,21 @@ public abstract class BaseOpMode extends OpMode {
                 break;
 
             case ONE:
-                if (atShootingPosition(GameState.SHOOT1)) {
+                if (atShootingPosition(PowerShotState.ONE)) {
                     shootingSystem.shoot();
                     powerShotState = PowerShotState.TWO;
                 }
                 break;
 
             case TWO:
-                if (atShootingPosition(GameState.SHOOT2)) {
+                if (atShootingPosition(PowerShotState.TWO)) {
                     shootingSystem.shoot();
                     powerShotState = PowerShotState.THREE;
                 }
                 break;
 
             case THREE:
-                if (atShootingPosition(GameState.SHOOT3)) {
+                if (atShootingPosition(PowerShotState.THREE)) {
                     shootingSystem.shoot();
                     powerShotState = PowerShotState.FINISHED;
                 }
@@ -137,7 +131,7 @@ public abstract class BaseOpMode extends OpMode {
      * Assumes shooter is set to State Powershot
      * @param shot number to be performed
      */
-    private boolean atShootingPosition(GameState shot) {
+    private boolean atShootingPosition(PowerShotState shot) {
         trajectory = Trajectories.getTrajectory(shot, currentPosition);
         roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         trajectoryFinished = roadRunnerDriveSystem.update();

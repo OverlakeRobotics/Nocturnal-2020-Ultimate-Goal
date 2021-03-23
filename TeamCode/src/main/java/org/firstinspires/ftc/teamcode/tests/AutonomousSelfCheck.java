@@ -7,17 +7,46 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
+import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.helpers.Target;
+import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
 
 @Autonomous(name = "AutonomousSelfCheck", group = "Autonomous")
 public class AutonomousSelfCheck extends AutonomousOpMode {
 
+    // Variables
+    private GameState currentGameState;                         // Current GameState Machine GameState.
+    private static TargetDropBox targetRegion;
+    private boolean deliveredFirstWobble;
     private Pose2d oldPosEstimate;
-    private IntakeSystem intake = new IntakeSystem(hardwareMap.get(DcMotor.class, "IntakeSystem"));
     private boolean first = true;
+
+    // Systems
+    private Tensorflow tensorflow;
+    private IntakeSystem intake = new IntakeSystem(hardwareMap.get(DcMotor.class, "IntakeSystem"));
     TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(currentPosition);
+
+    @Override
+    public void init() {
+        super.init();
+        deliveredFirstWobble = false;
+        tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        tensorflow.activate();
+        newGameState(GameState.INITIAL);
+    }
+
+    @Override
+    public void init_loop() {
+        targetRegion = tensorflow.getTargetRegion();
+    }
+
+    @Override
+    public void start() {
+        tensorflow.shutdown();
+        super.start();
+    }
 
     @Override
     public void loop() {

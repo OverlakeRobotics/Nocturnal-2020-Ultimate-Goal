@@ -3,17 +3,12 @@ package org.firstinspires.ftc.teamcode.components;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
 
 import java.util.EnumMap;
 import java.util.List;
 
 public class Tensorflow {
-
-    public enum SquareState {
-        BOX_A, BOX_B, BOX_C,
-    }
-
-    EnumMap<SquareState, Integer> boxCoordinates;
 
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Four"; //FourRings
@@ -56,28 +51,37 @@ public class Tensorflow {
         return null;
     }
 
+    /**
+     * Activates TensorFlow
+     */
     public void activate() {
         if (tfod != null) {
             tfod.activate();
         }
 
-    } //activate
+    }
 
+    /**
+     * Shuts down TensorFlow
+     */
     public void shutdown() {
         if (tfod != null) {
             tfod.shutdown();
         }
-    } //deactivate
+    }
 
-
-    public SquareState getTargetRegion() {
+    /**
+     * Returns the target region currently selected
+     * @return the target region currently selected
+     */
+    public TargetDropBox getTargetRegion() {
         if (tfod == null) {
-            return SquareState.BOX_A;
+            return TargetDropBox.BOX_A;
         }
         List<Recognition> recognitionList = getInference();
         if (recognitionList.size() == 1 && recognitionList.get(0).getConfidence() >= 0.4) {
-            return recognitionList.get(0).getLabel().equals(LABEL_FIRST_ELEMENT) ? SquareState.BOX_A : SquareState.BOX_B;
+            return recognitionList.get(0).getLabel().equals(LABEL_FIRST_ELEMENT) ? TargetDropBox.BOX_A : TargetDropBox.BOX_B;
         }
-        return SquareState.BOX_C;
+        return TargetDropBox.BOX_C;
     }
 }

@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
-import org.firstinspires.ftc.teamcode.opmodes.autonomous.AutonomousOpMode;
+import org.firstinspires.ftc.teamcode.components.Tensorflow;
 
 public class Trajectories {
 
@@ -24,42 +24,11 @@ public class Trajectories {
                 trajectoryBuilder.lineToConstantHeading(Coordinates.DETOUR_POSITION.getCoordinates());
                 break;
 
-            case DELIVER_WOBBLE:
-                switch (AutonomousOpMode.targetRegion) {
-                    case BOX_A:
-                        trajectoryBuilder.lineToConstantHeading(Coordinates.BOX_A.getCoordinates());
-                        break;
-
-                    case BOX_B:
-                        trajectoryBuilder.lineToConstantHeading(Coordinates.BOX_B.getCoordinates());
-                        break;
-
-                    case BOX_C:
-                        trajectoryBuilder.lineToConstantHeading(Coordinates.BOX_C.getCoordinates());
-                        break;
-
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + AutonomousOpMode.targetRegion);
-                }
-                break;
-
             case CALIBRATE_LOCATION:
                 trajectoryBuilder.lineToConstantHeading(Coordinates.CALIBRATION.getCoordinates());
                 break;
 
-            case DRIVE_TO_SHOOTING_LOCATION:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_1.getCoordinates());
-                break;
-
-            case SHOOT2:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_2.getCoordinates());
-                break;
-
-            case SHOOT3:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_3.getCoordinates());
-                break;
-
-            case DELIVER_SECOND_WOBBLE:
+            case PICK_UP_SECOND_WOBBLE:
                 trajectoryBuilder.lineToConstantHeading(Coordinates.SECOND_WOBBLE.getCoordinates());
                 break;
 
@@ -68,6 +37,59 @@ public class Trajectories {
                 break;
             default:
                 return null;
+        }
+
+        return trajectoryBuilder.build();
+    }
+
+    /**
+     * Returns a trajectory to the selected TargetRegion
+     * @param targetRegion to drive to
+     * @param posEstimate of the robot
+     * @return Trajectory to the target region
+     */
+    public static Trajectory getTrajectory(TargetDropBox targetRegion, Pose2d posEstimate) {
+        TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
+        switch (targetRegion) {
+            case BOX_A:
+                trajectoryBuilder.lineToConstantHeading(Coordinates.BOX_A.getCoordinates());
+                break;
+
+            case BOX_B:
+                trajectoryBuilder.lineToConstantHeading(Coordinates.BOX_B.getCoordinates());
+                break;
+
+            case BOX_C:
+                trajectoryBuilder.lineToConstantHeading(Coordinates.BOX_C.getCoordinates());
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + targetRegion);
+        }
+
+        return trajectoryBuilder.build();
+    }
+
+    /**
+     * Returns trajectory for PowerShots
+     * @param shot to drive to
+     * @param posEstimate of the robot
+     * @return Trajectory to the target region
+     */
+    public static Trajectory getTrajectory(PowerShotState shot, Pose2d posEstimate) {
+        TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
+        switch (shot) {
+            case ONE:
+                trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_1.getCoordinates());
+                break;
+
+            case TWO:
+                trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_2.getCoordinates());
+                break;
+
+            case THREE:
+                trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_3.getCoordinates());
+                break;
         }
 
         return trajectoryBuilder.build();

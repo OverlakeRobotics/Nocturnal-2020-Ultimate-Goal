@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.helpers.Target;
+import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
 
 public class JUnitTests extends AutonomousSelfCheck {
 
@@ -21,6 +22,34 @@ public class JUnitTests extends AutonomousSelfCheck {
     private boolean first = true;
     TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(currentPosition);
     private RoadRunnerDriveSystem roadRunnerDriveSystem;
+
+    // Variables
+    private GameState currentGameState;                         // Current GameState Machine GameState.
+    private static TargetDropBox targetRegion;
+    private boolean deliveredFirstWobble;
+
+    // Systems
+    private Tensorflow tensorflow;
+
+    @Override
+    public void init() {
+        super.init();
+        deliveredFirstWobble = false;
+        tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        tensorflow.activate();
+        newGameState(GameState.INITIAL);
+    }
+
+    @Override
+    public void init_loop() {
+        targetRegion = tensorflow.getTargetRegion();
+    }
+
+    @Override
+    public void start() {
+        tensorflow.shutdown();
+        super.start();
+    }
 
     @Override
     public void loop() {
@@ -86,7 +115,7 @@ public class JUnitTests extends AutonomousSelfCheck {
                 newGameState(GameState.TEST_TENSORFLOW);
             case TEST_TENSORFLOW:
                 targetRegion = tensorflow.getTargetRegion();
-                if (targetRegion == Tensorflow.SquareState.BOX_C) {
+                if (targetRegion == TargetDropBox.BOX_C) {
                     telemetry.addData("TensorFlow Target Correct (Viewing 0 Rings)", targetRegion);
                     telemetry.update();
                 } else {

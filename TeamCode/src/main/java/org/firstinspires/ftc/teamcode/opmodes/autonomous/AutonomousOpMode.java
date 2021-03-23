@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.helpers.Target;
+import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
 import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
@@ -15,12 +16,12 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 public class AutonomousOpMode extends BaseOpMode {
 
     // Variables
-    protected GameState currentGameState;                         // Current GameState Machine GameState.
-    public static Tensorflow.SquareState targetRegion;
-    protected boolean deliveredFirstWobble;
+    private GameState currentGameState;                         // Current GameState Machine GameState.
+    private static TargetDropBox targetRegion;
+    private boolean deliveredFirstWobble;
 
     // Systems
-    protected Tensorflow tensorflow;
+    private Tensorflow tensorflow;
 
     @Override
     public void init() {
@@ -73,21 +74,17 @@ public class AutonomousOpMode extends BaseOpMode {
                 case CALIBRATE_LOCATION:
                     deliveredFirstWobble = true;
                     calibrateLocation();
-                    newGameState(GameState.DRIVE_TO_SHOOTING_LOCATION);
-                    break;
-
-                case DRIVE_TO_SHOOTING_LOCATION:
                     shootingSystem.warmUp(Target.POWER_SHOT);
                     newGameState(GameState.POWERSHOT);
                     break;
 
                 case POWERSHOT:
                     if (powerShotRoutine()) {
-                        newGameState(GameState.DELIVER_SECOND_WOBBLE);
+                        newGameState(GameState.PICK_UP_SECOND_WOBBLE);
                     }
                     break;
 
-                case DELIVER_SECOND_WOBBLE:
+                case PICK_UP_SECOND_WOBBLE:
                     if (yeetSystem.pickedUp()) {
                         newGameState(GameState.DELIVER_WOBBLE);
                     }
@@ -119,7 +116,13 @@ public class AutonomousOpMode extends BaseOpMode {
     protected void newGameState(GameState newGameState) {
         currentGameState = newGameState;
         currentPosition = roadRunnerDriveSystem.getPositionEstimate();
-        trajectory = Trajectories.getTrajectory(currentGameState, currentPosition);
+
+        if (currentGameState == GameState.DELIVER_WOBBLE) {
+            trajectory = Trajectories.getTrajectory(targetRegion, currentPosition);
+        } else {
+            trajectory = Trajectories.getTrajectory(currentGameState, currentPosition);
+        }
+
         if (trajectory != null) {
             roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
         }

@@ -8,8 +8,11 @@ import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @TeleOp(name = "Real Teleop", group="TeleOp")
 public class DriveTeleop extends BaseOpMode {
@@ -24,7 +27,7 @@ public class DriveTeleop extends BaseOpMode {
     }
 
     // Variables
-    private List<Functions> calledFunctions;
+    private Set<Functions> calledFunctions;
 
     // Systems
     private IntakeSystem intakeSystem;
@@ -37,7 +40,7 @@ public class DriveTeleop extends BaseOpMode {
         } catch (Exception e) {
             telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
         }
-        calledFunctions = new ArrayList<>();
+        calledFunctions = new HashSet<>();
     }
 
     @Override
@@ -51,26 +54,25 @@ public class DriveTeleop extends BaseOpMode {
         roadRunnerDriveSystem.drive(rx, lx, ly);
 
         // Executes loaded functions
-        for (int i = 0; i < calledFunctions.size(); i++) {
-            switch (calledFunctions.get(i)) {
+        Iterator<Functions> i = calledFunctions.iterator();
+        while (i.hasNext()) {
+            Functions f = i.next();
+            switch (f) {
                 case RAISE_ARM:
                     if (yeetSystem.pickedUp()) {
-                        calledFunctions.remove(i);
-                        i--;
+                        i.remove();
                     }
                     break;
 
                 case LOWER_ARM:
                     if (yeetSystem.placed()) {
-                        calledFunctions.remove(i);
-                        i--;
+                        i.remove();
                     }
                     break;
 
                 case SHOOT:
                     if (powerShotRoutine()) {
-                        calledFunctions.remove(i);
-                        i--;
+                        i.remove();
                     }
                     break;
             }

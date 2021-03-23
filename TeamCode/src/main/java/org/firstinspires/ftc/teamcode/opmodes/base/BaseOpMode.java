@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opmodes.base;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -14,7 +13,6 @@ import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
 import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
-import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.helpers.PowerShotState;
 import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 
@@ -49,18 +47,21 @@ public abstract class BaseOpMode extends OpMode {
             roadRunnerDriveSystem.setPoseEstimate(currentPosition);
         } catch (Exception e) {
             telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
+            telemetry.addData("Road Runner", e.getStackTrace());
         }
 
         try {
             shootingSystem = new ShootingSystem(hardwareMap.get(DcMotorEx.class, "ShootingSystem"), hardwareMap.get(Servo.class, "ShootingSystemServo"));
         } catch (Exception e) {
             telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
+            telemetry.addData("Shooting System", e.getStackTrace());
         }
 
         try {
             yeetSystem = new YeetSystem(hardwareMap.get(DcMotorEx.class, "YeetSystem"), hardwareMap.get(Servo.class, "LeftArmServo"), hardwareMap.get(Servo.class, "RightArmServo"));
         } catch (Exception e) {
             telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
+            telemetry.addData("Yeet System", e.getStackTrace());
         }
     }
 

@@ -79,9 +79,9 @@ public class DriveTeleop extends BaseOpMode {
         }
 
         // IntakeSystem
-        if (gamepad1.a && intakeSystem.isSucking()) {
+        if (gamepad1.a) {
             intakeSystem.suck();
-        } else if (intakeSystem.isSucking()) {
+        } else {
             intakeSystem.stop();
         }
 

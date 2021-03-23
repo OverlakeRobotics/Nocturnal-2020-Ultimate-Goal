@@ -32,23 +32,19 @@ public class IntakeSystem {
      * Intakes rings
      */
     public void suck() {
-        currentState = IntakeState.SUCK;
-        motor.setPower(1);
+        if (currentState != IntakeState.SUCK) {
+            currentState = IntakeState.SUCK;
+            motor.setPower(1);
+        }
     }
 
     /**
      * Shuts down the motor
      */
     public void stop() {
-        currentState = IntakeState.IDLE;
-        motor.setPower(0);
-    }
-
-    /**
-     * Returns if the system is running
-     * @return if the system is running
-     */
-    public boolean isSucking() {
-        return currentState == IntakeState.SUCK;
+        if (currentState == IntakeState.SUCK) {
+            currentState = IntakeState.IDLE;
+            motor.setPower(0);
+        }
     }
 }

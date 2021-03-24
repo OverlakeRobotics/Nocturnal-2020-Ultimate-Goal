@@ -4,8 +4,8 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 public enum Coordinates {
     //TODO check and correct these coordinates
-    // Starting position adjust for starging at back wall
-    STARTING_POSITION(2.5 * Constants.tileWidth, 0.5 * Constants.tileWidth),
+    //TODO See if the webcam will still work if the robot starts pressed against the left or right edge of the starting tile
+    STARTING_POSITION(2.5 * Constants.tileWidth, 0.5 * Constants.LATERAL_DISTANCE),
 
     // Spline position to the left to avoid rings
     DETOUR_POSITION(0.5 * Constants.tileWidth, 2 * Constants.tileWidth),

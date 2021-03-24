@@ -34,35 +34,19 @@ public abstract class BaseOpMode extends OpMode {
 
     @Override
     public void init() {
+
+        // Variables
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
-
         currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
-        vuforia = VuforiaSystem.getInstance();
         powerShotState = PowerShotState.IDLE;
 
-        //TODO initialize RoadRunnerDriveSystem, ShootingSystem, and IntakeSystem once hardware online
-        try {
-            roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
-            roadRunnerDriveSystem.setPoseEstimate(currentPosition);
-        } catch (Exception e) {
-            telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
-            telemetry.addData("Road Runner", e.getStackTrace());
-        }
-
-        try {
-            shootingSystem = new ShootingSystem(hardwareMap.get(DcMotorEx.class, "ShootingSystem"), hardwareMap.get(Servo.class, "ShootingSystemServo"));
-        } catch (Exception e) {
-            telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
-            telemetry.addData("Shooting System", e.getStackTrace());
-        }
-
-        try {
-            yeetSystem = new YeetSystem(hardwareMap.get(DcMotorEx.class, "YeetSystem"), hardwareMap.get(Servo.class, "LeftArmServo"), hardwareMap.get(Servo.class, "RightArmServo"));
-        } catch (Exception e) {
-            telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
-            telemetry.addData("Yeet System", e.getStackTrace());
-        }
+        // Systems
+        vuforia = VuforiaSystem.getInstance();
+        roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
+        roadRunnerDriveSystem.setPoseEstimate(currentPosition);
+        shootingSystem = new ShootingSystem(hardwareMap.get(DcMotorEx.class, "ShootingSystem"), hardwareMap.get(Servo.class, "ShootingSystemServo"));
+        yeetSystem = new YeetSystem(hardwareMap.get(DcMotorEx.class, "YeetSystem"), hardwareMap.get(Servo.class, "LeftArmServo"), hardwareMap.get(Servo.class, "RightArmServo"));
     }
 
     @Override

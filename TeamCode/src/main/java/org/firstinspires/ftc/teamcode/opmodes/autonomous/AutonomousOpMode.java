@@ -19,6 +19,7 @@ public class AutonomousOpMode extends BaseOpMode {
     private GameState currentGameState;                         // Current GameState Machine GameState.
     private static TargetDropBox targetRegion;
     private boolean deliveredFirstWobble;
+    private boolean isTurning;
 
     // Systems
     private Tensorflow tensorflow;
@@ -60,8 +61,13 @@ public class AutonomousOpMode extends BaseOpMode {
                     break;
 
                 case AVOID_RINGS:
-                    roadRunnerDriveSystem.turnAsync(-Math.PI / 2);
-                    newGameState(GameState.DELIVER_WOBBLE);
+                    if (!isTurning) {
+                        roadRunnerDriveSystem.turnAsync(-Math.PI / 2);
+                        isTurning = true;
+                    } else if (roadRunnerDriveSystem.update()) {
+                        isTurning = false;
+                        newGameState(GameState.DELIVER_WOBBLE);
+                    }
                     break;
 
                 case DELIVER_WOBBLE:

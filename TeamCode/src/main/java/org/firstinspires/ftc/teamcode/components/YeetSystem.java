@@ -100,7 +100,7 @@ public class YeetSystem {
         if (targetPosition == null) {
             return false;
         }
-        return (Math.abs(targetPosition - motor.getCurrentPosition()) < 50 && motor.getVelocity() < 20);
+        return (Math.abs(targetPosition - motor.getCurrentPosition()) < 50);
     }
 
     /**

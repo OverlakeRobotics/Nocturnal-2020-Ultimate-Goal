@@ -39,9 +39,12 @@ public class YeetSystem {
         grab();
     }
 
+
+
     /**
      * Places the wobble goal down and releases it
      * @return if the wobble goal is placed on the ground
+     * RIGHT BUMPER
      */
     public boolean placed() {
         if (isComplete()) {
@@ -51,9 +54,23 @@ public class YeetSystem {
             return true;
         }
 
-        if (currentState == ArmState.IDLE) {
-            targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
-            moveArm();
+        switch (currentState) {
+            case IDLE:
+                elapsedTime.reset();
+                currentState = ArmState.GRAB;
+                break;
+
+            case GRAB:
+                if (elapsedTime.hasExpired()) {
+                    currentState = ArmState.START_ARM;
+                }
+                break;
+
+            case START_ARM:
+                targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
+                moveArm();
+                currentState = ArmState.MOVING_ARM;
+                break;
         }
         return false;
     }
@@ -116,7 +133,7 @@ public class YeetSystem {
     private void moveArm() {
         motor.setTargetPosition(targetPosition);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        if (targetPosition == Constants.ARM_MOTOR_DOWN_POSITION) {
+        if (targetPosition == Constants.ARM_MOTOR_UP_POSITION) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setPower(-Constants.ARM_MOTOR_RAW_POWER);
         } else {

@@ -36,7 +36,7 @@ public class YeetSystem {
         elapsedTime = new Deadline(Constants.SERVO_WAIT_TIME, TimeUnit.MILLISECONDS);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         currentState = ArmState.IDLE;
-        release();
+        grab();
     }
 
     /**

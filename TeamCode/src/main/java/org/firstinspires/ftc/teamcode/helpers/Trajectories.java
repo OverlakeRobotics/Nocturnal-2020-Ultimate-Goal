@@ -7,6 +7,25 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 
+
+/**
+ * Trajectories.java is a file in which we use a state machine
+ * for organization regarding 'pre-set' but adaptable
+ * paths that the robot should take based on both its stage
+ * in the overall autonomous routine, as well as its stage in the
+ * specific PowerShot routine, and Tensorflow input at the
+ * beginning of the match. This was created to better organize other classes.
+ *
+ * Refer to:
+ * @components Roadrunner.java to understand methods
+ * @components Tensorflow.java to understand 'TargetDropBox' (2nd Method Specifically)
+ * @helpers Coordinates.java to find numerical values for pre-set positions in the trajectories.
+ *
+ * Used in:
+ * @autonomous AutonomousOpMode
+ * @base BaseOpmode
+ */
+
 public class Trajectories {
 
     /**

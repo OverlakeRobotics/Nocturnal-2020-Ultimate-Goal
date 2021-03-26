@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.helpers.PowerShotState;
+import org.firstinspires.ftc.teamcode.helpers.Target;
 
 @Autonomous(name = "AutonomousDriveTest", group = "Autonomous")
 public class AutonomousDriveTest extends OpMode {
@@ -78,20 +79,21 @@ public class AutonomousDriveTest extends OpMode {
         switch (currentGameState) {
             case INITIAL:
                 // Initialize
+                elapsedTime.reset();
                 newGameState(GameState.DELIVER_WOBBLE);
+                shootingSystem.warmUp(Target.POWER_SHOT);
                 break;
 
             case DELIVER_WOBBLE:
-                if (yeetSystem.pickedUp(true)) {
-                    elapsedTime.reset();
+                if (elapsedTime.milliseconds() > 250) {
                     newGameState(GameState.CALIBRATE_LOCATION);
                 }
 
                 break;
 
             case CALIBRATE_LOCATION:
-                if (elapsedTime.seconds() > 2) {
-                    newGameState(GameState.POWERSHOT);
+                if (shootingSystem.shoot()) {
+                    newGameState(GameState.COMPLETE);
                 }
                 break;
 

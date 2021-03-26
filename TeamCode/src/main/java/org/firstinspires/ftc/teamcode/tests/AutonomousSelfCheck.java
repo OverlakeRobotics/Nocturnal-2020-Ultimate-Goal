@@ -55,7 +55,7 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
         switch (currentGameState) { // TODO: This monstrosity.
             //TODO Do we need a trajectory as a field?
             case TEST_YEET_UP:
-                if (yeetSystem.pickedUp()) {
+                if (yeetSystem.pickedUp(true)) {
                     newGameState(GameState.TEST_YEET_DOWN);
                 }
             case TEST_YEET_DOWN:

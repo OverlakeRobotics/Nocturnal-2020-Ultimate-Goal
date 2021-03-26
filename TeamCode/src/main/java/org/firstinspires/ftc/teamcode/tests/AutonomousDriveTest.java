@@ -82,7 +82,7 @@ public class AutonomousDriveTest extends OpMode {
                 break;
 
             case DELIVER_WOBBLE:
-                if (yeetSystem.pickedUp()) {
+                if (yeetSystem.pickedUp(true)) {
                     elapsedTime.reset();
                     newGameState(GameState.CALIBRATE_LOCATION);
                 }

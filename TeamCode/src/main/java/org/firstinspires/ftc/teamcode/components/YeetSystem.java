@@ -15,6 +15,7 @@ public class YeetSystem {
     private enum ArmState {
         IDLE,
         GRAB,
+        RELEASE,
         START_ARM,
         MOVING_ARM
     }
@@ -56,20 +57,12 @@ public class YeetSystem {
 
         switch (currentState) {
             case IDLE:
-                elapsedTime.reset();
-                currentState = ArmState.GRAB;
-                break;
-
-            case GRAB:
-                if (elapsedTime.hasExpired()) {
-                    currentState = ArmState.START_ARM;
-                }
+                currentState = ArmState.START_ARM;
                 break;
 
             case START_ARM:
                 targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
                 moveArm();
-                currentState = ArmState.MOVING_ARM;
                 break;
         }
         return false;
@@ -90,7 +83,6 @@ public class YeetSystem {
         switch (currentState) {
             case IDLE:
                 elapsedTime.reset();
-                currentState = ArmState.GRAB;
                 grab();
                 break;
 
@@ -103,7 +95,6 @@ public class YeetSystem {
             case START_ARM:
                 targetPosition = Constants.ARM_MOTOR_UP_POSITION;
                 moveArm();
-                currentState = ArmState.MOVING_ARM;
                 break;
         }
         return false;
@@ -131,6 +122,7 @@ public class YeetSystem {
      * Moves arm either up or down
      */
     private void moveArm() {
+        currentState = ArmState.MOVING_ARM;
         motor.setTargetPosition(targetPosition);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if (targetPosition == Constants.ARM_MOTOR_UP_POSITION) {
@@ -146,6 +138,7 @@ public class YeetSystem {
      * Closes the servos to grab the wobble goal
      */
     public void grab() {
+        currentState = ArmState.GRAB;
         leftServo.setPosition(Constants.LEFT_ARM_SERVO_CLOSED_POSITION);
         rightServo.setPosition(Constants.RIGHT_ARM_SERVO_CLOSED_POSITION);
     }
@@ -154,6 +147,7 @@ public class YeetSystem {
      * Opens the servos to release the wobble goal
      */
     public void release() {
+        currentState = ArmState.RELEASE;
         leftServo.setPosition(Constants.LEFT_ARM_SERVO_OPEN_POSITION);
         rightServo.setPosition(Constants.RIGHT_ARM_SERVO_OPEN_POSITION);
     }

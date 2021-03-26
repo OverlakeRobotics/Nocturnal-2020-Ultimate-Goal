@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Log;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -11,6 +14,7 @@ import static org.firstinspires.ftc.teamcode.helpers.Constants.SERVO_WAIT_TIME;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_IDLE_POSITION;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_SHOOT_POSITION;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.TICKS_PER_REV;
+import static org.firstinspires.ftc.teamcode.helpers.Constants.TICKS_PER_REV_SHOOTER;
 
 public class ShootingSystem {
 
@@ -34,6 +38,7 @@ public class ShootingSystem {
         elapsedTime = new ElapsedTime();
         currentShootingState = ShootingState.IDLE;
 
+        motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         this.motor = motor;
         this.servo = servo;
         initMotors();
@@ -104,7 +109,7 @@ public class ShootingSystem {
      * @param rpm the motor will be set to
      */
     private void setMotorRpm(double rpm) {
-        motor.setVelocity(rpm / 60.0 * TICKS_PER_REV);
+        motor.setVelocity(rpm / 60.0 * TICKS_PER_REV_SHOOTER);
     }
 
     /**

@@ -87,6 +87,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
                 case POWERSHOT:
                     if (powerShotRoutine()) {
+                        shootingSystem.shutDown();
                         newGameState(GameState.PICK_UP_SECOND_WOBBLE);
                     }
                     break;

@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.components;
 
-import android.util.Log;
-
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -13,7 +10,6 @@ import org.firstinspires.ftc.teamcode.helpers.Target;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SERVO_WAIT_TIME;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_IDLE_POSITION;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_SHOOT_POSITION;
-import static org.firstinspires.ftc.teamcode.helpers.Constants.TICKS_PER_REV;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.TICKS_PER_REV_SHOOTER;
 
 public class ShootingSystem {
@@ -26,8 +22,8 @@ public class ShootingSystem {
     // ShootingState
     private enum ShootingState {
         IDLE,
-        OPEN,
-        CLOSE
+        SERVO_IDLE,
+        SHOOT
     }
     private ShootingState currentShootingState;
 
@@ -80,23 +76,16 @@ public class ShootingSystem {
     public boolean shoot() {
         switch (currentShootingState) {
             case IDLE:
+                servoIdle();
+                currentShootingState = ShootingState.SHOOT;
                 elapsedTime.reset();
-                currentShootingState = ShootingState.OPEN;
-                servoShoot();
                 break;
 
-            case OPEN:
+            case SHOOT:
                 if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
-                    elapsedTime.reset();
-                    servoIdle();
-                    currentShootingState = ShootingState.CLOSE;
-                }
-                break;
-
-            case CLOSE:
-                if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
-                    elapsedTime.reset();
+                    servoShoot();
                     currentShootingState = ShootingState.IDLE;
+                    elapsedTime.reset();
                 }
                 return true;
         }

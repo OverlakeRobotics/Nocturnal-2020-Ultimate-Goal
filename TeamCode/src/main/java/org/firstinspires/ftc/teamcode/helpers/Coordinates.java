@@ -32,6 +32,13 @@ public enum Coordinates {
     private final double x;
     private final double y;
 
+    /**
+     * Constructor
+     * @param x (x-coordinate)
+     * @param y (y-coordinate)
+     *
+     */
+
     Coordinates(double x, double y) {
         this.x = x;
         this.y = y;

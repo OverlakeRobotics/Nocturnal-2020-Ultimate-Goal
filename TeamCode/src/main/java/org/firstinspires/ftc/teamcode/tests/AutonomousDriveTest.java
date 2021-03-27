@@ -95,7 +95,7 @@ public class AutonomousDriveTest extends BaseOpMode {
                     deliveredFirstWobble = true;
                     calibrateLocation();
                     shootingSystem.warmUp(Target.POWER_SHOT);
-                    newGameState(GameState.POWERSHOT);
+//                    newGameState(GameState.POWERSHOT);
                 }
                 break;
 

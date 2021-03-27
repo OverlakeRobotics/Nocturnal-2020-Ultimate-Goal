@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -143,6 +145,9 @@ public class VuforiaSystem {
      */
     public float getXOffset() {
         if (listener.isVisible()) {
+            Log.d("CALIBRATION", "target visible");
+            Log.d("CALIBRATION", "redAllianceTarget == " + redAllianceTarget);
+            Log.d("CALIBRATION", "lastlocation == " + lastLocation);
             lastLocation = listener.getUpdatedRobotLocation();
             return lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0);
         }
@@ -155,7 +160,10 @@ public class VuforiaSystem {
      */
     public float getYOffset() {
         if (listener.isVisible()) {
+            Log.d("CALIBRATION", "target visible");
             lastLocation = listener.getUpdatedRobotLocation();
+            Log.d("CALIBRATION", "redAllianceTarget == " + redAllianceTarget);
+            Log.d("CALIBRATION", "lastlocation == " + lastLocation);
             return lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1);
         }
         return Float.NaN;
@@ -167,6 +175,7 @@ public class VuforiaSystem {
      */
     public float getZOffset() {
         if (listener.isVisible()) {
+            lastLocation = listener.getUpdatedRobotLocation();
             return lastLocation.getTranslation().get(2) - redAllianceTarget.getLocation().getTranslation().get(2);
         }
         return Float.NaN;

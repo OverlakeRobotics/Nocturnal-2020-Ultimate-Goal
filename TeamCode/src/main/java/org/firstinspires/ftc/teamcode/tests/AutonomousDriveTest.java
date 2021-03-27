@@ -39,7 +39,7 @@ public class AutonomousDriveTest extends BaseOpMode {
         super.init();
         deliveredFirstWobble = false;
         isTurning = false;
-        tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        tensorflow = new Tensorflow();
         tensorflow.activate();
         newGameState(GameState.INITIAL);
     }
@@ -61,7 +61,7 @@ public class AutonomousDriveTest extends BaseOpMode {
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
 
-        trajectoryFinished = currentGameState == GameState.INITIAL || roadRunnerDriveSystem.update();
+        trajectoryFinished = currentGameState == GameState.INITIAL || currentGameState == GameState.CALIBRATE_LOCATION || roadRunnerDriveSystem.update();
 
         // Makes sure the trajectory is finished before doing anything else
         if (trajectoryFinished) {

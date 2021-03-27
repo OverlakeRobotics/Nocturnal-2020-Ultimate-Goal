@@ -72,7 +72,7 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
                 intake.stop();
                 newGameState(GameState.TEST_VUFORIA);
             case TEST_VUFORIA:
-                vuforiaData();
+//                vuforiaData();
                 telemetry.addData("GameState", currentGameState);
                 telemetry.update();
                 newGameState(GameState.TEST_TENSORFLOW);

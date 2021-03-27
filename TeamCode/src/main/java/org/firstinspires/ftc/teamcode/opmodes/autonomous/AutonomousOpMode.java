@@ -47,7 +47,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
     @Override
     public void loop() {
-        vuforiaData();
+//        vuforiaData();
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
 

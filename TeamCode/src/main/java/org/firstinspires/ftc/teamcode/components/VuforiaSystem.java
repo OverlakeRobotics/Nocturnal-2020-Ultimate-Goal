@@ -146,9 +146,10 @@ public class VuforiaSystem {
     public float getXOffset() {
         if (listener.isVisible()) {
             Log.d("CALIBRATION", "target visible");
-            Log.d("CALIBRATION", "redAllianceTarget == " + redAllianceTarget);
+//            lastLocation = listener.getUpdatedRobotLocation();
+            Log.d("CALIBRATION", "redAllianceTarget == " + redAllianceTarget.getLocation());
             Log.d("CALIBRATION", "lastlocation == " + lastLocation);
-            lastLocation = listener.getUpdatedRobotLocation();
+            Log.d("CALIBRATION", "x: " + (lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0)));
             return lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0);
         }
         return Float.NaN;
@@ -162,8 +163,9 @@ public class VuforiaSystem {
         if (listener.isVisible()) {
             Log.d("CALIBRATION", "target visible");
             lastLocation = listener.getUpdatedRobotLocation();
-            Log.d("CALIBRATION", "redAllianceTarget == " + redAllianceTarget);
+            Log.d("CALIBRATION", "redAllianceTarget == " + redAllianceTarget.getLocation());
             Log.d("CALIBRATION", "lastlocation == " + lastLocation);
+            Log.d("CALIBRATION", "y: " + (lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1)));
             return lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1);
         }
         return Float.NaN;

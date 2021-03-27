@@ -21,14 +21,10 @@ import static org.firstinspires.ftc.teamcode.helpers.Constants.mmPerInch;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.mmTargetHeight;
 
 /** Teddy, trust my code, you blasphemer. */
-
-/**
- *
- */
 public class VuforiaSystem {
 
     private VuforiaLocalizer vuforiaLocalizer;
-    private OpenGLMatrix lastLocation = null; // class members
+    private OpenGLMatrix lastLocation; // class members
     public static VuforiaTrackables targetsUltGoal;
     public static VuforiaTrackable redAllianceTarget;
     VuforiaTrackableDefaultListener listener;

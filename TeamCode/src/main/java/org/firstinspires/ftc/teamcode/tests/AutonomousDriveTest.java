@@ -93,9 +93,10 @@ public class AutonomousDriveTest extends BaseOpMode {
             case CALIBRATE_LOCATION:
                 if (trajectoryFinished) {
                     deliveredFirstWobble = true;
-                    calibrateLocation();
-                    shootingSystem.warmUp(Target.POWER_SHOT);
-//                    newGameState(GameState.POWERSHOT);
+                    if (calibrateLocation()) {
+                        shootingSystem.warmUp(Target.POWER_SHOT);
+//                        newGameState(GameState.POWERSHOT);
+                    }
                 }
                 break;
 
@@ -163,11 +164,15 @@ public class AutonomousDriveTest extends BaseOpMode {
      * Because camera is sideways, the x offset corresponds to y coordinates and visa versa
      * Vuforia is in millimeters and everything else is in inches
      */
-    private void calibrateLocation() {
+    private boolean calibrateLocation() {
         double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - Constants.tileWidth);
         double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset() / Constants.mmPerInch;
         Log.d("CALIBRATION", "xUpdate == " + xUpdate);
         Log.d("CALIBRATION", "yUpdate == " + yUpdate);
-        roadRunnerDriveSystem.setPoseEstimate(new Pose2d(xUpdate, yUpdate));
+        if (!Double.isNaN(xUpdate) && Double.isNaN(yUpdate)) {
+            roadRunnerDriveSystem.setPoseEstimate(new Pose2d(xUpdate, yUpdate));
+            return true;
+        }
+        return false;
     }
 }

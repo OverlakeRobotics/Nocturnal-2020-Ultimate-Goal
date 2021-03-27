@@ -88,9 +88,9 @@ public class Constants {
     }
 
     //Camera
-    public static final float CAMERA_FORWARD_DISPLACEMENT = 8.625f * mmPerInch;   // eg: Camera is 8.625 Inches in front of robot-center
-    public static final float CAMERA_VERTICAL_DISPLACEMENT = 1.875f * mmPerInch;   // eg: Camera is 1.875 Inches above ground
-    public static final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
+    public static final float CAMERA_FORWARD_DISPLACEMENT = 0;   // Position of the camera relative to the length
+    public static final float CAMERA_VERTICAL_DISPLACEMENT = 1.875f * mmPerInch;   // Position of the camera relative to the ground
+    public static final float CAMERA_LEFT_DISPLACEMENT = 8.625f * mmPerInch;     // Position of the camera relative to the width
 
     //Field
     public static final int tileWidth = 24;

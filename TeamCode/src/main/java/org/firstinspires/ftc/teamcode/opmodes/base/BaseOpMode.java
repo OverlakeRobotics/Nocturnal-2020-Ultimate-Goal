@@ -135,7 +135,7 @@ public abstract class BaseOpMode extends OpMode {
     @Override
     public void stop() {
         if (vuforia != null) {
-            vuforia.disable();
+            vuforia.deactivate();
         }
 
         if (shootingSystem != null) {

@@ -15,6 +15,7 @@ public class Constants {
 
     private final static int CPS_STEP = 0x10000;
 
+    public static final float mmPerInch = 25.4f;                    // constant for converting measurements from inches to millimeters
     public static int TICKS_PER_REV = 2400;
     public static int TICKS_PER_REV_SHOOTER = 103;
     public static double WHEEL_RADIUS = 1; // in
@@ -86,11 +87,15 @@ public class Constants {
         return 32767 * 60.0 / (MAX_RPM * TICKS_PER_REV);
     }
 
+    //Camera
+    public static final float CAMERA_FORWARD_DISPLACEMENT = 8.625f * mmPerInch;   // eg: Camera is 8.625 Inches in front of robot-center
+    public static final float CAMERA_VERTICAL_DISPLACEMENT = 1.875f * mmPerInch;   // eg: Camera is 1.875 Inches above ground
+    public static final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
+
     //Field
     public static final int tileWidth = 24;
 
     //Vuforia
-    public static final float mmPerInch = 25.4f;                    // constant for converting measurements from inches to millimeters
     public static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
     public static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
     public static final float quadField = 36 * mmPerInch;

@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.BuildConfig;
+import org.firstinspires.ftc.teamcode.helpers.Constants;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
@@ -27,7 +28,7 @@ public class VuforiaSystem {
     private OpenGLMatrix lastLocation; // class members
     public static VuforiaTrackables targetsUltGoal;
     public static VuforiaTrackable redAllianceTarget;
-    VuforiaTrackableDefaultListener listener;
+    private VuforiaTrackableDefaultListener listener;
     private static VuforiaSystem instance;
     private static final VuforiaLocalizer.CameraDirection CAMERA_DIRECTION = VuforiaLocalizer.CameraDirection.BACK;
 
@@ -60,8 +61,8 @@ public class VuforiaSystem {
     }
 
     /**
-     *
-     * @param webcamName
+     * Initializes the vuforia localizer
+     * @param webcamName to use for init
      */
     private void initVuforiaLocalizer(WebcamName webcamName) {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
@@ -76,22 +77,20 @@ public class VuforiaSystem {
     }
 
     /**
-     *
-     * @param webcamName
+     * Initializes the UltsGoal
+     * @param webcamName of the webcam to use
      */
     private void initUltsGoal(WebcamName webcamName) {
         // TODO most likely will need to end up establishing precise positions in the future
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
         float phoneXRotate = 0;
         float phoneYRotate = 0;
         float phoneZRotate = 0;
 
+        //TODO fix these coordinates
         OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .translation(Constants.CAMERA_FORWARD_DISPLACEMENT, Constants.CAMERA_LEFT_DISPLACEMENT, Constants.CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
         targetsUltGoal = vuforiaLocalizer.loadTrackablesFromAsset("UltimateGoal");
@@ -113,24 +112,23 @@ public class VuforiaSystem {
     }
 
     /**
-     *
-     * @return
+     * @return current vuforia localizer
      */
     public VuforiaLocalizer getVuforiaLocalizer() {
         return vuforiaLocalizer;
     }
 
     /**
-     *
+     * Activates vuforia and sets up targetUltGoal
      */
     public void activate() {
         targetsUltGoal.activate();
     }
 
     /**
-     *
+     * Deactivates vuforia completely
      */
-    public void disable() {
+    public void deactivate() {
         targetsUltGoal.deactivate();
         instance = null;
     }
@@ -140,12 +138,8 @@ public class VuforiaSystem {
      * Index 1: Vertical distance from target relative to the robot]
      */
     public float getXOffset() {
-        if (listener.isVisible()) {
-            Log.d("CALIBRATION", "target visible");
-//            lastLocation = listener.getUpdatedRobotLocation();
-            Log.d("CALIBRATION", "redAllianceTarget == " + redAllianceTarget.getLocation());
-            Log.d("CALIBRATION", "lastlocation == " + lastLocation);
-            Log.d("CALIBRATION", "x: " + (lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0)));
+        if (lastLocation != null) {
+            Log.d("CALIBRATION", "X Offset == " + (lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0)));
             return lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0);
         }
         return Float.NaN;
@@ -156,12 +150,8 @@ public class VuforiaSystem {
      * @return
      */
     public float getYOffset() {
-        if (listener.isVisible()) {
-            Log.d("CALIBRATION", "target visible");
-            lastLocation = listener.getUpdatedRobotLocation();
-            Log.d("CALIBRATION", "redAllianceTarget == " + redAllianceTarget.getLocation());
-            Log.d("CALIBRATION", "lastlocation == " + lastLocation);
-            Log.d("CALIBRATION", "y: " + (lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1)));
+        if (lastLocation != null) {
+            Log.d("CALIBRATION", "Y Offset == " + (lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1)));
             return lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1);
         }
         return Float.NaN;
@@ -172,8 +162,8 @@ public class VuforiaSystem {
      * @return
      */
     public float getZOffset() {
-        if (listener.isVisible()) {
-            lastLocation = listener.getUpdatedRobotLocation();
+        if (lastLocation != null) {
+            Log.d("CALIBRATION", "Z Offset == " + (lastLocation.getTranslation().get(2) - redAllianceTarget.getLocation().getTranslation().get(2)));
             return lastLocation.getTranslation().get(2) - redAllianceTarget.getLocation().getTranslation().get(2);
         }
         return Float.NaN;
@@ -184,9 +174,16 @@ public class VuforiaSystem {
      * @return
      */
     public VectorF vector() {
-        if (lastLocation == null) {
-            return null;
+        if (listener.isVisible()) {
+            return lastLocation.getTranslation();
         }
-        return lastLocation.getTranslation();
+        return null;
+    }
+
+    public void updateLocation() {
+        OpenGLMatrix proposedPosition = listener.getUpdatedRobotLocation();
+        if (proposedPosition != null) {
+            lastLocation = proposedPosition;
+        }
     }
 }

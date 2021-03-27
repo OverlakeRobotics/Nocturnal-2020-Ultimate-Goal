@@ -166,6 +166,7 @@ public class AutonomousDriveTest extends BaseOpMode {
      * Vuforia is in millimeters and everything else is in inches
      */
     private boolean calibrateLocation() {
+        vuforia.updateLocation();
         double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - Constants.tileWidth);
         double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset() / Constants.mmPerInch;
         Log.d("CALIBRATION", "xUpdate == " + xUpdate);

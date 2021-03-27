@@ -40,6 +40,7 @@ public class AutonomousDriveTest extends BaseOpMode {
     @Override
     public void init() {
         super.init();
+        elapsedTime = new ElapsedTime();
         deliveredFirstWobble = false;
         isTurning = false;
         tensorflow = new Tensorflow();

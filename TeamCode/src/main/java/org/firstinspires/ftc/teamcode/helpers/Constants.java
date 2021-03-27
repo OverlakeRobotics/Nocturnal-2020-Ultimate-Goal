@@ -16,6 +16,7 @@ public class Constants {
     private final static int CPS_STEP = 0x10000;
 
     public static int TICKS_PER_REV = 2400;
+    public static int TICKS_PER_REV_SHOOTER = 103;
     public static double WHEEL_RADIUS = 1; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 

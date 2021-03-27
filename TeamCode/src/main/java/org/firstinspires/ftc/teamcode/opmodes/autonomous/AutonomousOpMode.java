@@ -73,7 +73,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
                 case DELIVER_WOBBLE:
                     if (yeetSystem.placed()) {
-                        yeetSystem.pickedUp();
+                        yeetSystem.pickedUp(!deliveredFirstWobble);
                         newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
                     }
                     break;
@@ -87,12 +87,13 @@ public class AutonomousOpMode extends BaseOpMode {
 
                 case POWERSHOT:
                     if (powerShotRoutine()) {
+                        shootingSystem.shutDown();
                         newGameState(GameState.PICK_UP_SECOND_WOBBLE);
                     }
                     break;
 
                 case PICK_UP_SECOND_WOBBLE:
-                    if (yeetSystem.pickedUp()) {
+                    if (yeetSystem.pickedUp(false)) {
                         newGameState(GameState.DELIVER_WOBBLE);
                     }
                     break;

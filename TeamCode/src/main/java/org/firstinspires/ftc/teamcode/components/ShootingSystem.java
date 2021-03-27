@@ -10,11 +10,7 @@ import org.firstinspires.ftc.teamcode.helpers.Target;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SERVO_WAIT_TIME;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_IDLE_POSITION;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_SHOOT_POSITION;
-import static org.firstinspires.ftc.teamcode.helpers.Constants.TICKS_PER_REV;
-
-/**
- * ShootingSystem.java is
- */
+import static org.firstinspires.ftc.teamcode.helpers.Constants.TICKS_PER_REV_SHOOTER;
 
 public class ShootingSystem {
 
@@ -26,31 +22,25 @@ public class ShootingSystem {
     // ShootingState
     private enum ShootingState {
         IDLE,
-        OPEN,
-        CLOSE
+        SHOOT
     }
     private ShootingState currentShootingState;
 
     // Target
     private Target currentTarget;
 
-    /**
-     * The constructor:
-     * @param motor to rotate the spinning 'thingy' that will launch the disc
-     * @param servo to determine whether the disc is released tangentially
-     *              or remains in rotational motion.
-     */
     public ShootingSystem(DcMotorEx motor, Servo servo) {
         elapsedTime = new ElapsedTime();
         currentShootingState = ShootingState.IDLE;
 
+        motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         this.motor = motor;
         this.servo = servo;
         initMotors();
     }
 
     /**
-     * Initializes the motor and servo.
+     * Initializes the motor and servo
      */
     private void initMotors() {
         // Motors
@@ -84,31 +74,17 @@ public class ShootingSystem {
      */
     public boolean shoot() {
         switch (currentShootingState) {
-            /**
-             *
-             */
             case IDLE:
+                servoIdle();
+                currentShootingState = ShootingState.SHOOT;
                 elapsedTime.reset();
-                currentShootingState = ShootingState.OPEN;
-                servoShoot();
                 break;
-            /**
-             *
-             */
-            case OPEN:
+
+            case SHOOT:
                 if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
-                    elapsedTime.reset();
-                    servoIdle();
-                    currentShootingState = ShootingState.CLOSE;
-                }
-                break;
-            /**
-             *
-             */
-            case CLOSE:
-                if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
-                    elapsedTime.reset();
+                    servoShoot();
                     currentShootingState = ShootingState.IDLE;
+                    elapsedTime.reset();
                 }
                 return true;
         }
@@ -121,7 +97,7 @@ public class ShootingSystem {
      * @param rpm the motor will be set to
      */
     private void setMotorRpm(double rpm) {
-        motor.setVelocity(rpm / 60.0 * TICKS_PER_REV);
+        motor.setVelocity(rpm / 60.0 * TICKS_PER_REV_SHOOTER);
     }
 
     /**

@@ -12,6 +12,10 @@ import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_ID
 import static org.firstinspires.ftc.teamcode.helpers.Constants.SHOOTING_SERVO_SHOOT_POSITION;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.TICKS_PER_REV;
 
+/**
+ * ShootingSystem.java is
+ */
+
 public class ShootingSystem {
 
     // Systems
@@ -30,6 +34,12 @@ public class ShootingSystem {
     // Target
     private Target currentTarget;
 
+    /**
+     * The constructor:
+     * @param motor to rotate the spinning 'thingy' that will launch the disc
+     * @param servo to determine whether the disc is released tangentially
+     *              or remains in rotational motion.
+     */
     public ShootingSystem(DcMotorEx motor, Servo servo) {
         elapsedTime = new ElapsedTime();
         currentShootingState = ShootingState.IDLE;
@@ -40,7 +50,7 @@ public class ShootingSystem {
     }
 
     /**
-     * Initializes the motor and servo
+     * Initializes the motor and servo.
      */
     private void initMotors() {
         // Motors
@@ -74,12 +84,17 @@ public class ShootingSystem {
      */
     public boolean shoot() {
         switch (currentShootingState) {
+            /**
+             *
+             */
             case IDLE:
                 elapsedTime.reset();
                 currentShootingState = ShootingState.OPEN;
                 servoShoot();
                 break;
-
+            /**
+             *
+             */
             case OPEN:
                 if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
                     elapsedTime.reset();
@@ -87,7 +102,9 @@ public class ShootingSystem {
                     currentShootingState = ShootingState.CLOSE;
                 }
                 break;
-
+            /**
+             *
+             */
             case CLOSE:
                 if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
                     elapsedTime.reset();

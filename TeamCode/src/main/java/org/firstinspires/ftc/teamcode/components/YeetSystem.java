@@ -9,6 +9,11 @@ import org.firstinspires.ftc.teamcode.helpers.Constants;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * YeetSystem is a conponent which
+ *
+ * ArmState
+ */
 public class YeetSystem {
 
     // Arm State

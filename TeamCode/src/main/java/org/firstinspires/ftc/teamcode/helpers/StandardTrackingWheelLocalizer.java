@@ -10,7 +10,13 @@ import org.firstinspires.ftc.teamcode.components.Encoder;
 import java.util.Arrays;
 import java.util.List;
 
-/*
+
+/**
+ *
+ */
+
+
+/**
  * Sample tracking wheel localizer implementation assuming the standard configuration:
  *
  *    /--------------\
@@ -23,6 +29,7 @@ import java.util.List;
  *    \--------------/
  *
  */
+
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 2400;
     public static double WHEEL_RADIUS = 1; // in
@@ -35,6 +42,11 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     public static double Y_MULTIPLIER = 1.0;
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
+
+    /**
+     *
+     * @param hardwareMap
+     */
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
@@ -53,20 +65,41 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         frontEncoder.setDirection(Encoder.Direction.REVERSE);
     }
 
+    /**
+     *
+     * @param ticks
+     * @return
+     */
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
 
+    /**
+     *
+     * @return
+     */
     public double leftEncoderValue() { return leftEncoder.getCurrentPosition(); }
 
+    /**
+     *
+     * @return
+     */
     public double rightEncoderValue() {
         return rightEncoder.getCurrentPosition();
     }
 
+    /**
+     *
+     * @return
+     */
     public double frontEncoderValue() {
         return frontEncoder.getCurrentPosition();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
@@ -76,6 +109,10 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         );
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<Double> getWheelVelocities() {
         // TODO: If your encoder velocity can exceed 32767 counts / second (such as the REV Through Bore and other

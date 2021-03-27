@@ -19,6 +19,10 @@ import static org.firstinspires.ftc.teamcode.helpers.Constants.mmPerInch;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.mmTargetHeight;
 
 /** Teddy, trust my code, you blasphemer. */
+
+/**
+ *
+ */
 public class VuforiaSystem {
 
     private VuforiaLocalizer vuforiaLocalizer;
@@ -28,21 +32,38 @@ public class VuforiaSystem {
     private static VuforiaSystem instance;
     private static final VuforiaLocalizer.CameraDirection CAMERA_DIRECTION = VuforiaLocalizer.CameraDirection.BACK;
 
+    /**
+     *
+     * @param webcamName
+     * @return
+     */
     public static VuforiaSystem getInstance(WebcamName webcamName) {
         if (instance == null) instance = new VuforiaSystem(webcamName);
         return instance;
     }
 
+    /**
+     *
+     * @return
+     */
     public static VuforiaSystem getInstance() {
         if (instance == null) instance = new VuforiaSystem(null);
         return instance;
     }
 
+    /**
+     *
+     * @param webcamName
+     */
     private VuforiaSystem(WebcamName webcamName) {
         initVuforiaLocalizer(webcamName);
         initUltsGoal(webcamName);
     }
 
+    /**
+     *
+     * @param webcamName
+     */
     private void initVuforiaLocalizer(WebcamName webcamName) {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = BuildConfig.NOCTURNAL_VUFORIA_KEY;
@@ -55,6 +76,10 @@ public class VuforiaSystem {
         vuforiaLocalizer = ClassFactory.getInstance().createVuforia(parameters);
     }
 
+    /**
+     *
+     * @param webcamName
+     */
     private void initUltsGoal(WebcamName webcamName) {
         // TODO most likely will need to end up establishing precise positions in the future
         // Next, translate the camera lens to where it is on the robot.
@@ -90,14 +115,24 @@ public class VuforiaSystem {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public VuforiaLocalizer getVuforiaLocalizer() {
         return vuforiaLocalizer;
     }
 
+    /**
+     *
+     */
     public void activate() {
         targetsUltGoal.activate();
     }
 
+    /**
+     *
+     */
     public void disable() {
         targetsUltGoal.deactivate();
         instance = null;
@@ -115,6 +150,10 @@ public class VuforiaSystem {
         return Float.NaN;
     }
 
+    /**
+     *
+     * @return
+     */
     public float getYOffset() {
         VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener());
         if (listener.isVisible()) {
@@ -123,6 +162,10 @@ public class VuforiaSystem {
         return Float.NaN;
     }
 
+    /**
+     *
+     * @return
+     */
     public float getZOffset() {
         VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener());
         if (listener.isVisible()) {
@@ -131,6 +174,10 @@ public class VuforiaSystem {
         return Float.NaN;
     }
 
+    /**
+     *
+     * @return
+     */
     public VectorF vector() {
         if (lastLocation == null) {
             return null;

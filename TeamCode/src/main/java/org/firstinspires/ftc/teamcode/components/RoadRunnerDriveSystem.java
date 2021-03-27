@@ -40,6 +40,10 @@ import static org.firstinspires.ftc.teamcode.helpers.Constants.kA;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.kStatic;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.kV;
 
+/**
+ *
+ */
+
 public class RoadRunnerDriveSystem extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(12, .3, .2);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(12, .3, .2);
@@ -78,6 +82,10 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     private boolean mPathComplete = false;
     public static final double SLOW_DRIVE_COEFF = 0.4;
 
+    /**
+     *
+     * @param hardwareMap
+     */
     public RoadRunnerDriveSystem(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -135,6 +143,10 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         setLocalizer(standardTrackingWheelLocalizer);
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<DcMotorEx> getMotors(){
         ArrayList<DcMotorEx> list = new ArrayList<DcMotorEx>();
         list.add(leftFront);
@@ -144,6 +156,10 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         return list;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Double> getEncoders() {
         return new ArrayList<Double>(
                 Arrays.asList(standardTrackingWheelLocalizer.leftEncoderValue(),
@@ -151,18 +167,39 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
                 standardTrackingWheelLocalizer.frontEncoderValue()));
     }
 
+    /**
+     *
+     * @param startPose
+     * @return
+     */
     public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, constraints);
     }
 
+    /**
+     *
+     * @param startPose
+     * @param reversed
+     * @return
+     */
     public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
         return new TrajectoryBuilder(startPose, reversed, constraints);
     }
 
+    /**
+     *
+     * @param startPose
+     * @param startHeading
+     * @return
+     */
     public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
         return new TrajectoryBuilder(startPose, startHeading, constraints);
     }
 
+    /**
+     *
+     * @param angle
+     */
     public void turnAsync(double angle) {
         double heading = getPoseEstimate().getHeading();
 
@@ -180,21 +217,37 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         mode = Mode.TURN;
     }
 
+    /**
+     *
+     * @param angle
+     */
     public void turn(double angle) {
         turnAsync(angle);
         waitForIdle();
     }
 
+    /**
+     *
+     * @param trajectory
+     */
     public void followTrajectory(Trajectory trajectory) {
         followTrajectoryAsync(trajectory);
         waitForIdle();
     }
 
+    /**
+     *
+     * @param trajectory
+     */
     public void followTrajectoryAsync(Trajectory trajectory) {
         follower.followTrajectory(trajectory);
         mode = Mode.FOLLOW_TRAJECTORY;
     }
 
+    /**
+     *
+     * @return
+     */
     public Pose2d getLastError() {
         switch (mode) {
             case FOLLOW_TRAJECTORY:
@@ -207,6 +260,10 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         throw new AssertionError();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean update() {
         boolean mPathComplete = false;
 
@@ -268,38 +325,67 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         return mPathComplete;
     }
 
+    /**
+     *
+     * @return
+     */
     public Pose2d getPositionEstimate() {
         update();
         return getPoseEstimate();
     }
 
+    /**
+     *
+     */
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy()) {
             update();
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isBusy() {
         return mode != Mode.IDLE;
     }
 
+    /**
+     *
+     * @param runMode
+     */
     public void setMode(DcMotor.RunMode runMode) {
         for (DcMotorEx motor : motors) {
             motor.setMode(runMode);
         }
     }
 
+    /**
+     *
+     * @param zeroPowerBehavior
+     */
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
         for (DcMotorEx motor : motors) {
             motor.setZeroPowerBehavior(zeroPowerBehavior);
         }
     }
 
+    /**
+     *
+     * @param runMode
+     * @return
+     */
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
         PIDFCoefficients coefficients = leftFront.getPIDFCoefficients(runMode);
         return new PIDCoefficients(coefficients.p, coefficients.i, coefficients.d);
     }
 
+    /**
+     *
+     * @param runMode
+     * @param coefficients
+     */
     public void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients) {
         for (DcMotorEx motor : motors) {
             motor.setPIDFCoefficients(runMode, new PIDFCoefficients(
@@ -308,6 +394,10 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         }
     }
 
+    /**
+     *
+     * @param drivePower
+     */
     public void setWeightedDrivePower(Pose2d drivePower) {
         Pose2d vel = drivePower;
 
@@ -337,6 +427,10 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         return wheelPositions;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Double> getWheelVelocities() {
         List<Double> wheelVelocities = new ArrayList<>();
         for (DcMotorEx motor : motors) {
@@ -390,10 +484,19 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         mSlowDrive = false;
     }
 
+    /**
+     *
+     * @param slowDrive
+     */
     public void slowDrive(boolean slowDrive) {
         mSlowDrive = slowDrive;
     }
 
+    /**
+     *
+     * @param motorPower
+     * @return
+     */
     private double getDrivePower( double motorPower) {
         return Range.clip(mSlowDrive ?
                 SLOW_DRIVE_COEFF * motorPower : motorPower, -1, 1);

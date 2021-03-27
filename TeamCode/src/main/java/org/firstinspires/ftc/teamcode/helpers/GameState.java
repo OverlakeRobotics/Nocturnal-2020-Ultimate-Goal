@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.helpers;
 
+/**
+ *
+ */
 public enum GameState {
     INITIAL,//Game starts!
     //Robot uses vuforia with right side camera

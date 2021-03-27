@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.helpers;
 
+/**
+ *
+ */
 public enum Target {
     //TODO Find out powers for each goal
     POWER_SHOT (1000),

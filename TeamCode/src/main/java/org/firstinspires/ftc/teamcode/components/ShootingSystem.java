@@ -18,11 +18,13 @@ public class ShootingSystem {
     private final DcMotorEx motor;
     public final Servo servo;
     private final ElapsedTime elapsedTime;
+    private double targetVelocity;
 
     // ShootingState
     private enum ShootingState {
         IDLE,
-        SHOOT
+        SHOOTING,
+        RESET
     }
     private ShootingState currentShootingState;
 
@@ -75,16 +77,25 @@ public class ShootingSystem {
     public boolean shoot() {
         switch (currentShootingState) {
             case IDLE:
-                servoIdle();
-                currentShootingState = ShootingState.SHOOT;
-                elapsedTime.reset();
+                if (Math.abs(motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0 - targetVelocity) < 50) {
+                    elapsedTime.reset();
+                    currentShootingState = ShootingState.SHOOTING;
+                    servoShoot();
+                }
                 break;
 
-            case SHOOT:
+            case SHOOTING:
                 if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
-                    servoShoot();
-                    currentShootingState = ShootingState.IDLE;
                     elapsedTime.reset();
+                    servoIdle();
+                    currentShootingState = ShootingState.RESET;
+                }
+                break;
+
+            case RESET:
+                if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
+                    elapsedTime.reset();
+                    currentShootingState = ShootingState.IDLE;
                     return true;
                 }
                 break;
@@ -98,6 +109,7 @@ public class ShootingSystem {
      * @param rpm the motor will be set to
      */
     private void setMotorRpm(double rpm) {
+        targetVelocity = rpm;
         motor.setVelocity(rpm / 60.0 * TICKS_PER_REV_SHOOTER);
     }
 

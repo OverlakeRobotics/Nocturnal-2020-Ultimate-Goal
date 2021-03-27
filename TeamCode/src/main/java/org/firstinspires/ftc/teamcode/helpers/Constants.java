@@ -104,7 +104,7 @@ public class Constants {
     public static final float powerShotY = 78;
     // TODO, Find position values.
     public static final double SHOOTING_SERVO_IDLE_POSITION = 0.5;
-    public static final double SHOOTING_SERVO_SHOOT_POSITION = 0.7;
+    public static final double SHOOTING_SERVO_SHOOT_POSITION = 0.3;
 
     Vector2d negativeFirstPowerShotCoordinates = new Vector2d(-4 * tileWidth - (23.5f * 2 + 4.25f - ((44 * 10) / Constants.mmPerInch / 2)), powerShotY);
     public static final Vector2d firstPowerShotCoordinates = new Vector2d(4 * tileWidth - (23.5f * 2 + 4.25f - ((44 * 10) / mmPerInch / 2)), powerShotY);
@@ -121,5 +121,5 @@ public class Constants {
     public static final double RIGHT_ARM_SERVO_CLOSED_POSITION = 0.0;
     public static final double LEFT_ARM_SERVO_OPEN_POSITION = 0.16;
     public static final double RIGHT_ARM_SERVO_OPEN_POSITION = 0.4;
-    public static final int SERVO_WAIT_TIME = 500;
+    public static final int SERVO_WAIT_TIME = 250;
 }

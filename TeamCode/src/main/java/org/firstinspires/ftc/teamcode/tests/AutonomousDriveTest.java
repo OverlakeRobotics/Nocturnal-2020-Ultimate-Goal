@@ -30,6 +30,7 @@ public class AutonomousDriveTest extends BaseOpMode {
     private static TargetDropBox targetRegion;
     private boolean deliveredFirstWobble;
     private boolean isTurning;
+    private ElapsedTime elapsedTime;
 
     // Systems
     private Tensorflow tensorflow;
@@ -37,6 +38,7 @@ public class AutonomousDriveTest extends BaseOpMode {
     @Override
     public void init() {
         super.init();
+        elapsedTime = new ElapsedTime();
         deliveredFirstWobble = false;
         isTurning = false;
         tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));

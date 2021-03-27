@@ -33,9 +33,8 @@ public class VuforiaSystem {
     private static final VuforiaLocalizer.CameraDirection CAMERA_DIRECTION = VuforiaLocalizer.CameraDirection.BACK;
 
     /**
-     *
-     * @param webcamName
-     * @return
+     * @param webcamName to use for vuforia
+     * @return instance of vuforia singleton
      */
     public static VuforiaSystem getInstance(WebcamName webcamName) {
         if (instance == null) instance = new VuforiaSystem(webcamName);
@@ -43,8 +42,7 @@ public class VuforiaSystem {
     }
 
     /**
-     *
-     * @return
+     * @return instance of vuforia singleton
      */
     public static VuforiaSystem getInstance() {
         if (instance == null) instance = new VuforiaSystem(null);
@@ -52,8 +50,8 @@ public class VuforiaSystem {
     }
 
     /**
-     *
-     * @param webcamName
+     * Constructor
+     * @param webcamName to use for init
      */
     private VuforiaSystem(WebcamName webcamName) {
         initVuforiaLocalizer(webcamName);
@@ -119,7 +117,7 @@ public class VuforiaSystem {
     }
 
     /**
-     * Activates vuforia and sets up targetUltGoal
+     * Activates vuforia and sets up targetsUltGoal
      */
     public void activate() {
         targetsUltGoal.activate();
@@ -135,7 +133,8 @@ public class VuforiaSystem {
 
     /**
      * Index 0: Rotation of the target relative to the robot
-     * Index 1: Vertical distance from target relative to the robot]
+     * Index 1: Vertical distance from target relative to the robot
+     * @return x offset
      */
     public float getXOffset() {
         if (lastLocation != null) {
@@ -147,7 +146,7 @@ public class VuforiaSystem {
 
     /**
      *
-     * @return
+     * @return y offset
      */
     public float getYOffset() {
         if (lastLocation != null) {
@@ -159,7 +158,7 @@ public class VuforiaSystem {
 
     /**
      *
-     * @return
+     * @return z offset
      */
     public float getZOffset() {
         if (lastLocation != null) {
@@ -171,7 +170,7 @@ public class VuforiaSystem {
 
     /**
      *
-     * @return
+     * @return vector of the robot's last location
      */
     public VectorF vector() {
         if (listener.isVisible()) {
@@ -180,6 +179,9 @@ public class VuforiaSystem {
         return null;
     }
 
+    /**
+     * Updates the robot's current position if there is a new position
+     */
     public void updateLocation() {
         OpenGLMatrix proposedPosition = listener.getUpdatedRobotLocation();
         if (proposedPosition != null) {

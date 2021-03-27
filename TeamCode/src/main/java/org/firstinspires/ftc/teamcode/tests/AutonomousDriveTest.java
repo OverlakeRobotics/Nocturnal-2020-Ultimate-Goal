@@ -8,122 +8,125 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
+import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.helpers.PowerShotState;
 import org.firstinspires.ftc.teamcode.helpers.Target;
+import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
+import org.firstinspires.ftc.teamcode.helpers.Trajectories;
+import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 @Autonomous(name = "AutonomousDriveTest", group = "Autonomous")
-public class AutonomousDriveTest extends OpMode {
+public class AutonomousDriveTest extends BaseOpMode {
+
+    //TODO add method that keeps looping until see target
+    //TODO make sure CALIBRATE_LOCATION is moving onto the next state
 
     // Variables
-    protected GameState currentGameState;
-
-    // Variables
-    protected Pose2d currentPosition;
+    private GameState currentGameState;                         // Current GameState Machine GameState.
+    private static TargetDropBox targetRegion;
+    private boolean deliveredFirstWobble;
+    private boolean isTurning;
 
     // Systems
-//    protected RoadRunnerDriveSystem roadRunnerDriveSystem;
-//    protected YeetSystem yeetSystem;
-    protected ShootingSystem shootingSystem;
-    protected YeetSystem yeetSystem;
-    protected ElapsedTime elapsedTime;
+    private Tensorflow tensorflow;
 
     @Override
     public void init() {
-        this.msStuckDetectInit = 20000;
-        this.msStuckDetectInitLoop = 20000;
-        elapsedTime = new ElapsedTime();
-
-        currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
-
-        //Initialize RoadRunner
-        try {
-//            roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
-//            roadRunnerDriveSystem.setPoseEstimate(currentPosition);
-        } catch (Exception e) {
-            telemetry.addData(Constants.ROBOT_SYSTEM_ERROR, e.getStackTrace());
-        }
-
-        shootingSystem = new ShootingSystem(hardwareMap.get(DcMotorEx.class, "ShootingSystem"), hardwareMap.get(Servo.class, "ShootingSystemServo"));
-
-        yeetSystem = new YeetSystem(hardwareMap.get(DcMotorEx.class, "YeetSystem"), hardwareMap.get(Servo.class, "LeftArmServo"), hardwareMap.get(Servo.class, "RightArmServo"));
+        super.init();
+        deliveredFirstWobble = false;
+        isTurning = false;
+        tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        tensorflow.activate();
         newGameState(GameState.INITIAL);
     }
 
     @Override
     public void init_loop() {
-
+        targetRegion = tensorflow.getTargetRegion();
     }
 
     @Override
     public void start() {
+        tensorflow.shutdown();
         super.start();
     }
 
     @Override
     public void loop() {
+//        vuforiaData();
         telemetry.addData("GameState", currentGameState);
-
-
-        // Makes sure the trajectory is finished before doing anything else
-//        boolean trajectoryFinished = roadRunnerDriveSystem.update();
-//        Pose2d poseEstimate = roadRunnerDriveSystem.getPoseEstimate();
-//        telemetry.addData("x", poseEstimate.getX());
-//        telemetry.addData("y", poseEstimate.getY());
-//        telemetry.addData("heading", poseEstimate.getHeading());
         telemetry.update();
 
-        switch (currentGameState) {
-            case INITIAL:
-                // Initialize
-                elapsedTime.reset();
-                newGameState(GameState.DELIVER_WOBBLE);
-                shootingSystem.warmUp(Target.POWER_SHOT);
-                break;
+        trajectoryFinished = currentGameState == GameState.INITIAL || roadRunnerDriveSystem.update();
 
-            case DELIVER_WOBBLE:
-                if (elapsedTime.milliseconds() > 250) {
+        // Makes sure the trajectory is finished before doing anything else
+        if (trajectoryFinished) {
+            switch (currentGameState) {
+                case INITIAL:
+                    // Initialize
                     newGameState(GameState.CALIBRATE_LOCATION);
-                }
+                    break;
 
-                break;
+                case AVOID_RINGS:
+                    if (!isTurning) {
+                        roadRunnerDriveSystem.turnAsync(-Math.PI / 2);
+                        isTurning = true;
+                    } else if (roadRunnerDriveSystem.update()) {
+                        isTurning = false;
+                        newGameState(GameState.DELIVER_WOBBLE);
+                    }
+                    break;
 
-            case CALIBRATE_LOCATION:
-                if (shootingSystem.shoot()) {
+                case DELIVER_WOBBLE:
+                    if (yeetSystem.placed()) {
+                        yeetSystem.pickedUp(!deliveredFirstWobble);
+                        newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
+                    }
+                    break;
+
+                case CALIBRATE_LOCATION:
+                    deliveredFirstWobble = true;
+
+                    //TODO this method never finishes executing and we need to see why
+                    calibrateLocation();
+                    shootingSystem.warmUp(Target.POWER_SHOT);
+                    newGameState(GameState.POWERSHOT);
+                    break;
+
+                case POWERSHOT:
+                    if (powerShotRoutine()) {
+                        shootingSystem.shutDown();
+                        newGameState(GameState.PICK_UP_SECOND_WOBBLE);
+                    }
+                    break;
+
+                case PICK_UP_SECOND_WOBBLE:
+                    if (yeetSystem.pickedUp(false)) {
+                        newGameState(GameState.DELIVER_WOBBLE);
+                    }
+                    break;
+
+                case RETURN_TO_NEST:
                     newGameState(GameState.COMPLETE);
-                }
-                break;
+                    break;
 
-
-            case POWERSHOT:
-                //TODO do the powershot routine
-                newGameState(GameState.PICK_UP_SECOND_WOBBLE);
-                break;
-
-            case PICK_UP_SECOND_WOBBLE:
-                //TODO drive to the second wobble goal
-                newGameState(GameState.RETURN_TO_NEST);
-                break;
-
-
-            case RETURN_TO_NEST:
-                //TODO drive back to nest
-                newGameState(GameState.COMPLETE);
-                break;
-
-            case COMPLETE:
-                //TODO park the robot, shut down system, and release used resources
-                stop();
-                break;
+                case COMPLETE:
+                    stop();
+                    break;
+            }
         }
     }
 
     @Override
     public void stop() {
-
+        super.stop();
+        if (tensorflow != null) {
+            tensorflow.shutdown();
+        }
     }
 
     /**
@@ -132,5 +135,34 @@ public class AutonomousDriveTest extends OpMode {
      */
     protected void newGameState(GameState newGameState) {
         currentGameState = newGameState;
+        currentPosition = roadRunnerDriveSystem.getPositionEstimate();
+
+        if (currentGameState == GameState.DELIVER_WOBBLE) {
+            trajectory = Trajectories.getTrajectory(targetRegion, currentPosition);
+        }
+
+        //TODO test code
+        else if (currentGameState == GameState.CALIBRATE_LOCATION) {
+            trajectory = null;
+        }
+
+        else {
+            trajectory = Trajectories.getTrajectory(currentGameState, currentPosition);
+        }
+
+        if (trajectory != null) {
+            roadRunnerDriveSystem.followTrajectoryAsync(trajectory);
+        }
+    }
+
+    /**
+     * Calibrates RoadRunner using Vuforia data
+     * Because camera is sideways, the x offset corresponds to y coordinates and visa versa
+     * Vuforia is in millimeters and everything else is in inches
+     */
+    private void calibrateLocation() {
+        double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - Constants.tileWidth);
+        double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset() / Constants.mmPerInch;
+        roadRunnerDriveSystem.setPoseEstimate(new Pose2d(xUpdate, yUpdate));
     }
 }

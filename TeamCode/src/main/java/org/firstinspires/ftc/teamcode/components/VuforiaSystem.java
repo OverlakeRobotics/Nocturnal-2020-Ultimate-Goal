@@ -25,6 +25,7 @@ public class VuforiaSystem {
     private OpenGLMatrix lastLocation = null; // class members
     public static VuforiaTrackables targetsUltGoal;
     public static VuforiaTrackable redAllianceTarget;
+    VuforiaTrackableDefaultListener listener;
     private static VuforiaSystem instance;
     private static final VuforiaLocalizer.CameraDirection CAMERA_DIRECTION = VuforiaLocalizer.CameraDirection.BACK;
 
@@ -74,20 +75,18 @@ public class VuforiaSystem {
 
         redAllianceTarget = targetsUltGoal.get(2);
         redAllianceTarget.setName("Red Alliance");
+        listener = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener());
         if (webcamName == null) {
-            ((VuforiaTrackableDefaultListener) redAllianceTarget.getListener()).setPhoneInformation(robotFromCamera, VuforiaLocalizer.CameraDirection.BACK);
+            listener.setPhoneInformation(robotFromCamera, VuforiaLocalizer.CameraDirection.BACK);
         } else {
-            ((VuforiaTrackableDefaultListener) redAllianceTarget.getListener()).setCameraLocationOnRobot(webcamName, robotFromCamera);
+            listener.setCameraLocationOnRobot(webcamName, robotFromCamera);
         }
 
         redAllianceTarget.setLocation(OpenGLMatrix
                 .translation(0, 0, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
 
-        OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener()).getUpdatedRobotLocation();
-        if (robotLocationTransform != null) {
-            lastLocation = robotLocationTransform;
-        }
+        lastLocation = listener.getUpdatedRobotLocation();
     }
 
     public VuforiaLocalizer getVuforiaLocalizer() {
@@ -108,23 +107,22 @@ public class VuforiaSystem {
      * Index 1: Vertical distance from target relative to the robot]
      */
     public float getXOffset() {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener());
         if (listener.isVisible()) {
+            lastLocation = listener.getUpdatedRobotLocation();
             return lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0);
         }
         return Float.NaN;
     }
 
     public float getYOffset() {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener());
         if (listener.isVisible()) {
+            lastLocation = listener.getUpdatedRobotLocation();
             return lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1);
         }
         return Float.NaN;
     }
 
     public float getZOffset() {
-        VuforiaTrackableDefaultListener listener = ((VuforiaTrackableDefaultListener)redAllianceTarget.getListener());
         if (listener.isVisible()) {
             return lastLocation.getTranslation().get(2) - redAllianceTarget.getLocation().getTranslation().get(2);
         }

@@ -22,7 +22,6 @@ public class ShootingSystem {
     // ShootingState
     private enum ShootingState {
         IDLE,
-        SERVO_IDLE,
         SHOOT
     }
     private ShootingState currentShootingState;

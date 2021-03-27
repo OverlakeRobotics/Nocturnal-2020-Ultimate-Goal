@@ -109,8 +109,7 @@ public abstract class BaseOpMode extends OpMode {
      * @param nextState if an update of status is needed
      */
     private void updateStatus(PowerShotState nextState) {
-        if (atShootingPosition()) {
-            shootingSystem.shoot();
+        if (atShootingPosition() && shootingSystem.shoot()) {
             powerShotState = nextState;
             updateShotTrajectory();
         }

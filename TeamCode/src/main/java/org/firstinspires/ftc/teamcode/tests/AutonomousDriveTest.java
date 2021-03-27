@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -63,56 +65,62 @@ public class AutonomousDriveTest extends BaseOpMode {
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
 
-        trajectoryFinished = currentGameState == GameState.INITIAL || currentGameState == GameState.CALIBRATE_LOCATION || roadRunnerDriveSystem.update();
+        if (currentGameState == GameState.CALIBRATE_LOCATION) trajectoryFinished = true;
 
-        if (trajectoryFinished) {
-            switch (currentGameState) {
-                case INITIAL:
-                    // Initialize
-                    elapsedTime.reset();
-                    shootingSystem.warmUp(Target.POWER_SHOT);
+        switch (currentGameState) {
+            case INITIAL:
+                // Initialize
+                newGameState(GameState.CALIBRATE_LOCATION);
+                break;
+
+            case AVOID_RINGS:
+                if (trajectoryFinished && !isTurning) {
+                    roadRunnerDriveSystem.turnAsync(-Math.PI / 2);
+                    isTurning = true;
+                } else if (roadRunnerDriveSystem.update()) {
+                    isTurning = false;
                     newGameState(GameState.DELIVER_WOBBLE);
-                    break;
+                }
+                break;
 
-                case DELIVER_WOBBLE:
-                    if (elapsedTime.seconds() > 1) {
-                        newGameState(GameState.CALIBRATE_LOCATION);
-                    }
-                    break;
+            case DELIVER_WOBBLE:
+                if (trajectoryFinished && yeetSystem.placed()) {
+                    yeetSystem.pickedUp(!deliveredFirstWobble);
+                    newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
+                }
+                break;
 
-                case CALIBRATE_LOCATION:
-                    if (shootingSystem.shoot()) {
-                        newGameState(GameState.POWERSHOT);
-                    }
-                    break;
+            case CALIBRATE_LOCATION:
+                if (trajectoryFinished) {
+                    deliveredFirstWobble = true;
+                    calibrateLocation();
+                    shootingSystem.warmUp(Target.POWER_SHOT);
+                    newGameState(GameState.POWERSHOT);
+                }
+                break;
 
-
-                case POWERSHOT:
-                    //TODO do the powershot routine
-                    if (shootingSystem.shoot()) {
-                        newGameState(GameState.PICK_UP_SECOND_WOBBLE);
-                    }
-                    break;
-
-                case PICK_UP_SECOND_WOBBLE:
-                    //TODO drive to the second wobble goal
-                    if (shootingSystem.shoot()) {
-                        newGameState(GameState.COMPLETE);
-                    }
-                    break;
-
-
-                case RETURN_TO_NEST:
-                    //TODO drive back to nest
-                    newGameState(GameState.COMPLETE);
-                    break;
-
-                case COMPLETE:
-                    //TODO park the robot, shut down system, and release used resources
-                    stop();
+            case POWERSHOT:
+                if (powerShotRoutine()) {
                     shootingSystem.shutDown();
-                    break;
-            }
+                    newGameState(GameState.PICK_UP_SECOND_WOBBLE);
+                }
+                break;
+
+            case PICK_UP_SECOND_WOBBLE:
+                if (trajectoryFinished && yeetSystem.pickedUp(false)) {
+                    newGameState(GameState.DELIVER_WOBBLE);
+                }
+                break;
+
+            case RETURN_TO_NEST:
+                if (trajectoryFinished) {
+                    newGameState(GameState.COMPLETE);
+                }
+                break;
+
+            case COMPLETE:
+                stop();
+                break;
         }
     }
 
@@ -158,6 +166,8 @@ public class AutonomousDriveTest extends BaseOpMode {
     private void calibrateLocation() {
         double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - Constants.tileWidth);
         double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset() / Constants.mmPerInch;
+        Log.d("CALIBRATION", "xUpdate == " + xUpdate);
+        Log.d("CALIBRATION", "yUpdate == " + yUpdate);
         roadRunnerDriveSystem.setPoseEstimate(new Pose2d(xUpdate, yUpdate));
     }
 }

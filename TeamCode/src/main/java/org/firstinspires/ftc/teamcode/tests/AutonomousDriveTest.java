@@ -30,6 +30,7 @@ public class AutonomousDriveTest extends BaseOpMode {
     private static TargetDropBox targetRegion;
     private boolean deliveredFirstWobble;
     private boolean isTurning;
+    private ElapsedTime elapsedTime;
 
     // Systems
     private Tensorflow tensorflow;
@@ -40,6 +41,7 @@ public class AutonomousDriveTest extends BaseOpMode {
         deliveredFirstWobble = false;
         isTurning = false;
         tensorflow = new Tensorflow();
+        elapsedTime = new ElapsedTime();
         tensorflow.activate();
         newGameState(GameState.INITIAL);
     }
@@ -63,59 +65,52 @@ public class AutonomousDriveTest extends BaseOpMode {
 
         trajectoryFinished = currentGameState == GameState.INITIAL || currentGameState == GameState.CALIBRATE_LOCATION || roadRunnerDriveSystem.update();
 
-        // Makes sure the trajectory is finished before doing anything else
         if (trajectoryFinished) {
             switch (currentGameState) {
                 case INITIAL:
                     // Initialize
-                    newGameState(GameState.CALIBRATE_LOCATION);
-                    break;
-
-                case AVOID_RINGS:
-                    if (!isTurning) {
-                        roadRunnerDriveSystem.turnAsync(-Math.PI / 2);
-                        isTurning = true;
-                    } else if (roadRunnerDriveSystem.update()) {
-                        isTurning = false;
-                        newGameState(GameState.DELIVER_WOBBLE);
-                    }
+                    elapsedTime.reset();
+                    shootingSystem.warmUp(Target.POWER_SHOT);
+                    newGameState(GameState.DELIVER_WOBBLE);
                     break;
 
                 case DELIVER_WOBBLE:
-                    if (yeetSystem.placed()) {
-                        yeetSystem.pickedUp(!deliveredFirstWobble);
-                        newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
+                    if (elapsedTime.seconds() > 1) {
+                        newGameState(GameState.CALIBRATE_LOCATION);
                     }
                     break;
 
                 case CALIBRATE_LOCATION:
-                    deliveredFirstWobble = true;
-
-                    //TODO this method never finishes executing and we need to see why
-                    calibrateLocation();
-                    shootingSystem.warmUp(Target.POWER_SHOT);
-                    newGameState(GameState.POWERSHOT);
+                    if (shootingSystem.shoot()) {
+                        newGameState(GameState.POWERSHOT);
+                    }
                     break;
 
+
                 case POWERSHOT:
-                    if (powerShotRoutine()) {
-                        shootingSystem.shutDown();
+                    //TODO do the powershot routine
+                    if (shootingSystem.shoot()) {
                         newGameState(GameState.PICK_UP_SECOND_WOBBLE);
                     }
                     break;
 
                 case PICK_UP_SECOND_WOBBLE:
-                    if (yeetSystem.pickedUp(false)) {
-                        newGameState(GameState.DELIVER_WOBBLE);
+                    //TODO drive to the second wobble goal
+                    if (shootingSystem.shoot()) {
+                        newGameState(GameState.COMPLETE);
                     }
                     break;
 
+
                 case RETURN_TO_NEST:
+                    //TODO drive back to nest
                     newGameState(GameState.COMPLETE);
                     break;
 
                 case COMPLETE:
+                    //TODO park the robot, shut down system, and release used resources
                     stop();
+                    shootingSystem.shutDown();
                     break;
             }
         }

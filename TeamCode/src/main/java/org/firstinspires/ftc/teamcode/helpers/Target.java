@@ -5,8 +5,12 @@ package org.firstinspires.ftc.teamcode.helpers;
  */
 public enum Target {
     //TODO Find out powers for each goal
-    POWER_SHOT (60),
-    TOWER_GOAL (60);
+    // 1500
+
+    // 29.5 inches
+    // 63 inches
+    POWER_SHOT (1200),
+    TOWER_GOAL (1200);
 
     private final double rpm;
     Target(double rpm) {

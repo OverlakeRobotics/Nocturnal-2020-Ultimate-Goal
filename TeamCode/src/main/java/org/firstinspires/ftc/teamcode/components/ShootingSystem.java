@@ -85,8 +85,9 @@ public class ShootingSystem {
                     servoShoot();
                     currentShootingState = ShootingState.IDLE;
                     elapsedTime.reset();
+                    return true;
                 }
-                return true;
+                break;
         }
 
         return false;

@@ -97,8 +97,9 @@ public class ShootingSystem {
                 if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
                     elapsedTime.reset();
                     currentShootingState = ShootingState.IDLE;
+                    return true;
                 }
-                return true;
+                break;
         }
 
         return false;

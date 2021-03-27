@@ -80,12 +80,12 @@ public class AutonomousDriveTest extends OpMode {
             case INITIAL:
                 // Initialize
                 elapsedTime.reset();
-                newGameState(GameState.DELIVER_WOBBLE);
                 shootingSystem.warmUp(Target.POWER_SHOT);
+                newGameState(GameState.DELIVER_WOBBLE);
                 break;
 
             case DELIVER_WOBBLE:
-                if (elapsedTime.milliseconds() > 250) {
+                if (elapsedTime.seconds() > 1) {
                     newGameState(GameState.CALIBRATE_LOCATION);
                 }
 
@@ -93,19 +93,23 @@ public class AutonomousDriveTest extends OpMode {
 
             case CALIBRATE_LOCATION:
                 if (shootingSystem.shoot()) {
-                    newGameState(GameState.COMPLETE);
+                    newGameState(GameState.POWERSHOT);
                 }
                 break;
 
 
             case POWERSHOT:
                 //TODO do the powershot routine
-                newGameState(GameState.PICK_UP_SECOND_WOBBLE);
+                if (shootingSystem.shoot()) {
+                    newGameState(GameState.PICK_UP_SECOND_WOBBLE);
+                }
                 break;
 
             case PICK_UP_SECOND_WOBBLE:
                 //TODO drive to the second wobble goal
-                newGameState(GameState.RETURN_TO_NEST);
+                if (shootingSystem.shoot()) {
+                    newGameState(GameState.COMPLETE);
+                }
                 break;
 
 
@@ -117,6 +121,7 @@ public class AutonomousDriveTest extends OpMode {
             case COMPLETE:
                 //TODO park the robot, shut down system, and release used resources
                 stop();
+                shootingSystem.shutDown();
                 break;
         }
     }

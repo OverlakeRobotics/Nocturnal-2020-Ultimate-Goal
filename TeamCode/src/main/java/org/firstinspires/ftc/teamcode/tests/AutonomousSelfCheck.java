@@ -32,7 +32,7 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
     public void init() {
         super.init();
         deliveredFirstWobble = false;
-        tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        tensorflow = new Tensorflow();
         tensorflow.activate();
         newGameState(GameState.INITIAL);
     }
@@ -72,7 +72,7 @@ public class AutonomousSelfCheck extends AutonomousOpMode {
                 intake.stop();
                 newGameState(GameState.TEST_VUFORIA);
             case TEST_VUFORIA:
-                vuforiaData();
+//                vuforiaData();
                 telemetry.addData("GameState", currentGameState);
                 telemetry.update();
                 newGameState(GameState.TEST_TENSORFLOW);

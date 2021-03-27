@@ -8,9 +8,6 @@ import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
 import java.util.EnumMap;
 import java.util.List;
 
-/**
- *
- */
 public class Tensorflow {
 
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
@@ -21,11 +18,10 @@ public class Tensorflow {
 
     /**
      * Constructor for TensorFlow
-     * @param tfodMonitorId monitor ID
      */
-    public Tensorflow(int tfodMonitorId) {
+    public Tensorflow() {
         VuforiaSystem vuforiaSystem = VuforiaSystem.getInstance();
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorId); //creating parameters
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(); //creating parameters
         tfodParameters.minResultConfidence = 0.3f; //minimumConfidenceNecessaryForActingOnDetection
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforiaSystem.getVuforiaLocalizer()); //create objectDetector
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); //loading models

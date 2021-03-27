@@ -35,7 +35,7 @@ public class JUnitTests extends AutonomousSelfCheck {
     public void init() {
         super.init();
         deliveredFirstWobble = false;
-        tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        tensorflow = new Tensorflow();
         tensorflow.activate();
         newGameState(GameState.INITIAL);
     }

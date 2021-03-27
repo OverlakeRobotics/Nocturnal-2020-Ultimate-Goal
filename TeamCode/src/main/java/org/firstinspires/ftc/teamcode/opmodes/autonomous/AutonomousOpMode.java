@@ -29,7 +29,7 @@ public class AutonomousOpMode extends BaseOpMode {
         super.init();
         deliveredFirstWobble = false;
         isTurning = false;
-        tensorflow = new Tensorflow(hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        tensorflow = new Tensorflow();
         tensorflow.activate();
         newGameState(GameState.INITIAL);
     }
@@ -47,7 +47,7 @@ public class AutonomousOpMode extends BaseOpMode {
 
     @Override
     public void loop() {
-        vuforiaData();
+//        vuforiaData();
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
 

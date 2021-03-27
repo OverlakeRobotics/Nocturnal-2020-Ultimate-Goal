@@ -75,15 +75,15 @@ public class ShootingSystem {
     public boolean shoot() {
         switch (currentShootingState) {
             case IDLE:
-                servoIdle();
                 currentShootingState = ShootingState.SHOOT;
+                servoShoot();
                 elapsedTime.reset();
                 break;
 
             case SHOOT:
                 if (elapsedTime.milliseconds() > SERVO_WAIT_TIME) {
-                    servoShoot();
                     currentShootingState = ShootingState.IDLE;
+                    servoIdle();
                     elapsedTime.reset();
                     return true;
                 }

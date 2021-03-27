@@ -42,6 +42,11 @@ public class Encoder {
     private double velocityEstimate;
     private double lastUpdateTime;
 
+    /**
+     *
+     * @param motor
+     * @param clock
+     */
     public Encoder(DcMotorEx motor, NanoClock clock) {
         this.motor = motor;
         this.clock = clock;
@@ -53,10 +58,18 @@ public class Encoder {
         this.lastUpdateTime = clock.seconds();
     }
 
+    /**
+     *
+     * @param motor
+     */
     public Encoder(DcMotorEx motor) {
         this(motor, NanoClock.system());
     }
 
+    /**
+     *
+     * @return
+     */
     public Direction getDirection() {
         return direction;
     }
@@ -82,11 +95,19 @@ public class Encoder {
         return currentPosition;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getRawVelocity() {
         int multiplier = direction.getMultiplier();
         return motor.getVelocity() * multiplier;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getCorrectedVelocity() {
         return inverseOverflow(getRawVelocity(), velocityEstimate);
     }

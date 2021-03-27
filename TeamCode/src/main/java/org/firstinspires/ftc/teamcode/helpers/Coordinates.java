@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.helpers;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
+/**
+ *
+ */
 public enum Coordinates {
     //TODO check and correct these coordinates
     //TODO See if the webcam will still work if the robot starts pressed against the left or right edge of the starting tile
@@ -44,14 +47,26 @@ public enum Coordinates {
         this.y = y;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getX() {
         return x;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getY() {
         return y;
     }
 
+    /**
+     *
+     * @return
+     */
     public Vector2d getCoordinates() {
         return new Vector2d(x, y);
     }

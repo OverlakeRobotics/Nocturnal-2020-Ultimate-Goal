@@ -9,6 +9,11 @@ import org.firstinspires.ftc.teamcode.helpers.Constants;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * YeetSystem is a conponent which
+ *
+ * ArmState
+ */
 public class YeetSystem {
 
     // Arm State
@@ -72,7 +77,7 @@ public class YeetSystem {
      * Picks up the wobble goal
      * @return If the wobble goal is picked up
      */
-    public boolean pickedUp() {
+    public boolean pickedUp(boolean closeServoOnPickup) {
         if (isComplete()) {
             shutDown();
             targetPosition = null;
@@ -83,7 +88,11 @@ public class YeetSystem {
         switch (currentState) {
             case IDLE:
                 elapsedTime.reset();
-                grab();
+                if (closeServoOnPickup) {
+                    grab();
+                } else {
+                    currentState = ArmState.START_ARM;
+                }
                 break;
 
             case GRAB:

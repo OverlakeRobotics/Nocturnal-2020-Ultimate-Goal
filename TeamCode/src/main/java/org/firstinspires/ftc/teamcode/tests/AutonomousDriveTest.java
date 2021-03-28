@@ -167,8 +167,10 @@ public class AutonomousDriveTest extends BaseOpMode {
      */
     private boolean calibrateLocation() {
         vuforia.updateLocation();
+
+        //TODO x value here is not very reliable as it goes further and closer to the target
         double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - Constants.tileWidth);
-        double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset() / Constants.mmPerInch;
+        double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset() / Constants.mmPerInch - 1;
         Log.d("CALIBRATION", "xUpdate == " + xUpdate);
         Log.d("CALIBRATION", "yUpdate == " + yUpdate);
         if (!Double.isNaN(xUpdate) && Double.isNaN(yUpdate)) {

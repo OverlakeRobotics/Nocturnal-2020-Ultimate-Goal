@@ -88,15 +88,15 @@ public class Constants {
     }
 
     //Camera
-    public static final float CAMERA_FORWARD_DISPLACEMENT = 8.625f * mmPerInch;   // eg: Camera is 8.625 Inches in front of robot-center
-    public static final float CAMERA_VERTICAL_DISPLACEMENT = 1.875f * mmPerInch;   // eg: Camera is 1.875 Inches above ground
-    public static final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
+    public static final float CAMERA_FORWARD_DISPLACEMENT = -7.875f * mmPerInch;   // Position of the camera relative to the length
+    public static final float CAMERA_VERTICAL_DISPLACEMENT = 1.875f * mmPerInch;   // Position of the camera relative to the ground
+    public static final float CAMERA_LEFT_DISPLACEMENT = 0;     // Position of the camera relative to the width
 
     //Field
-    public static final int tileWidth = 24;
+    public static final double tileWidth = 23.5;
 
     //Vuforia
-    public static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    public static final float mmTargetHeight = 6.25f * mmPerInch;          // the height of the center of the target image above the floor
     public static final float halfField = 72 * mmPerInch;                  // constants for perimeter targets
     public static final float quadField = 36 * mmPerInch;
 

@@ -158,4 +158,14 @@
 
     <!-- ======================================================================================= -->
 
+    <!-- Logitech HD Webcam C210, Calibrated by -->
+    <Camera vid="Logitech" pid="0x0819">
+        <Calibration
+            size="640 480"
+            focalLength="783.3291f, 779.3704f"
+            principalPoint="324.0457f, 249.6358f"
+            distortionCoefficients="-0.0449369, 1.17277, 0, 0, -3.63244, 0, 0, 0"
+            />
+    </Camera>
+
 </Calibrations>

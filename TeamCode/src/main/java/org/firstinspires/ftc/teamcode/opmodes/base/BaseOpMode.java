@@ -38,7 +38,7 @@ public abstract class BaseOpMode extends OpMode {
         // Variables
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
-        currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), Math.PI);
+        currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY());
         powerShotState = PowerShotState.IDLE;
 
         // Systems

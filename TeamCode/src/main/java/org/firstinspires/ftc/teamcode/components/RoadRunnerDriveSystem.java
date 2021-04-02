@@ -45,8 +45,8 @@ import static org.firstinspires.ftc.teamcode.helpers.Constants.kV;
  */
 
 public class RoadRunnerDriveSystem extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(12, .3, .2);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(12, .3, .2);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(16, 0.2, 0.2);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(16, 0.2, 0.2);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -215,6 +215,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
         turnStart = clock.seconds();
         mode = Mode.TURN;
+        mPathComplete = false;
     }
 
     /**
@@ -242,6 +243,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     public void followTrajectoryAsync(Trajectory trajectory) {
         follower.followTrajectory(trajectory);
         mode = Mode.FOLLOW_TRAJECTORY;
+        mPathComplete = false;
     }
 
     /**
@@ -265,8 +267,6 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
      * @return
      */
     public boolean update() {
-        boolean mPathComplete = false;
-
         updatePoseEstimate();
 
         Pose2d currentPose = getPoseEstimate();

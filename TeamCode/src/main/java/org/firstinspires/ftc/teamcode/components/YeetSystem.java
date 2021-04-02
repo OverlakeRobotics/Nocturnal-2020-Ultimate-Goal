@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -41,8 +43,8 @@ public class YeetSystem {
         this.rightServo = rightServo;
         elapsedTime = new Deadline(Constants.SERVO_WAIT_TIME, TimeUnit.MILLISECONDS);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        currentState = ArmState.IDLE;
         grab();
+        currentState = ArmState.IDLE;
     }
 
 

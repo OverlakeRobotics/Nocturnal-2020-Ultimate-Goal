@@ -21,15 +21,15 @@ public class Constants {
     public static double WHEEL_RADIUS = 1; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 4.212; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = -9.97; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 3.737958; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = 0.13; // in; offset of the lateral wheel
 
     public static double X_MULTIPLIER = 1.0;
     public static double Y_MULTIPLIER = 1.0;
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static final double MAX_RPM = 160;
+    public static final double MAX_RPM = 200;
 
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID, update
@@ -48,7 +48,7 @@ public class Constants {
      */
 
     // TODO
-    public static double TRACK_WIDTH = 3; // in
+    public static double TRACK_WIDTH = 13; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -69,7 +69,7 @@ public class Constants {
      * forces acceleration-limited profiling). All distance units are inches.
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            15, 15, 0.0,
+            30, 30, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 

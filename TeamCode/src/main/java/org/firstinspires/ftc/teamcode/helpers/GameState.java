@@ -7,7 +7,9 @@ public enum GameState {
     INITIAL,//Game starts!
     //Robot uses vuforia with right side camera
     AVOID_RINGS,
+    TURN_FOR_BOXES,
     DELIVER_WOBBLE, //Use roadrunner to go to specified target zone and drop off wobble goal
+    RESET_ARM,
     CALIBRATE_LOCATION,
     POWERSHOT,
     PICK_UP_SECOND_WOBBLE, //Drive to second wobble goal

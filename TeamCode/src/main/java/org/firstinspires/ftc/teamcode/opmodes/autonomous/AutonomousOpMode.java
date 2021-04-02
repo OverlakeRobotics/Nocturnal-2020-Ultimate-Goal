@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -19,7 +21,6 @@ public class AutonomousOpMode extends BaseOpMode {
     private GameState currentGameState;                         // Current GameState Machine GameState.
     private static TargetDropBox targetRegion;
     private boolean deliveredFirstWobble;
-    private boolean isTurning;
 
     // Systems
     private Tensorflow tensorflow;
@@ -28,7 +29,6 @@ public class AutonomousOpMode extends BaseOpMode {
     public void init() {
         super.init();
         deliveredFirstWobble = false;
-        isTurning = false;
         tensorflow = new Tensorflow();
         tensorflow.activate();
         newGameState(GameState.INITIAL);
@@ -37,6 +37,7 @@ public class AutonomousOpMode extends BaseOpMode {
     @Override
     public void init_loop() {
         targetRegion = tensorflow.getTargetRegion();
+        Log.d("POSITION", "Target region: " + targetRegion.name());
     }
 
     @Override
@@ -51,30 +52,33 @@ public class AutonomousOpMode extends BaseOpMode {
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
 
-        trajectoryFinished = currentGameState == GameState.INITIAL || roadRunnerDriveSystem.update();
+        Pose2d poseEstimate = roadRunnerDriveSystem.getPoseEstimate();
+        Log.d("POSITION", "x: " + poseEstimate.getX());
+        Log.d("POSITION","y: " + poseEstimate.getY());
+        Log.d("POSITION", "heading: " + poseEstimate.getHeading());
+
+        trajectoryFinished = currentGameState == GameState.INITIAL || roadRunnerDriveSystem.update() || trajectory == null;
 
         // Makes sure the trajectory is finished before doing anything else
         if (trajectoryFinished) {
             switch (currentGameState) {
                 case INITIAL:
-                   // Initialize
                     newGameState(GameState.AVOID_RINGS);
                     break;
 
                 case AVOID_RINGS:
-                    if (!isTurning) {
-                        roadRunnerDriveSystem.turnAsync(-Math.PI / 2);
-                        isTurning = true;
-                    } else if (roadRunnerDriveSystem.update()) {
-                        isTurning = false;
-                        newGameState(GameState.DELIVER_WOBBLE);
-                    }
+                    newGameState(GameState.DELIVER_WOBBLE);
                     break;
 
                 case DELIVER_WOBBLE:
                     if (yeetSystem.placed()) {
-                        yeetSystem.pickedUp(!deliveredFirstWobble);
+                        newGameState(GameState.RESET_ARM);
+                    }
+                    break;
+                case RESET_ARM:
+                    if (yeetSystem.pickedUp(false)) {
                         newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
+                        deliveredFirstWobble = true;
                     }
                     break;
 

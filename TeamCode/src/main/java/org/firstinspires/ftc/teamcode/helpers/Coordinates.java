@@ -8,15 +8,18 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 public enum Coordinates {
     //TODO check and correct these coordinates
     //TODO See if the webcam will still work if the robot starts pressed against the left or right edge of the starting tile
-    STARTING_POSITION(2.5 * Constants.tileWidth, 0.5 * Constants.LATERAL_DISTANCE),
+    // 17 inches is the width of the robot
+    STARTING_POSITION(2.5 * Constants.tileWidth, 0.5 * 17),
 
     // Spline position to the left to avoid rings
-    DETOUR_POSITION(0.5 * Constants.tileWidth, 2 * Constants.tileWidth),
+    DETOUR_POSITION(1.5 * Constants.tileWidth, 2 * Constants.tileWidth),
 
     // Wobblegoal dropoff boxes
-    BOX_A(3.5 * Constants.tileWidth, 3.5 * Constants.tileWidth),
-    BOX_B(2.5 * Constants.tileWidth, 4.5 * Constants.tileWidth),
-    BOX_C(3.5 * Constants.tileWidth, 5.5 * Constants.tileWidth),
+    BOX_A(2.8 * Constants.tileWidth, 3.5 * Constants.tileWidth),
+    BOX_B(1.8 * Constants.tileWidth, 4.5 * Constants.tileWidth),
+    BOX_C(2.8 * Constants.tileWidth, 5.5 * Constants.tileWidth),
+    // 82.25
+    // 129.25
 
     //Calibration
     CALIBRATION(2.5 * Constants.tileWidth, 3 * Constants.tileWidth),

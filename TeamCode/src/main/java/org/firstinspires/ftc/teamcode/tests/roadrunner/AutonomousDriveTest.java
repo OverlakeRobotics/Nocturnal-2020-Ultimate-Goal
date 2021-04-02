@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tests;
+package org.firstinspires.ftc.teamcode.tests.roadrunner;
 
 import android.util.Log;
 
@@ -95,7 +95,6 @@ public class AutonomousDriveTest extends BaseOpMode {
                 if (trajectoryFinished) {
                     deliveredFirstWobble = true;
                     if (calibrateLocation()) {
-                        shootingSystem.warmUp(Target.POWER_SHOT);
 //                        newGameState(GameState.POWERSHOT);
                     }
                 }
@@ -169,8 +168,8 @@ public class AutonomousDriveTest extends BaseOpMode {
         vuforia.updateLocation();
 
         //TODO x value here is not very reliable as it goes further and closer to the target
-        double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - Constants.tileWidth) + 10;
-        xUpdate /= 0.9722;
+        double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - Constants.tileWidth) + 2.7;
+        xUpdate /= 0.9822;
         xUpdate -= 0.5;
         double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset() / Constants.mmPerInch;
         yUpdate /= 1.062;

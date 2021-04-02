@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
+import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 import java.util.ArrayList;
@@ -48,11 +50,12 @@ public class DriveTeleop extends BaseOpMode {
     public void loop() {
         //TODO implement gamepad mechanics
         // Drive
-        float rx = (float) Math.pow(gamepad1.right_stick_x, 3);
-        float lx = (float) Math.pow(gamepad1.left_stick_x, 3);
-        float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
+        float rx = (float) Math.pow(gamepad1.right_stick_x, 1);
+        float lx = -(float) Math.pow(gamepad1.left_stick_x, 1);
+        float ly = -(float) Math.pow(gamepad1.left_stick_y, 1);
         roadRunnerDriveSystem.slowDrive(gamepad1.y);
         roadRunnerDriveSystem.drive(rx, lx, ly);
+        shootingSystem.warmUp(Target.POWER_SHOT);
 
         // Executes loaded functions
         Iterator<Functions> i = calledFunctions.iterator();
@@ -78,7 +81,7 @@ public class DriveTeleop extends BaseOpMode {
                     break;
 
                 case SHOOT:
-                    if (powerShotRoutine()) {
+                    if (shootingSystem.shoot()) {
                         i.remove();
                     }
                     break;

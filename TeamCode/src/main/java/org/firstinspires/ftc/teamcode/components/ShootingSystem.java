@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -77,7 +79,8 @@ public class ShootingSystem {
     public boolean shoot() {
         switch (currentShootingState) {
             case IDLE:
-                if (Math.abs(motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0 - targetVelocity) < 50) {
+                if (Math.abs(motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0 - targetVelocity) < 10) {
+                    Log.d("SHOOTER", "Velocity: " + (motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0));
                     elapsedTime.reset();
                     currentShootingState = ShootingState.SHOOTING;
                     servoShoot();

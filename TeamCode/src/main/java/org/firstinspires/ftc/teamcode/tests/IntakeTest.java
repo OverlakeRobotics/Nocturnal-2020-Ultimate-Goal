@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
 import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
-@Autonomous(name = "AutonomousDriveTest", group = "Autonomous")
+@Autonomous(name = "IntakeTest", group = "Autonomous")
 public class IntakeTest extends BaseOpMode {
 
     //TODO add method that keeps looping until see target

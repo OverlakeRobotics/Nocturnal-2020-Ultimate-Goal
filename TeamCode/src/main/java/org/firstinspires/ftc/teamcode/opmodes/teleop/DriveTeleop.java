@@ -23,12 +23,12 @@ public class DriveTeleop extends BaseOpMode {
         RAISE_ARM_AFTER_YEET,
         LOWER_ARM,
         SUCK,
-        SHOOT,
-        DRIVE
+        SHOOT
     }
 
     // Variables
     private Set<Functions> calledFunctions;
+    private boolean isSucking;
 
     // Systems
     private IntakeSystem intakeSystem;
@@ -82,14 +82,21 @@ public class DriveTeleop extends BaseOpMode {
                         i.remove();
                     }
                     break;
+
+                case SUCK:
+                    intakeSystem.suck();
+                    i.remove();
+                    break;
             }
         }
 
         // IntakeSystem
         if (gamepad1.a) {
-            intakeSystem.suck();
-        } else {
-            intakeSystem.stop();
+            isSucking = !isSucking;
+        }
+
+        if (isSucking) {
+            calledFunctions.add(Functions.SUCK);
         }
 
         // YeetSystem

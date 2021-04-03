@@ -15,7 +15,8 @@ public class IntakeSystem {
     // IntakeState
     private enum IntakeState {
         IDLE,
-        SUCK
+        SUCK,
+        UNSUCK
     }
     private IntakeState currentState;
 
@@ -47,6 +48,16 @@ public class IntakeSystem {
         if (currentState != IntakeState.SUCK) {
             currentState = IntakeState.SUCK;
             motor.setPower(1);
+        }
+    }
+
+    /**
+     * Outtakes rings
+     */
+    public void unsuck() {
+        if (currentState != IntakeState.UNSUCK) {
+            currentState = IntakeState.UNSUCK;
+            motor.setPower(-1);
         }
     }
 

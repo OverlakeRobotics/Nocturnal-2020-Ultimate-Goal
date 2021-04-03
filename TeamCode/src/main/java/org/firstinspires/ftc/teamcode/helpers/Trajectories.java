@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.helpers;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
+
+import static org.firstinspires.ftc.teamcode.helpers.Constants.tileWidth;
 
 
 /**
@@ -54,6 +57,26 @@ public class Trajectories {
             case RETURN_TO_NEST:
                 trajectoryBuilder.lineToConstantHeading(Coordinates.PARKING_POSITION.getCoordinates());
                 break;
+            case MOVE_TO_POWERSHOT:
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(Coordinates.STARTING_POSITION.getCoordinates().getX(), Coordinates.POWERSHOT_1.getCoordinates().getY()));
+                break;
+            case SHOOT_UPPER:
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.5 * tileWidth, tileWidth * 2.75));
+                break;
+            case POWERSHOT_1:
+                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.POWERSHOT_1.getCoordinates().getX(), Coordinates.POWERSHOT_1.getCoordinates().getY(), -Math.PI / 2.14));
+                break;
+
+            case POWERSHOT_2:
+                trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_2.getCoordinates());
+                break;
+
+            case POWERSHOT_3:
+                trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_3.getCoordinates());
+                break;
+//            case COMPLETE:
+//                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.STARTING_POSITION.getCoordinates().getX(), Coordinates.STARTING_POSITION.getCoordinates().getY(), 0));
+//                break;
             default:
                 return null;
         }

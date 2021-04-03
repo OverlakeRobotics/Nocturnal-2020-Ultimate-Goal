@@ -34,6 +34,9 @@ public class DriveTeleop extends BaseOpMode {
 
     // Systems
     private IntakeSystem intakeSystem;
+    private boolean suckWasPressed = false;
+    private boolean shooterWasPressed = false;
+    private boolean shouldStartShooter = true;
 
     @Override
     public void init() {
@@ -55,7 +58,6 @@ public class DriveTeleop extends BaseOpMode {
         float ly = -(float) Math.pow(gamepad1.left_stick_y, 1);
         roadRunnerDriveSystem.slowDrive(gamepad1.y);
         roadRunnerDriveSystem.drive(rx, lx, ly);
-        shootingSystem.warmUp(Target.POWER_SHOT);
 
         // Executes loaded functions
         Iterator<Functions> i = calledFunctions.iterator();
@@ -85,21 +87,40 @@ public class DriveTeleop extends BaseOpMode {
                         i.remove();
                     }
                     break;
-
-                case SUCK:
-                    intakeSystem.suck();
-                    i.remove();
-                    break;
             }
         }
 
         // IntakeSystem
         if (gamepad1.a) {
-            isSucking = !isSucking;
+            if (!suckWasPressed) {
+                isSucking = !isSucking;
+            }
+            suckWasPressed = true;
+        } else {
+            suckWasPressed = false;
+        }
+
+        if (gamepad1.x) {
+            if (!shooterWasPressed) {
+                if (shouldStartShooter) {
+                    shootingSystem.warmUp(Target.TOWER_GOAL);
+                } else {
+                    shootingSystem.shutDown();
+                }
+                shouldStartShooter = !shouldStartShooter;
+            }
+            shooterWasPressed = true;
+        } else {
+            shooterWasPressed = false;
         }
 
         if (isSucking) {
-            calledFunctions.add(Functions.SUCK);
+            intakeSystem.suck();
+            if (gamepad1.right_trigger > 0.3) {
+                intakeSystem.unsuck();
+            }
+        } else {
+            intakeSystem.stop();
         }
 
         // YeetSystem

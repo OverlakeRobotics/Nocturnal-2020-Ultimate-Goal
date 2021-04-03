@@ -9,8 +9,8 @@ public enum Target {
 
     // 29.5 inches
     // 63 inches
-    POWER_SHOT (1200),
-    TOWER_GOAL (1200);
+    POWER_SHOT (1100),
+    TOWER_GOAL (1135);
 
     private final double rpm;
     Target(double rpm) {

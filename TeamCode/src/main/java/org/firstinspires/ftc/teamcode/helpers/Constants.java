@@ -21,8 +21,8 @@ public class Constants {
     public static double WHEEL_RADIUS = 1; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 3.737958; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 0.13; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 3.741; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = 0.52; // in; offset of the lateral wheel
 
     public static double X_MULTIPLIER = 1.0;
     public static double Y_MULTIPLIER = 1.0;
@@ -48,7 +48,7 @@ public class Constants {
      */
 
     // TODO
-    public static double TRACK_WIDTH = 13; // in
+    public static double TRACK_WIDTH = 15; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -101,15 +101,15 @@ public class Constants {
     public static final float quadField = 36 * mmPerInch;
 
     //Shooter Constants
-    public static final float powerShotY = 78;
+    public static final double powerShotY = tileWidth * 2.75;
     // TODO, Find position values.
     public static final double SHOOTING_SERVO_IDLE_POSITION = 0.5;
     public static final double SHOOTING_SERVO_SHOOT_POSITION = 0.3;
 
     Vector2d negativeFirstPowerShotCoordinates = new Vector2d(-4 * tileWidth - (23.5f * 2 + 4.25f - ((44 * 10) / Constants.mmPerInch / 2)), powerShotY);
-    public static final Vector2d firstPowerShotCoordinates = new Vector2d(4 * tileWidth - (23.5f * 2 + 4.25f - ((44 * 10) / mmPerInch / 2)), powerShotY);
-    public static final Vector2d secondPowerShotCoordinates = new Vector2d(firstPowerShotCoordinates.getX() - 6.75, 78);
-    public static final Vector2d thirdPowerShotCoordinates = new Vector2d(secondPowerShotCoordinates.getX() - 8.5, powerShotY);
+    public static final Vector2d firstPowerShotCoordinates = new Vector2d(1.95 * tileWidth, powerShotY);
+    public static final Vector2d secondPowerShotCoordinates = new Vector2d(1.65 * tileWidth, powerShotY);
+    public static final Vector2d thirdPowerShotCoordinates = new Vector2d(1.35 * tileWidth, powerShotY);
 
     //YeetSystem
     //TODO Change these numbers

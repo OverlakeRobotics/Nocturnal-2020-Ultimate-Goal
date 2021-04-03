@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
@@ -21,6 +22,8 @@ public class AutonomousOpMode extends BaseOpMode {
     private GameState currentGameState;                         // Current GameState Machine GameState.
     private static TargetDropBox targetRegion;
     private boolean deliveredFirstWobble;
+    private ElapsedTime elapsedTime;
+    private int shotsLeft = 3;
 
     // Systems
     private Tensorflow tensorflow;
@@ -31,6 +34,7 @@ public class AutonomousOpMode extends BaseOpMode {
         deliveredFirstWobble = false;
         tensorflow = new Tensorflow();
         tensorflow.activate();
+        elapsedTime = new ElapsedTime();
         newGameState(GameState.INITIAL);
     }
 
@@ -53,6 +57,7 @@ public class AutonomousOpMode extends BaseOpMode {
         telemetry.update();
 
         Pose2d poseEstimate = roadRunnerDriveSystem.getPoseEstimate();
+        Log.d("POSITION", "STATE: " + currentGameState.name());
         Log.d("POSITION", "x: " + poseEstimate.getX());
         Log.d("POSITION","y: " + poseEstimate.getY());
         Log.d("POSITION", "heading: " + poseEstimate.getHeading());
@@ -67,43 +72,70 @@ public class AutonomousOpMode extends BaseOpMode {
                     break;
 
                 case AVOID_RINGS:
-                    newGameState(GameState.DELIVER_WOBBLE);
+                    newGameState(GameState.SHOOT_UPPER);
+                    shootingSystem.warmUp(Target.TOWER_GOAL);
+                    break;
+
+                case SHOOT_UPPER:
+                    if (shootingSystem.shoot()) {
+                        if (shotsLeft <= 0) {
+                            newGameState(GameState.DELIVER_WOBBLE);
+                            shootingSystem.shutDown();
+                        }
+                        shotsLeft--;
+                    }
                     break;
 
                 case DELIVER_WOBBLE:
                     if (yeetSystem.placed()) {
+                        newGameState(GameState.WAIT_FOR_ARM_SERVO);
+                        elapsedTime.reset();
+                    }
+                    break;
+                case WAIT_FOR_ARM_SERVO:
+                    if (elapsedTime.milliseconds() > 500) {
                         newGameState(GameState.RESET_ARM);
                     }
                     break;
                 case RESET_ARM:
                     if (yeetSystem.pickedUp(false)) {
-                        newGameState(deliveredFirstWobble ? GameState.RETURN_TO_NEST : GameState.CALIBRATE_LOCATION);
-                        deliveredFirstWobble = true;
+                        newGameState(GameState.RETURN_TO_NEST);
+                    }
+                    break;
+                case RETURN_TO_NEST:
+                    newGameState(GameState.COMPLETE);
+                    break;
+//                case START_SHOOTER:
+//                    shootingSystem.warmUp(Target.POWER_SHOT);
+//                    newGameState(GameState.POWERSHOT_1);
+//                    break;
+
+                case POWERSHOT_1:
+                    if (shootingSystem.shoot()) {
+                        newGameState(GameState.POWERSHOT_2);
                     }
                     break;
 
-                case CALIBRATE_LOCATION:
-                    deliveredFirstWobble = true;
-                    calibrateLocation();
-                    shootingSystem.warmUp(Target.POWER_SHOT);
-                    newGameState(GameState.POWERSHOT);
+                case POWERSHOT_2:
+                    if (shootingSystem.shoot()) {
+                        newGameState(GameState.POWERSHOT_3);
+                    }
                     break;
 
-                case POWERSHOT:
-                    if (powerShotRoutine()) {
+                case POWERSHOT_3:
+                    if (shootingSystem.shoot()) {
                         shootingSystem.shutDown();
-                        newGameState(GameState.PICK_UP_SECOND_WOBBLE);
+                        newGameState(GameState.PARK_ON_LINE);
                     }
+                    break;
+                case PARK_ON_LINE:
+                    newGameState(GameState.COMPLETE);
                     break;
 
                 case PICK_UP_SECOND_WOBBLE:
                     if (yeetSystem.pickedUp(false)) {
                         newGameState(GameState.DELIVER_WOBBLE);
                     }
-                    break;
-
-                case RETURN_TO_NEST:
-                    newGameState(GameState.COMPLETE);
                     break;
 
                 case COMPLETE:

@@ -9,8 +9,16 @@ public enum GameState {
     AVOID_RINGS,
     TURN_FOR_BOXES,
     DELIVER_WOBBLE, //Use roadrunner to go to specified target zone and drop off wobble goal
+    WAIT_FOR_ARM_SERVO,
     RESET_ARM,
     CALIBRATE_LOCATION,
+    START_SHOOTER,
+    SHOOT_UPPER,
+    MOVE_TO_POWERSHOT,
+    POWERSHOT_1,
+    POWERSHOT_2,
+    POWERSHOT_3,
+    PARK_ON_LINE,
     POWERSHOT,
     PICK_UP_SECOND_WOBBLE, //Drive to second wobble goal
     RETURN_TO_NEST,//Backup and park on line using vuforia

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -78,9 +80,18 @@ public class Tensorflow {
             return TargetDropBox.BOX_A;
         }
         List<Recognition> recognitionList = getInference();
-        if (recognitionList.size() == 1 && recognitionList.get(0).getConfidence() >= 0.4) {
-            return recognitionList.get(0).getLabel().equals(LABEL_FIRST_ELEMENT) ? TargetDropBox.BOX_A : TargetDropBox.BOX_B;
+        for (int i = 0; i < recognitionList.size(); i++) {
+            Log.d("DETECTION", recognitionList.get(i).getLabel());
+            Log.d("DETECTION", "Confidence: " + recognitionList.get(i).getConfidence());
         }
-        return TargetDropBox.BOX_C;
+        if (recognitionList.size() == 1) {
+            if (recognitionList.get(0).getLabel().equals("Four")) {
+                return TargetDropBox.BOX_C;
+            }
+            if (recognitionList.get(0).getLabel().equals("One")) {
+                return TargetDropBox.BOX_B;
+            }
+        }
+        return TargetDropBox.BOX_A;
     }
 }

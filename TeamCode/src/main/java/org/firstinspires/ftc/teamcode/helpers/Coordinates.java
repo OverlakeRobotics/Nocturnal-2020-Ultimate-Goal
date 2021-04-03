@@ -15,9 +15,9 @@ public enum Coordinates {
     DETOUR_POSITION(1.5 * Constants.tileWidth, 2 * Constants.tileWidth),
 
     // Wobblegoal dropoff boxes
-    BOX_A(2.8 * Constants.tileWidth, 3.5 * Constants.tileWidth),
-    BOX_B(1.8 * Constants.tileWidth, 4.5 * Constants.tileWidth),
-    BOX_C(2.8 * Constants.tileWidth, 5.5 * Constants.tileWidth),
+    BOX_A(2.4 * Constants.tileWidth, 3.75 * Constants.tileWidth),
+    BOX_B(1.4 * Constants.tileWidth, 4.75 * Constants.tileWidth),
+    BOX_C(2.4 * Constants.tileWidth, 5.75 * Constants.tileWidth),
     // 82.25
     // 129.25
 
@@ -33,7 +33,7 @@ public enum Coordinates {
     SECOND_WOBBLE(2.5 * Constants.tileWidth, Constants.tileWidth),
 
     // Parking position
-    PARKING_POSITION(2.5 * Constants.tileWidth, 3.5 * Constants.tileWidth);
+    PARKING_POSITION(Constants.thirdPowerShotCoordinates.getX(), 3.5 * Constants.tileWidth);
 
     private final double x;
     private final double y;

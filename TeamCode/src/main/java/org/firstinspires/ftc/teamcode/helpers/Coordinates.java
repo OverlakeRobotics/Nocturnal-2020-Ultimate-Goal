@@ -15,9 +15,9 @@ public enum Coordinates {
     DETOUR_POSITION(2 * Constants.tileWidth, 2 * Constants.tileWidth),
 
     // Wobblegoal dropoff boxes
-    BOX_A(2.4 * Constants.tileWidth, 3.75 * Constants.tileWidth),
-    BOX_B(1.4 * Constants.tileWidth, 4.75 * Constants.tileWidth),
-    BOX_C(2.4 * Constants.tileWidth, 5.75 * Constants.tileWidth),
+    BOX_A(2.9 * Constants.tileWidth, 3.75 * Constants.tileWidth),
+    BOX_B(1.9 * Constants.tileWidth, 4.75 * Constants.tileWidth),
+    BOX_C(2.9 * Constants.tileWidth, 5.75 * Constants.tileWidth),
     // 82.25
     // 129.25
 

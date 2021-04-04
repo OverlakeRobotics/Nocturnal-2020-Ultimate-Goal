@@ -43,7 +43,7 @@ public class Trajectories {
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
         switch (currentState) {
             case AVOID_RINGS:
-                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.DETOUR_POSITION.getCoordinates().getX(), Coordinates.DETOUR_POSITION.getCoordinates().getY(), -Math.PI / 2));
+                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.DETOUR_POSITION.getCoordinates().getX(), Coordinates.DETOUR_POSITION.getCoordinates().getY(), -Math.PI / 1.87));
                 break;
 
             case CALIBRATE_LOCATION:
@@ -61,7 +61,7 @@ public class Trajectories {
                 trajectoryBuilder.lineToConstantHeading(new Vector2d(Coordinates.STARTING_POSITION.getCoordinates().getX(), Coordinates.POWERSHOT_1.getCoordinates().getY()));
                 break;
             case SHOOT_UPPER:
-                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.5 * tileWidth, tileWidth * 2.85));
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.75 * tileWidth, tileWidth * 2.85));
                 break;
             case POWERSHOT_1:
                 trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.POWERSHOT_1.getCoordinates().getX(), Coordinates.POWERSHOT_1.getCoordinates().getY(), -Math.PI / 2.14));

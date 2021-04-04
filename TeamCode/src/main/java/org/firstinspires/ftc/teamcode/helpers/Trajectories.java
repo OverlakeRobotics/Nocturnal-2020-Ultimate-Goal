@@ -55,13 +55,13 @@ public class Trajectories {
                 break;
 
             case RETURN_TO_NEST:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.PARKING_POSITION.getCoordinates());
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(posEstimate.getX(), Coordinates.PARKING_POSITION.getY()));
                 break;
             case MOVE_TO_POWERSHOT:
                 trajectoryBuilder.lineToConstantHeading(new Vector2d(Coordinates.STARTING_POSITION.getCoordinates().getX(), Coordinates.POWERSHOT_1.getCoordinates().getY()));
                 break;
             case SHOOT_UPPER:
-                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.5 * tileWidth, tileWidth * 2.75));
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.5 * tileWidth, tileWidth * 2.85));
                 break;
             case POWERSHOT_1:
                 trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.POWERSHOT_1.getCoordinates().getX(), Coordinates.POWERSHOT_1.getCoordinates().getY(), -Math.PI / 2.14));

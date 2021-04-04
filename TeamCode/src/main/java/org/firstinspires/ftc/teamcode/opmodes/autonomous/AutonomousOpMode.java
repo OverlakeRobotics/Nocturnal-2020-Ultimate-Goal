@@ -41,6 +41,8 @@ public class AutonomousOpMode extends BaseOpMode {
     @Override
     public void init_loop() {
         targetRegion = tensorflow.getTargetRegion();
+        telemetry.addData("Target Region: ", targetRegion.name());
+        telemetry.update();
         Log.d("POSITION", "Target region: " + targetRegion.name());
     }
 
@@ -99,45 +101,27 @@ public class AutonomousOpMode extends BaseOpMode {
                     break;
                 case RESET_ARM:
                     if (yeetSystem.pickedUp(false)) {
-                        newGameState(GameState.RETURN_TO_NEST);
+                        if (deliveredFirstWobble) {
+                            newGameState(GameState.RETURN_TO_NEST);
+                        } else {
+                            newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
+                        }
+                        deliveredFirstWobble = true;
+                    }
+                    break;
+                case DRIVE_TO_SECOND_WOBBLE:
+                    if (yeetSystem.placed()) {
+                        newGameState(GameState.STRAFE_FOR_SECOND_WOBBLE);
+                    }
+                    break;
+                case STRAFE_FOR_SECOND_WOBBLE:
+                    if (yeetSystem.pickedUp(true)) {
+                        newGameState(GameState.DELIVER_WOBBLE);
                     }
                     break;
                 case RETURN_TO_NEST:
                     newGameState(GameState.COMPLETE);
                     break;
-//                case START_SHOOTER:
-//                    shootingSystem.warmUp(Target.POWER_SHOT);
-//                    newGameState(GameState.POWERSHOT_1);
-//                    break;
-
-                case POWERSHOT_1:
-                    if (shootingSystem.shoot()) {
-                        newGameState(GameState.POWERSHOT_2);
-                    }
-                    break;
-
-                case POWERSHOT_2:
-                    if (shootingSystem.shoot()) {
-                        newGameState(GameState.POWERSHOT_3);
-                    }
-                    break;
-
-                case POWERSHOT_3:
-                    if (shootingSystem.shoot()) {
-                        shootingSystem.shutDown();
-                        newGameState(GameState.PARK_ON_LINE);
-                    }
-                    break;
-                case PARK_ON_LINE:
-                    newGameState(GameState.COMPLETE);
-                    break;
-
-                case PICK_UP_SECOND_WOBBLE:
-                    if (yeetSystem.pickedUp(false)) {
-                        newGameState(GameState.DELIVER_WOBBLE);
-                    }
-                    break;
-
                 case COMPLETE:
                     stop();
                     break;

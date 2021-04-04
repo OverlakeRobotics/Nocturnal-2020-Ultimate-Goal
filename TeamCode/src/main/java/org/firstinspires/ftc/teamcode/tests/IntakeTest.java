@@ -98,11 +98,11 @@ public class IntakeTest extends BaseOpMode {
             case POWERSHOT:
                 if (powerShotRoutine()) {
                     shootingSystem.shutDown();
-                    newGameState(GameState.PICK_UP_SECOND_WOBBLE);
+                    newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
                 }
                 break;
 
-            case PICK_UP_SECOND_WOBBLE:
+            case DRIVE_TO_SECOND_WOBBLE:
                 if (trajectoryFinished && yeetSystem.pickedUp(false)) {
                     newGameState(GameState.DELIVER_WOBBLE);
                 }

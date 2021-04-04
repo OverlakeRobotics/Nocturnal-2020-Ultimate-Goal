@@ -20,7 +20,9 @@ public enum GameState {
     POWERSHOT_3,
     PARK_ON_LINE,
     POWERSHOT,
-    PICK_UP_SECOND_WOBBLE, //Drive to second wobble goal
+    DRIVE_TO_SECOND_WOBBLE, //Drive to second wobble goal
+    STRAFE_FOR_SECOND_WOBBLE,
+    DEPOSIT_SECOND_GOAL,
     RETURN_TO_NEST,//Backup and park on line using vuforia
     COMPLETE,
 

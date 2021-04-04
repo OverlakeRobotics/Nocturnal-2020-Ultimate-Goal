@@ -1,18 +1,12 @@
 package org.firstinspires.ftc.teamcode.tests;
 
-import android.util.Log;
-
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
-import org.firstinspires.ftc.teamcode.helpers.Constants;
-import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
 import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
-import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 @Autonomous(name = "ShootingTest", group = "Autonomous")
@@ -86,11 +80,11 @@ public class ShootingTest extends BaseOpMode {
 
             case POWERSHOT:
                 if (shootingSystem.shoot()) {
-                    newGameState(GameState.PICK_UP_SECOND_WOBBLE);
+                    newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
                 }
                 break;
 
-            case PICK_UP_SECOND_WOBBLE:
+            case DRIVE_TO_SECOND_WOBBLE:
                 if (shootingSystem.shoot()) {
                     newGameState(GameState.COMPLETE);
                 }

@@ -2,21 +2,13 @@ package org.firstinspires.ftc.teamcode.tests.roadrunner;
 
 import android.util.Log;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.Tensorflow;
-import org.firstinspires.ftc.teamcode.components.YeetSystem;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
 import org.firstinspires.ftc.teamcode.helpers.Coordinates;
 import org.firstinspires.ftc.teamcode.helpers.GameState;
-import org.firstinspires.ftc.teamcode.helpers.PowerShotState;
-import org.firstinspires.ftc.teamcode.helpers.Target;
 import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
 import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
@@ -103,11 +95,11 @@ public class AutonomousDriveTest extends BaseOpMode {
             case POWERSHOT:
                 if (powerShotRoutine()) {
                     shootingSystem.shutDown();
-                    newGameState(GameState.PICK_UP_SECOND_WOBBLE);
+                    newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
                 }
                 break;
 
-            case PICK_UP_SECOND_WOBBLE:
+            case DRIVE_TO_SECOND_WOBBLE:
                 if (trajectoryFinished && yeetSystem.pickedUp(false)) {
                     newGameState(GameState.DELIVER_WOBBLE);
                 }

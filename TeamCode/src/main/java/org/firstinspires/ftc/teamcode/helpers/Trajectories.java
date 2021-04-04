@@ -6,7 +6,6 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
-import org.firstinspires.ftc.teamcode.components.Tensorflow;
 
 import static org.firstinspires.ftc.teamcode.helpers.Constants.tileWidth;
 
@@ -50,8 +49,12 @@ public class Trajectories {
                 trajectoryBuilder.lineToConstantHeading(Coordinates.CALIBRATION.getCoordinates());
                 break;
 
-            case PICK_UP_SECOND_WOBBLE:
+            case DRIVE_TO_SECOND_WOBBLE:
                 trajectoryBuilder.lineToConstantHeading(Coordinates.SECOND_WOBBLE.getCoordinates());
+                break;
+
+            case STRAFE_FOR_SECOND_WOBBLE:
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.6 * tileWidth, Coordinates.SECOND_WOBBLE.getCoordinates().getY()));
                 break;
 
             case RETURN_TO_NEST:
@@ -74,6 +77,7 @@ public class Trajectories {
             case POWERSHOT_3:
                 trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_3.getCoordinates());
                 break;
+
 //            case COMPLETE:
 //                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.STARTING_POSITION.getCoordinates().getX(), Coordinates.STARTING_POSITION.getCoordinates().getY(), 0));
 //                break;

@@ -30,7 +30,7 @@ public class TestTrajectories {
                 trajectoryBuilder.lineTo(new Vector2d(60, -5));
                 break;
 
-            case PICK_UP_SECOND_WOBBLE:
+            case DRIVE_TO_SECOND_WOBBLE:
                 trajectoryBuilder.lineToConstantHeading(Coordinates.SECOND_WOBBLE.getCoordinates());
                 break;
 

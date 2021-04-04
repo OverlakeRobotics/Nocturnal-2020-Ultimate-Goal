@@ -138,6 +138,7 @@ public class DriveTeleop extends BaseOpMode {
 
         // ShootingSystem
         if (gamepad1.b) {
+            isSucking = false;
             calledFunctions.add(Functions.SHOOT);
         }
     }

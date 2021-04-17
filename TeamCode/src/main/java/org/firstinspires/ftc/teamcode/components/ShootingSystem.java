@@ -21,6 +21,7 @@ public class ShootingSystem {
     public final Servo servo;
     private final ElapsedTime elapsedTime;
     private double targetVelocity;
+    private boolean shooterTimeStarted;
 
     // ShootingState
     private enum ShootingState {
@@ -80,14 +81,20 @@ public class ShootingSystem {
     public boolean shoot() {
         switch (currentShootingState) {
             case IDLE:
+                if (!shooterTimeStarted) {
+                    elapsedTime.reset();
+                    shooterTimeStarted = true;
+                }
+
                 if (targetVelocity == 0) {
                     warmUp(Target.TOWER_GOAL);
                 } else {
-                    if (Math.abs(motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0 - targetVelocity) < 10) {
-//                        Log.d("SHOOTER", "Velocity: " + (motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0));
+                    if (Math.abs(motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0 - targetVelocity) < 10 || elapsedTime.milliseconds() > 2000) {
+                        Log.d("SHOOTER", "Velocity: " + (motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0));
                         elapsedTime.reset();
                         currentShootingState = ShootingState.SHOOTING;
                         servoShoot();
+                        shooterTimeStarted = false;
                     }
                 }
                 break;

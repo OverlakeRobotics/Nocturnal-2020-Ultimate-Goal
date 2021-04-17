@@ -21,8 +21,8 @@ public class Constants {
     public static double WHEEL_RADIUS = 1; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 3.741; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 0.52; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 6.239; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = 0.60; // in; offset of the lateral wheel
 
     public static double X_MULTIPLIER = 1.0;
     public static double Y_MULTIPLIER = 1.0;
@@ -48,7 +48,7 @@ public class Constants {
      */
 
     // TODO
-    public static double TRACK_WIDTH = 15; // in
+    public static double TRACK_WIDTH = 30; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using

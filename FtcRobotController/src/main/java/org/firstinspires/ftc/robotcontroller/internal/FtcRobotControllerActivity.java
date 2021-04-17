@@ -698,7 +698,6 @@ public class FtcRobotControllerActivity extends Activity
         : null);
     }
     // Only needed to modify event loop for testing
-//    FtcDashboard.attachEventLoop(eventLoop);
   }
 
   private void requestRobotSetup(@Nullable Runnable runOnComplete) {
@@ -723,6 +722,7 @@ public class FtcRobotControllerActivity extends Activity
 
     passReceivedUsbAttachmentsToEventLoop();
     AndroidBoard.showErrorIfUnknownControlHub();
+    FtcDashboard.attachEventLoop(eventLoop);
   }
 
   protected OpModeRegister createOpModeRegister() {

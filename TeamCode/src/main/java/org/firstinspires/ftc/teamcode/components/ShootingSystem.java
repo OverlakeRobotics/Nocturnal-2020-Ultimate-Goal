@@ -84,7 +84,7 @@ public class ShootingSystem {
                     warmUp(Target.TOWER_GOAL);
                 } else {
                     if (Math.abs(motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0 - targetVelocity) < 10) {
-                        Log.d("SHOOTER", "Velocity: " + (motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0));
+//                        Log.d("SHOOTER", "Velocity: " + (motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0));
                         elapsedTime.reset();
                         currentShootingState = ShootingState.SHOOTING;
                         servoShoot();

@@ -28,6 +28,8 @@ public class Tensorflow {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforiaSystem.getVuforiaLocalizer()); //create objectDetector
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); //loading models
         tfod.activate(); //turnOn
+        com.vuforia.CameraDevice.getInstance().setField("opti-zoom", "opti-zoom-on");
+        com.vuforia.CameraDevice.getInstance().setField("zoom", "30");
     }
 
     /** Method getInference()
@@ -80,15 +82,24 @@ public class Tensorflow {
             return TargetDropBox.BOX_A;
         }
         List<Recognition> recognitionList = getInference();
+        String detections = "Rings: [";
+        String confidence = "Confi: [";
+        String height = "Height: [";
         for (int i = 0; i < recognitionList.size(); i++) {
-            Log.d("DETECTION", recognitionList.get(i).getLabel());
-            Log.d("DETECTION", "Confidence: " + recognitionList.get(i).getConfidence());
+            detections += " " + recognitionList.get(i).getLabel();
+            confidence += " " + recognitionList.get(i).getConfidence();
+            height += " " + recognitionList.get(i).getHeight();
         }
-        if (recognitionList.size() == 1) {
-            if (recognitionList.get(0).getLabel().equals("Four")) {
+
+        // Logging
+//        Log.d("DETECTION", detections);
+//        Log.d("DETECTION", confidence);
+//        Log.d("DETECTION", height);
+
+        if (recognitionList.size() > 0) {
+            if (recognitionList.get(0).getHeight() > 110) {
                 return TargetDropBox.BOX_C;
-            }
-            if (recognitionList.get(0).getLabel().equals("One")) {
+            } else if (recognitionList.get(0).getHeight() > 60) {
                 return TargetDropBox.BOX_B;
             }
         }

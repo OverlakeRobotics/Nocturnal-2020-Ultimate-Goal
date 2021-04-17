@@ -138,7 +138,7 @@ public class VuforiaSystem {
      */
     public float getXOffset() {
         if (lastLocation != null) {
-            Log.d("CALIBRATION", "X Offset == " + (lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0)));
+//            Log.d("CALIBRATION", "X Offset == " + (lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0)));
             return lastLocation.getTranslation().get(0) - redAllianceTarget.getLocation().getTranslation().get(0);
         }
         return Float.NaN;
@@ -150,7 +150,7 @@ public class VuforiaSystem {
      */
     public float getYOffset() {
         if (lastLocation != null) {
-            Log.d("CALIBRATION", "Y Offset == " + (lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1)));
+//            Log.d("CALIBRATION", "Y Offset == " + (lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1)));
             return lastLocation.getTranslation().get(1) - redAllianceTarget.getLocation().getTranslation().get(1);
         }
         return Float.NaN;
@@ -162,7 +162,7 @@ public class VuforiaSystem {
      */
     public float getZOffset() {
         if (lastLocation != null) {
-            Log.d("CALIBRATION", "Z Offset == " + (lastLocation.getTranslation().get(2) - redAllianceTarget.getLocation().getTranslation().get(2)));
+//            Log.d("CALIBRATION", "Z Offset == " + (lastLocation.getTranslation().get(2) - redAllianceTarget.getLocation().getTranslation().get(2)));
             return lastLocation.getTranslation().get(2) - redAllianceTarget.getLocation().getTranslation().get(2);
         }
         return Float.NaN;

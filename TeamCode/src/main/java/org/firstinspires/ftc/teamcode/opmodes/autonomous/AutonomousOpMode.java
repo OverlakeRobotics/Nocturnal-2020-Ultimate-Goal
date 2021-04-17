@@ -58,10 +58,10 @@ public class AutonomousOpMode extends BaseOpMode {
         telemetry.update();
 
         Pose2d poseEstimate = roadRunnerDriveSystem.getPoseEstimate();
-        Log.d("POSITION", "STATE: " + currentGameState.name());
-        Log.d("POSITION", "x: " + poseEstimate.getX());
-        Log.d("POSITION","y: " + poseEstimate.getY());
-        Log.d("POSITION", "heading: " + poseEstimate.getHeading());
+//        Log.d("POSITION", "STATE: " + currentGameState.name());
+//        Log.d("POSITION", "x: " + poseEstimate.getX());
+//        Log.d("POSITION","y: " + poseEstimate.getY());
+//        Log.d("POSITION", "heading: " + poseEstimate.getHeading());
 
         trajectoryFinished = currentGameState == GameState.INITIAL || roadRunnerDriveSystem.update() || trajectory == null;
 

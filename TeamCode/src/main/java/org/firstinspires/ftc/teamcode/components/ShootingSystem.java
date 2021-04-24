@@ -44,6 +44,10 @@ public class ShootingSystem {
         initMotors();
     }
 
+    public Target getCurrentTarget() {
+        return currentTarget;
+    }
+
     /**
      * Initializes the motor and servo
      */

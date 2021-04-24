@@ -43,7 +43,7 @@ public class Trajectories {
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
         switch (currentState) {
             case AVOID_RINGS:
-                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.DETOUR_POSITION.getCoordinates().getX(), Coordinates.DETOUR_POSITION.getCoordinates().getY(), -Math.PI / 1.85));
+                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.DETOUR_POSITION.getCoordinates().getX(), Coordinates.DETOUR_POSITION.getCoordinates().getY(), -Math.PI / 1.9));
                 break;
 
             case CALIBRATE_LOCATION:

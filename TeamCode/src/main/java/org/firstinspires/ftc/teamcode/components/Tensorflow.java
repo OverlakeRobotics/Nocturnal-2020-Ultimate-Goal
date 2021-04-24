@@ -91,15 +91,15 @@ public class Tensorflow {
             height += " " + recognitionList.get(i).getHeight();
         }
 
-        // Logging
-//        Log.d("DETECTION", detections);
-//        Log.d("DETECTION", confidence);
-//        Log.d("DETECTION", height);
+//         Logging
+        Log.d("DETECTION", detections);
+        Log.d("DETECTION", confidence);
+        Log.d("DETECTION", height);
 
         if (recognitionList.size() > 0) {
-            if (recognitionList.get(0).getHeight() > 110) {
+            if (recognitionList.get(0).getHeight() > 140) {
                 return TargetDropBox.BOX_C;
-            } else if (recognitionList.get(0).getHeight() > 60) {
+            } else if (recognitionList.get(0).getHeight() > 90) {
                 return TargetDropBox.BOX_B;
             }
         }

@@ -56,7 +56,6 @@ public class DriveTeleop extends BaseOpMode {
         float rx = (float) Math.pow(gamepad1.right_stick_x, 1);
         float lx = -(float) Math.pow(gamepad1.left_stick_x, 1);
         float ly = -(float) Math.pow(gamepad1.left_stick_y, 1);
-        roadRunnerDriveSystem.slowDrive(gamepad1.y);
         roadRunnerDriveSystem.drive(rx, lx, ly);
 
         // Executes loaded functions
@@ -100,10 +99,14 @@ public class DriveTeleop extends BaseOpMode {
             suckWasPressed = false;
         }
 
-        if (gamepad1.x) {
+        if (gamepad1.x || gamepad1.y) {
             if (!shooterWasPressed) {
                 if (shouldStartShooter) {
-                    shootingSystem.warmUp(Target.TOWER_GOAL);
+                    if (gamepad1.y) {
+                        shootingSystem.warmUp(Target.POWER_SHOT);
+                    } else {
+                        shootingSystem.warmUp(Target.TOWER_GOAL);
+                    }
                 } else {
                     shootingSystem.shutDown();
                 }

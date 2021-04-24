@@ -9,14 +9,14 @@ public enum Coordinates {
     //TODO check and correct these coordinates
     //TODO See if the webcam will still work if the robot starts pressed against the left or right edge of the starting tile
     // 17 inches is the width of the robot
-    STARTING_POSITION(2 * Constants.tileWidth + 9, 0.5 * 17),
+    STARTING_POSITION(2 * Constants.tileWidth + 5, 0.55 * 17),
 
     // Spline position to the left to avoid rings
     DETOUR_POSITION(2 * Constants.tileWidth, 2 * Constants.tileWidth),
 
     // Wobblegoal dropoff boxes
     BOX_A(2.95 * Constants.tileWidth, 3.75 * Constants.tileWidth),
-    BOX_B(1.95 * Constants.tileWidth, 4.75 * Constants.tileWidth),
+    BOX_B(2.05 * Constants.tileWidth, 4.75 * Constants.tileWidth),
     BOX_C(3.4 * Constants.tileWidth, 5.75 * Constants.tileWidth),
     // 82.25
     // 129.25

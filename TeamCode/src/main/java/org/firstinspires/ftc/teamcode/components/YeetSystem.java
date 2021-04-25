@@ -12,9 +12,7 @@ import org.firstinspires.ftc.teamcode.helpers.Constants;
 import java.util.concurrent.TimeUnit;
 
 /**
- * YeetSystem is a conponent which
- *
- * ArmState
+ * YeetSystem is a conponent which operates on the arm of the robot.
  */
 public class YeetSystem {
 

@@ -41,12 +41,12 @@ import static org.firstinspires.ftc.teamcode.helpers.Constants.kStatic;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.kV;
 
 /**
- *
+ * Component that implements the basic functionality of
+ * a mecanum drive.
  */
-
 public class RoadRunnerDriveSystem extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(12, 0.2, 0.2);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(12, 0.2, 0.2);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(12, 0.2, 0.2); // Specify coefficients for the robot axial controller (robot X)
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(12, 0.2, 0.2); // Specify cefficients for the robot lateral controller (robot Y)
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -84,10 +84,10 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     /**
      *
-     * @param hardwareMap
+     * @param hardwareMap so the mapped wheels can be used by this component
      */
     public RoadRunnerDriveSystem(HardwareMap hardwareMap) {
-        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER); // Constructor for Mecanum Drive functionality
 
         clock = NanoClock.system();
 
@@ -144,8 +144,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     }
 
     /**
-     *
-     * @return
+     * @return An ArrayList of the motors being used by the component
      */
     public ArrayList<DcMotorEx> getMotors(){
         ArrayList<DcMotorEx> list = new ArrayList<DcMotorEx>();
@@ -157,8 +156,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     }
 
     /**
-     *
-     * @return
+     * @return An ArrayList of encoder values (left encoder, right encoder, front encoder)
      */
     public ArrayList<Double> getEncoders() {
         return new ArrayList<Double>(
@@ -169,8 +167,8 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     /**
      *
-     * @param startPose
-     * @return
+     * @param startPose Starting position of robot
+     * @return A new TrajectoryBuilder
      */
     public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, constraints);
@@ -178,9 +176,9 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     /**
      *
-     * @param startPose
+     * @param startPose Starting position of robot
      * @param reversed
-     * @return
+     * @return A new TrajectoryBuilder
      */
     public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
         return new TrajectoryBuilder(startPose, reversed, constraints);
@@ -188,17 +186,16 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     /**
      *
-     * @param startPose
+     * @param startPose Starting position of robot
      * @param startHeading
-     * @return
+     * @return A new TrajectoryBuilder
      */
     public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
         return new TrajectoryBuilder(startPose, startHeading, constraints);
     }
 
     /**
-     *
-     * @param angle
+     * @param angle The angle at which the robot should turn
      */
     public void turnAsync(double angle) {
         double heading = getPoseEstimate().getHeading();
@@ -220,7 +217,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     /**
      *
-     * @param angle
+     * @param angle The angle at which the robot should turn
      */
     public void turn(double angle) {
         turnAsync(angle);
@@ -228,8 +225,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     }
 
     /**
-     *
-     * @param trajectory
+     * @param trajectory The trajectory to follow
      */
     public void followTrajectory(Trajectory trajectory) {
         followTrajectoryAsync(trajectory);
@@ -237,8 +233,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     }
 
     /**
-     *
-     * @param trajectory
+     * @param trajectory The trajectory to follow (async edition)
      */
     public void followTrajectoryAsync(Trajectory trajectory) {
         follower.followTrajectory(trajectory);
@@ -247,8 +242,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     }
 
     /**
-     *
-     * @return
+     * @return The last robot pose error computed
      */
     public Pose2d getLastError() {
         switch (mode) {
@@ -264,7 +258,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
     /**
      *
-     * @return
+     * @return Whether or not the path was complete
      */
     public boolean update() {
         updatePoseEstimate();
@@ -273,6 +267,11 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         Pose2d lastError = getLastError();
 
         poseHistory.add(currentPose);
+        /*
+        * Update poseEstimate with the most recent
+        * positional change, and adds said recent
+        * change to the pose history
+        */
 
         switch (mode) {
             case IDLE:
@@ -281,7 +280,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
             case TURN: {
                 double t = clock.seconds() - turnStart;
 
-                MotionState targetState = turnProfile.get(t);
+                MotionState targetState = turnProfile.get(t); // Gets the kinematic state of main motion profile at time t
 
                 turnController.setTargetPosition(targetState.getX());
 
@@ -344,16 +343,14 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     }
 
     /**
-     *
-     * @return
+     * @return If component isn't idle.
      */
     public boolean isBusy() {
         return mode != Mode.IDLE;
     }
 
     /**
-     *
-     * @param runMode
+     * @param runMode The mode to set the motors to
      */
     public void setMode(DcMotor.RunMode runMode) {
         for (DcMotorEx motor : motors) {
@@ -362,8 +359,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     }
 
     /**
-     *
-     * @param zeroPowerBehavior
+     * @param zeroPowerBehavior What the motor should do at power level zero
      */
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
         for (DcMotorEx motor : motors) {

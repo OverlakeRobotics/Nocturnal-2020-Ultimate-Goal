@@ -61,9 +61,11 @@ public class AutonomousOpMode extends BaseOpMode {
 
     private void updateTargetRegion() {
         int max = shotCount[0];
-        if (shotCount[1] > max) {
+        max = Math.max(max, shotCount[1]);
+        max = Math.max(max, shotCount[2]);
+        if (shotCount[1] == max) {
             targetRegion = TargetDropBox.BOX_B;
-        } else if (shotCount[2] > max) {
+        } else if (shotCount[2] == max) {
             targetRegion = TargetDropBox.BOX_C;
         } else {
             targetRegion = TargetDropBox.BOX_A;

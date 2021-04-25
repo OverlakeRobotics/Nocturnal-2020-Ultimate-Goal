@@ -22,6 +22,7 @@ public class AutonomousOpMode extends BaseOpMode {
     private boolean deliveredFirstWobble;
     private ElapsedTime elapsedTime;
     private int shotsLeft = 2;
+    private int[] shotCount;
 
     // Systems
     private Tensorflow tensorflow;
@@ -33,12 +34,40 @@ public class AutonomousOpMode extends BaseOpMode {
         tensorflow = new Tensorflow();
         tensorflow.activate();
         elapsedTime = new ElapsedTime();
+        shotCount = new int[3];
         newGameState(GameState.INITIAL);
+        elapsedTime.reset();
     }
 
     @Override
     public void init_loop() {
-        targetRegion = tensorflow.getTargetRegion();
+        if (elapsedTime.milliseconds() > 1500) {
+            switch (tensorflow.getTargetRegion()) {
+                case BOX_A:
+                    shotCount[0]++;
+                    break;
+
+                case BOX_B:
+                    shotCount[1]++;
+                    break;
+
+                case BOX_C:
+                    shotCount[2]++;
+                    break;
+            }
+        }
+        updateTargetRegion();
+    }
+
+    private void updateTargetRegion() {
+        int max = shotCount[0];
+        if (shotCount[1] > max) {
+            targetRegion = TargetDropBox.BOX_B;
+        } else if (shotCount[2] > max) {
+            targetRegion = TargetDropBox.BOX_C;
+        } else {
+            targetRegion = TargetDropBox.BOX_A;
+        }
         telemetry.addData("Target Region", targetRegion.name());
         telemetry.update();
     }

@@ -69,17 +69,17 @@ public class AutonomousOpMode extends BaseOpMode {
         if (trajectoryFinished) {
             switch (currentGameState) {
                 case INITIAL:
-                    newGameState(GameState.AVOID_RINGS);
+                    shootingSystem.warmUp(Target.TOWER_GOAL);
+                    newGameState(GameState.SHOOT_UPPER);
                     break;
 
-                case AVOID_RINGS:
-                    newGameState(GameState.SHOOT_UPPER);
-                    shootingSystem.warmUp(Target.TOWER_GOAL);
-                    break;
+//                case AVOID_RINGS:
+//                    newGameState(GameState.SHOOT_UPPER);
+//                    break;
 
                 case SHOOT_UPPER:
                     if (shootingSystem.shoot()) {
-                        if (shotsLeft <= 0) {
+                        if (shotsLeft < 1) {
                             newGameState(GameState.DELIVER_WOBBLE);
                             shootingSystem.shutDown();
                         }
@@ -89,56 +89,45 @@ public class AutonomousOpMode extends BaseOpMode {
 
                 case DELIVER_WOBBLE:
                     if (yeetSystem.placed()) {
-                        newGameState(GameState.WAIT_FOR_ARM_SERVO);
+                        newGameState(GameState.RESET_ARM);
                         elapsedTime.reset();
                     }
                     break;
-                case WAIT_FOR_ARM_SERVO:
-                    if (elapsedTime.milliseconds() > 500) {
-                        newGameState(GameState.RESET_ARM);
-                    }
-                    break;
+//                case WAIT_FOR_ARM_SERVO:
+//                    if (elapsedTime.milliseconds() > 500) {
+//                        newGameState(GameState.RESET_ARM);
+//                    }
+//                    break;
                 case RESET_ARM:
                     if (yeetSystem.pickedUp(false)) {
-                        newGameState(GameState.RETURN_TO_NEST);
+                        if (deliveredFirstWobble) {
+                            newGameState(GameState.RETURN_TO_NEST);
+                        } else {
+                            newGameState(GameState.DRIVE_TO_SECOND_WOBBLE_MIDWAY);
+                        }
+                        deliveredFirstWobble = true;
                     }
                     break;
-                case RETURN_TO_NEST:
-                    newGameState(GameState.COMPLETE);
-                    break;
-//                case START_SHOOTER:
-//                    shootingSystem.warmUp(Target.POWER_SHOT);
-//                    newGameState(GameState.POWERSHOT_1);
-//                    break;
-
-                case POWERSHOT_1:
-                    if (shootingSystem.shoot()) {
-                        newGameState(GameState.POWERSHOT_2);
+                case DRIVE_TO_SECOND_WOBBLE_MIDWAY:
+                    newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
+                case DRIVE_TO_SECOND_WOBBLE:
+                    if (yeetSystem.placed()) {
+                        newGameState(GameState.STRAFE_FOR_SECOND_WOBBLE);
                     }
                     break;
-
-                case POWERSHOT_2:
-                    if (shootingSystem.shoot()) {
-                        newGameState(GameState.POWERSHOT_3);
+                case STRAFE_FOR_SECOND_WOBBLE:
+                    if (yeetSystem.pickedUp(true)) {
+                        newGameState(GameState.DELIVER_WOBBLE);
                     }
                     break;
-
-                case POWERSHOT_3:
-                    if (shootingSystem.shoot()) {
-                        shootingSystem.shutDown();
-                        newGameState(GameState.PARK_ON_LINE);
-                    }
-                    break;
-                case PARK_ON_LINE:
-                    newGameState(GameState.COMPLETE);
-                    break;
-
                 case PICK_UP_SECOND_WOBBLE:
                     if (yeetSystem.pickedUp(false)) {
                         newGameState(GameState.DELIVER_WOBBLE);
                     }
                     break;
-
+                case RETURN_TO_NEST:
+                    newGameState(GameState.COMPLETE);
+                    break;
                 case COMPLETE:
                     stop();
                     break;

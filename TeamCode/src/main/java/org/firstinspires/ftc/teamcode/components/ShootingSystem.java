@@ -73,7 +73,7 @@ public class ShootingSystem {
      * Shuts down the shooter
      */
     public void shutDown() {
-        currentShootingState = ShootingState.RESET;
+        currentShootingState = ShootingState.IDLE;
         setMotorRpm(0);
         servoIdle();
     }

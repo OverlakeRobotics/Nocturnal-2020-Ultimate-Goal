@@ -9,15 +9,15 @@ public enum Coordinates {
     //TODO check and correct these coordinates
     //TODO See if the webcam will still work if the robot starts pressed against the left or right edge of the starting tile
     // 17 inches is the width of the robot
-    STARTING_POSITION(2 * Constants.tileWidth + 5, 0.55 * 17),
+    STARTING_POSITION(2.5 * Constants.tileWidth, 17),
 
     // Spline position to the left to avoid rings
     DETOUR_POSITION(2 * Constants.tileWidth, 2 * Constants.tileWidth),
 
     // Wobblegoal dropoff boxes
     BOX_A(2.95 * Constants.tileWidth, 3.75 * Constants.tileWidth),
-    BOX_B(2.05 * Constants.tileWidth, 4.75 * Constants.tileWidth),
-    BOX_C(3.4 * Constants.tileWidth, 5.75 * Constants.tileWidth),
+    BOX_B(2.0 * Constants.tileWidth, 5.1 * Constants.tileWidth),
+    BOX_C(3.1 * Constants.tileWidth, 5.8 * Constants.tileWidth),
     // 82.25
     // 129.25
 
@@ -30,7 +30,7 @@ public enum Coordinates {
     POWERSHOT_3(Constants.thirdPowerShotCoordinates.getX(), Constants.thirdPowerShotCoordinates.getY()),
 
     // Second wobble
-    SECOND_WOBBLE(2.5 * Constants.tileWidth, Constants.tileWidth),
+    SECOND_WOBBLE(2.37 * Constants.tileWidth, 1.49 * Constants.tileWidth),
 
     // Parking position
     PARKING_POSITION(Constants.thirdPowerShotCoordinates.getX(), 3.5 * Constants.tileWidth);

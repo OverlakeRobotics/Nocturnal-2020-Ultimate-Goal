@@ -18,6 +18,9 @@ public enum GameState {
     POWERSHOT_1,
     POWERSHOT_2,
     POWERSHOT_3,
+    DRIVE_TO_SECOND_WOBBLE_MIDWAY,
+    DRIVE_TO_SECOND_WOBBLE,
+    STRAFE_FOR_SECOND_WOBBLE,
     PARK_ON_LINE,
     POWERSHOT,
     PICK_UP_SECOND_WOBBLE, //Drive to second wobble goal

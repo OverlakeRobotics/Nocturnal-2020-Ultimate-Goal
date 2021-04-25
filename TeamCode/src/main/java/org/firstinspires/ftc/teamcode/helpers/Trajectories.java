@@ -45,15 +45,9 @@ public class Trajectories {
             case AVOID_RINGS:
                 trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.DETOUR_POSITION.getCoordinates().getX(), Coordinates.DETOUR_POSITION.getCoordinates().getY(), -Math.PI / 1.9));
                 break;
-
             case CALIBRATE_LOCATION:
                 trajectoryBuilder.lineToConstantHeading(Coordinates.CALIBRATION.getCoordinates());
                 break;
-
-            case PICK_UP_SECOND_WOBBLE:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.SECOND_WOBBLE.getCoordinates());
-                break;
-
             case RETURN_TO_NEST:
                 trajectoryBuilder.lineToConstantHeading(new Vector2d(posEstimate.getX(), Coordinates.PARKING_POSITION.getY()));
                 break;
@@ -61,22 +55,17 @@ public class Trajectories {
                 trajectoryBuilder.lineToConstantHeading(new Vector2d(Coordinates.STARTING_POSITION.getCoordinates().getX(), Coordinates.POWERSHOT_1.getCoordinates().getY()));
                 break;
             case SHOOT_UPPER:
-                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.78 * tileWidth, tileWidth * 3.15));
+                trajectoryBuilder.lineToSplineHeading(new Pose2d(2.78 * tileWidth, tileWidth * 3.15, -Math.PI / 1.93));
                 break;
-            case POWERSHOT_1:
-                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.POWERSHOT_1.getCoordinates().getX(), Coordinates.POWERSHOT_1.getCoordinates().getY(), -Math.PI / 2.14));
+            case DRIVE_TO_SECOND_WOBBLE_MIDWAY:
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(Coordinates.SECOND_WOBBLE.getX(), 2.5 * Constants.tileWidth));
                 break;
-
-            case POWERSHOT_2:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_2.getCoordinates());
+            case DRIVE_TO_SECOND_WOBBLE:
+                trajectoryBuilder.lineToConstantHeading(Coordinates.SECOND_WOBBLE.getCoordinates());
                 break;
-
-            case POWERSHOT_3:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.POWERSHOT_3.getCoordinates());
+            case STRAFE_FOR_SECOND_WOBBLE:
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.69 * tileWidth, Coordinates.SECOND_WOBBLE.getCoordinates().getY()));
                 break;
-//            case COMPLETE:
-//                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.STARTING_POSITION.getCoordinates().getX(), Coordinates.STARTING_POSITION.getCoordinates().getY(), 0));
-//                break;
             default:
                 return null;
         }
@@ -94,15 +83,15 @@ public class Trajectories {
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
         switch (targetRegion) {
             case BOX_A:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.BOX_A.getCoordinates());
+                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_A.getX(),Coordinates.BOX_A.getY(), -Math.PI / 1.9));
                 break;
 
             case BOX_B:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.BOX_B.getCoordinates());
+                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B.getX(),Coordinates.BOX_B.getY(), -Math.PI / 1.9));
                 break;
 
             case BOX_C:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.BOX_C.getCoordinates());
+                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_C.getX(),Coordinates.BOX_C.getY(), -Math.PI / 1.86));
                 break;
 
             default:

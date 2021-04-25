@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-import android.util.Log;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,7 +21,7 @@ public class AutonomousOpMode extends BaseOpMode {
     private static TargetDropBox targetRegion;
     private boolean deliveredFirstWobble;
     private ElapsedTime elapsedTime;
-    private int shotsLeft = 3;
+    private int shotsLeft = 2;
 
     // Systems
     private Tensorflow tensorflow;
@@ -152,7 +150,7 @@ public class AutonomousOpMode extends BaseOpMode {
         currentPosition = roadRunnerDriveSystem.getPositionEstimate();
 
         if (currentGameState == GameState.DELIVER_WOBBLE) {
-            trajectory = Trajectories.getTrajectory(targetRegion, currentPosition);
+            trajectory = Trajectories.getTrajectory(targetRegion, currentPosition, deliveredFirstWobble);
         } else {
             trajectory = Trajectories.getTrajectory(currentGameState, currentPosition);
         }

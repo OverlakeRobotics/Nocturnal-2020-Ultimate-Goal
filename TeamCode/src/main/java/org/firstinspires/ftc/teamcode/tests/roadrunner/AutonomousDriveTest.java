@@ -142,7 +142,7 @@ public class AutonomousDriveTest extends BaseOpMode {
         currentPosition = roadRunnerDriveSystem.getPositionEstimate();
 
         if (currentGameState == GameState.DELIVER_WOBBLE) {
-            trajectory = Trajectories.getTrajectory(targetRegion, currentPosition);
+            trajectory = Trajectories.getTrajectory(targetRegion, currentPosition, true);
         }
 
         //TODO test code

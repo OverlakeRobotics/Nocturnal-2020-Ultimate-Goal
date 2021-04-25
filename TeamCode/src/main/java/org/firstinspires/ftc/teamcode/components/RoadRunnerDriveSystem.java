@@ -67,8 +67,6 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     private static DriveConstraints constraints;
     private final TrajectoryFollower follower;
 
-    private final List<Pose2d> poseHistory;
-
     private final DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private final List<DcMotorEx> motors;
 
@@ -99,8 +97,6 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
-
-        poseHistory = new ArrayList<>();
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -271,8 +267,6 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
         Pose2d currentPose = getPoseEstimate();
         Pose2d lastError = getLastError();
-
-        poseHistory.add(currentPose);
 
         switch (mode) {
             case IDLE:

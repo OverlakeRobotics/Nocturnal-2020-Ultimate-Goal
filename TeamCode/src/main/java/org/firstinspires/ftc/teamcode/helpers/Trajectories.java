@@ -31,6 +31,8 @@ import static org.firstinspires.ftc.teamcode.helpers.Constants.tileWidth;
 
 public class Trajectories {
 
+    static boolean didBoxC = false;
+
     /**
      * Gets the trajectory for a given state
      * @param currentState to draw trajectory for
@@ -64,7 +66,7 @@ public class Trajectories {
                 trajectoryBuilder.lineToConstantHeading(Coordinates.SECOND_WOBBLE.getCoordinates());
                 break;
             case STRAFE_FOR_SECOND_WOBBLE:
-                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.69 * tileWidth, Coordinates.SECOND_WOBBLE.getCoordinates().getY()));
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.69 * tileWidth, posEstimate.getY()));
                 break;
             default:
                 return null;
@@ -79,25 +81,42 @@ public class Trajectories {
      * @param posEstimate of the robot
      * @return Trajectory to the target region
      */
-    public static Trajectory getTrajectory(TargetDropBox targetRegion, Pose2d posEstimate) {
+    public static Trajectory getTrajectory(TargetDropBox targetRegion, Pose2d posEstimate, boolean deliveredFirstWobble) {
         TrajectoryBuilder trajectoryBuilder = RoadRunnerDriveSystem.trajectoryBuilder(posEstimate);
-        switch (targetRegion) {
-            case BOX_A:
-                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_A.getX(),Coordinates.BOX_A.getY(), -Math.PI / 1.9));
-                break;
+        if (!deliveredFirstWobble) {
+            switch (targetRegion) {
+                case BOX_A:
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_A.getX(),Coordinates.BOX_A.getY(), -Math.PI / 1.9));
+                    break;
 
-            case BOX_B:
-                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B.getX(),Coordinates.BOX_B.getY(), -Math.PI / 1.9));
-                break;
+                case BOX_B:
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B.getX(),Coordinates.BOX_B.getY(), -Math.PI / 1.9));
+                    break;
 
-            case BOX_C:
-                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_C.getX(),Coordinates.BOX_C.getY(), -Math.PI / 1.86));
-                break;
+                case BOX_C:
+                    didBoxC = true;
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_C.getX(),Coordinates.BOX_C.getY(), -Math.PI / 1.9));
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + targetRegion);
+            }
+        } else {
+            switch (targetRegion) {
+                case BOX_A:
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_A2.getX(),Coordinates.BOX_A2.getY(), -Math.PI / 1.9));
+                    break;
 
-            default:
-                throw new IllegalStateException("Unexpected value: " + targetRegion);
+                case BOX_B:
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B2.getX(),Coordinates.BOX_B2.getY(), -Math.PI / 1.95));
+                    break;
+
+                case BOX_C:
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_C2.getX(),Coordinates.BOX_C2.getY(), -Math.PI / 1.88));
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + targetRegion);
+            }
         }
-
         return trajectoryBuilder.build();
     }
 

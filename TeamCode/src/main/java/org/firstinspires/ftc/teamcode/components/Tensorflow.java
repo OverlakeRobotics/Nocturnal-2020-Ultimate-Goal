@@ -99,7 +99,7 @@ public class Tensorflow {
         if (recognitionList.size() > 0) {
             if (recognitionList.get(0).getHeight() > 140) {
                 return TargetDropBox.BOX_C;
-            } else if (recognitionList.get(0).getHeight() > 90) {
+            } else if (recognitionList.get(0).getHeight() > 60) {
                 return TargetDropBox.BOX_B;
             }
         }

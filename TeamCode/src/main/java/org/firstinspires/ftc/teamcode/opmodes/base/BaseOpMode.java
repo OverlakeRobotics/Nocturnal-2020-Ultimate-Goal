@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.opmodes.base;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -31,6 +33,7 @@ public abstract class BaseOpMode extends OpMode {
     protected VuforiaSystem vuforia;
     protected ShootingSystem shootingSystem;
     protected YeetSystem yeetSystem;
+    protected ColorSensor colorSensor;
 
     @Override
     public void init() {
@@ -40,6 +43,7 @@ public abstract class BaseOpMode extends OpMode {
         this.msStuckDetectInitLoop = 20000;
         currentPosition = new Pose2d(Coordinates.STARTING_POSITION.getX(), Coordinates.STARTING_POSITION.getY(), -Math.PI / 2);
         powerShotState = PowerShotState.IDLE;
+        colorSensor = hardwareMap.get(ColorSensor.class, "ColorSensor");
 
         // Systems
         vuforia = VuforiaSystem.getInstance();

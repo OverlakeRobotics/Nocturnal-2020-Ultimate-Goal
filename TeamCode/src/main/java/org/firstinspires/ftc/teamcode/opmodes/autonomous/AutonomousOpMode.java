@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -13,6 +16,8 @@ import org.firstinspires.ftc.teamcode.helpers.TargetDropBox;
 import org.firstinspires.ftc.teamcode.helpers.Trajectories;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
+import static org.firstinspires.ftc.teamcode.helpers.Constants.tileWidth;
+
 @Autonomous(name = "AutonomousOpMode", group = "Autonomous")
 public class AutonomousOpMode extends BaseOpMode {
 
@@ -22,6 +27,7 @@ public class AutonomousOpMode extends BaseOpMode {
     private boolean deliveredFirstWobble;
     private ElapsedTime elapsedTime;
     private int shotsLeft = 2;
+    boolean passedRed = false;
 
     // Systems
     private Tensorflow tensorflow;
@@ -55,7 +61,6 @@ public class AutonomousOpMode extends BaseOpMode {
         telemetry.addData("GameState", currentGameState);
         telemetry.update();
 
-        Pose2d poseEstimate = roadRunnerDriveSystem.getPoseEstimate();
 //        Log.d("POSITION", "STATE: " + currentGameState.name());
 //        Log.d("POSITION", "x: " + poseEstimate.getX());
 //        Log.d("POSITION","y: " + poseEstimate.getY());
@@ -84,18 +89,6 @@ public class AutonomousOpMode extends BaseOpMode {
                         shotsLeft--;
                     }
                     break;
-
-                case DELIVER_WOBBLE:
-                    if (yeetSystem.placed()) {
-                        newGameState(GameState.RESET_ARM);
-                        elapsedTime.reset();
-                    }
-                    break;
-//                case WAIT_FOR_ARM_SERVO:
-//                    if (elapsedTime.milliseconds() > 500) {
-//                        newGameState(GameState.RESET_ARM);
-//                    }
-//                    break;
                 case RESET_ARM:
                     if (yeetSystem.pickedUp(false)) {
                         if (deliveredFirstWobble) {
@@ -110,17 +103,32 @@ public class AutonomousOpMode extends BaseOpMode {
                     newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
                 case DRIVE_TO_SECOND_WOBBLE:
                     if (yeetSystem.placed()) {
-                        newGameState(GameState.STRAFE_FOR_SECOND_WOBBLE);
+                        newGameState(GameState.COLOR_SENSOR_TO_SECOND_WOBBLE);
                     }
                     break;
-                case STRAFE_FOR_SECOND_WOBBLE:
+                case COLOR_SENSOR_TO_SECOND_WOBBLE:
+                    Log.d("COLOR", colorSensor.red() + "");
+                    Log.d("COLOR", passedRed + "");
+                    if (!passedRed) {
+                        if (colorSensor.red() > 2000) {
+                            passedRed = true;
+                        }
+                    } else {
+                        if (colorSensor.red() < 2000) {
+                            roadRunnerDriveSystem.cancelFollowing();
+                            newGameState(GameState.PICK_UP_SECOND_WOBBLE);
+                        }
+                    }
+                    break;
+                case PICK_UP_SECOND_WOBBLE:
                     if (yeetSystem.pickedUp(true)) {
                         newGameState(GameState.DELIVER_WOBBLE);
                     }
                     break;
-                case PICK_UP_SECOND_WOBBLE:
-                    if (yeetSystem.pickedUp(false)) {
-                        newGameState(GameState.DELIVER_WOBBLE);
+                case DELIVER_WOBBLE:
+                    if (yeetSystem.placed()) {
+                        newGameState(GameState.RESET_ARM);
+                        elapsedTime.reset();
                     }
                     break;
                 case RETURN_TO_NEST:
@@ -166,7 +174,7 @@ public class AutonomousOpMode extends BaseOpMode {
      * Vuforia is in millimeters and everything else is in inches
      */
     private void calibrateLocation() {
-        double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - Constants.tileWidth);
+        double xUpdate = Coordinates.CALIBRATION.getX() - (vuforia.getYOffset() / Constants.mmPerInch - tileWidth);
         double yUpdate = Coordinates.CALIBRATION.getY() + vuforia.getXOffset() / Constants.mmPerInch;
         roadRunnerDriveSystem.setPoseEstimate(new Pose2d(xUpdate, yUpdate));
     }

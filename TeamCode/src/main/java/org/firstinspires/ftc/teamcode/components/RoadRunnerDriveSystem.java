@@ -192,6 +192,11 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         return new TrajectoryBuilder(startPose, startHeading, constraints);
     }
 
+    public void cancelFollowing() {
+        mode = Mode.IDLE;
+        mPathComplete = true;
+    }
+
     /**
      *
      * @param angle

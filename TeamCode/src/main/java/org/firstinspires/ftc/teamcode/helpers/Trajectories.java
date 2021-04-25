@@ -62,11 +62,11 @@ public class Trajectories {
             case DRIVE_TO_SECOND_WOBBLE_MIDWAY:
                 trajectoryBuilder.lineToConstantHeading(new Vector2d(Coordinates.SECOND_WOBBLE.getX(), 2.5 * Constants.tileWidth));
                 break;
+            case COLOR_SENSOR_TO_SECOND_WOBBLE:
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(3 * tileWidth, posEstimate.getY()));
+                break;
             case DRIVE_TO_SECOND_WOBBLE:
                 trajectoryBuilder.lineToConstantHeading(Coordinates.SECOND_WOBBLE.getCoordinates());
-                break;
-            case STRAFE_FOR_SECOND_WOBBLE:
-                trajectoryBuilder.lineToConstantHeading(new Vector2d(2.69 * tileWidth, posEstimate.getY()));
                 break;
             default:
                 return null;
@@ -90,7 +90,7 @@ public class Trajectories {
                     break;
 
                 case BOX_B:
-                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B.getX(),Coordinates.BOX_B.getY(), -Math.PI / 1.9));
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B.getX(),Coordinates.BOX_B.getY(), -Math.PI / 1.92));
                     break;
 
                 case BOX_C:

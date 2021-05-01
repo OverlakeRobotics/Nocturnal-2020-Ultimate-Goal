@@ -23,6 +23,10 @@ public class ShootingSystem {
     private double targetVelocity;
     private boolean shooterTimeStarted;
 
+    public void max() {
+        motor.setPower(1);
+    }
+
     // ShootingState
     private enum ShootingState {
         IDLE,
@@ -66,7 +70,8 @@ public class ShootingSystem {
      */
     public void warmUp(Target target) {
         currentTarget = target;
-        setMotorRpm(currentTarget.getRpm());
+        motor.setPower(1);
+//        setMotorRpm(currentTarget.getRpm());
     }
 
     /**

@@ -117,6 +117,10 @@ public class DriveTeleop extends BaseOpMode {
             shooterWasPressed = false;
         }
 
+        if (gamepad1.dpad_up) {
+            shootingSystem.max();
+        }
+
         if (isSucking) {
             intakeSystem.suck();
             if (gamepad1.right_trigger > 0.3) {

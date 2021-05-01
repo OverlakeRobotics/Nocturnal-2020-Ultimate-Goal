@@ -79,14 +79,12 @@ public class VuforiaSystem {
      * @param webcamName of the webcam to use
      */
     private void initUltsGoal(WebcamName webcamName) {
-        // TODO most likely will need to end up establishing precise positions in the future
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
         float phoneXRotate = 0;
         float phoneYRotate = 0;
         float phoneZRotate = 0;
 
-        //TODO fix these coordinates
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(Constants.CAMERA_FORWARD_DISPLACEMENT, Constants.CAMERA_LEFT_DISPLACEMENT, Constants.CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));

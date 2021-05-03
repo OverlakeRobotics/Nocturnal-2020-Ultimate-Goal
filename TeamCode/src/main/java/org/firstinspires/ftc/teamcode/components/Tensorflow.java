@@ -24,7 +24,7 @@ public class Tensorflow {
     public Tensorflow() {
         VuforiaSystem vuforiaSystem = VuforiaSystem.getInstance();
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(); //creating parameters
-        tfodParameters.minResultConfidence = 0.3f; //minimumConfidenceNecessaryForActingOnDetection
+        tfodParameters.minResultConfidence = 0.4f; //minimumConfidenceNecessaryForActingOnDetection
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforiaSystem.getVuforiaLocalizer()); //create objectDetector
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); //loading models
         tfod.activate(); //turnOn
@@ -96,12 +96,15 @@ public class Tensorflow {
         Log.d("DETECTION", confidence);
         Log.d("DETECTION", height);
 
-        if (recognitionList.size() > 0) {
-            if (recognitionList.get(0).getHeight() > 140) {
-                return TargetDropBox.BOX_C;
-            } else if (recognitionList.get(0).getHeight() > 60) {
-                return TargetDropBox.BOX_B;
-            }
+        float maxHeight = 0;
+        for (int i = 0; i < recognitionList.size(); i++) {
+            maxHeight = Math.max(maxHeight, recognitionList.get(i).getHeight());
+        }
+
+        if (maxHeight > 140) {
+            return TargetDropBox.BOX_C;
+        } else if (maxHeight > 60) {
+            return TargetDropBox.BOX_B;
         }
         return TargetDropBox.BOX_A;
     }

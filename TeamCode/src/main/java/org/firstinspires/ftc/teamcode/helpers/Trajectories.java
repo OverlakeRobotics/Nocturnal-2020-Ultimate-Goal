@@ -31,8 +31,6 @@ import static org.firstinspires.ftc.teamcode.helpers.Constants.tileWidth;
 
 public class Trajectories {
 
-    static boolean didBoxC = false;
-
     /**
      * Gets the trajectory for a given state
      * @param currentState to draw trajectory for
@@ -66,7 +64,13 @@ public class Trajectories {
                 trajectoryBuilder.lineToConstantHeading(new Vector2d(3 * tileWidth, posEstimate.getY()));
                 break;
             case DRIVE_TO_SECOND_WOBBLE:
-                trajectoryBuilder.lineToConstantHeading(Coordinates.SECOND_WOBBLE.getCoordinates());
+                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.SECOND_WOBBLE.getCoordinates().getX(), Coordinates.SECOND_WOBBLE.getCoordinates().getY(), -Math.PI / 1.94));
+                break;
+            case STRAFE_OUT_FROM_WOBBLE:
+                trajectoryBuilder.lineToConstantHeading(new Vector2d(posEstimate.getX() - 4, posEstimate.getY()));
+                break;
+            case BOX_B_STRAFE:
+                trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B2.getX(), Coordinates.BOX_B2.getY() - 2, -Math.PI / 1.95));
                 break;
             default:
                 return null;
@@ -90,12 +94,11 @@ public class Trajectories {
                     break;
 
                 case BOX_B:
-                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B.getX(),Coordinates.BOX_B.getY(), -Math.PI / 1.92));
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B.getX(),Coordinates.BOX_B.getY(), -Math.PI / 1.94));
                     break;
 
                 case BOX_C:
-                    didBoxC = true;
-                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_C.getX(),Coordinates.BOX_C.getY(), -Math.PI / 1.9));
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_C.getX(),Coordinates.BOX_C.getY(), -Math.PI / 1.88));
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + targetRegion);
@@ -107,11 +110,11 @@ public class Trajectories {
                     break;
 
                 case BOX_B:
-                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B2.getX(),Coordinates.BOX_B2.getY(), -Math.PI / 1.95));
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_B2.getX(), Coordinates.BOX_B2.getY(), -Math.PI / 1.95));
                     break;
 
                 case BOX_C:
-                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_C2.getX(),Coordinates.BOX_C2.getY(), -Math.PI / 1.88));
+                    trajectoryBuilder.lineToSplineHeading(new Pose2d(Coordinates.BOX_C2.getX(),Coordinates.BOX_C2.getY(), -Math.PI / 1.91));
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + targetRegion);

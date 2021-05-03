@@ -28,6 +28,7 @@ public class AutonomousOpMode extends BaseOpMode {
     private ElapsedTime elapsedTime;
     private int shotsLeft = 2;
     boolean passedRed = false;
+    boolean pickedUpArm = false;
 
     // Systems
     private Tensorflow tensorflow;
@@ -46,6 +47,7 @@ public class AutonomousOpMode extends BaseOpMode {
     public void init_loop() {
         targetRegion = tensorflow.getTargetRegion();
         telemetry.addData("Target Region", targetRegion.name());
+        Log.d("COLOR", colorSensor.red() + "");
         telemetry.update();
     }
 
@@ -68,76 +70,109 @@ public class AutonomousOpMode extends BaseOpMode {
 
         trajectoryFinished = currentGameState == GameState.INITIAL || roadRunnerDriveSystem.update() || trajectory == null;
 
+        if (currentGameState == GameState.RETURN_TO_NEST || currentGameState == GameState.COMPLETE) {
+            if (elapsedTime.milliseconds() > 500 && !pickedUpArm) {
+                pickedUpArm = yeetSystem.pickedUp(false);
+            }
+        }
+
         // Makes sure the trajectory is finished before doing anything else
-        if (trajectoryFinished) {
-            switch (currentGameState) {
-                case INITIAL:
-                    shootingSystem.warmUp(Target.TOWER_GOAL);
-                    newGameState(GameState.SHOOT_UPPER);
-                    break;
+        switch (currentGameState) {
+            case INITIAL:
+                shootingSystem.warmUp(Target.TOWER_GOAL);
+                newGameState(GameState.SHOOT_UPPER);
+                break;
 
 //                case AVOID_RINGS:
 //                    newGameState(GameState.SHOOT_UPPER);
 //                    break;
 
-                case SHOOT_UPPER:
-                    if (shootingSystem.shoot()) {
-                        if (shotsLeft < 1) {
-                            newGameState(GameState.DELIVER_WOBBLE);
-                            shootingSystem.shutDown();
+            case SHOOT_UPPER:
+                if (trajectoryFinished) {
+                    intakeSystem.suck();
+                    if (shotsLeft == 2) {
+                        if (shootingSystem.shoot(1000)) {
+                            shotsLeft--;
                         }
-                        shotsLeft--;
-                    }
-                    break;
-                case RESET_ARM:
-                    if (yeetSystem.pickedUp(false)) {
-                        if (deliveredFirstWobble) {
-                            newGameState(GameState.RETURN_TO_NEST);
-                        } else {
-                            newGameState(GameState.DRIVE_TO_SECOND_WOBBLE_MIDWAY);
+                    } else {
+                        if (shootingSystem.shoot()) {
+                            if (shotsLeft < 1) {
+                                intakeSystem.stop();
+                                newGameState(GameState.DELIVER_WOBBLE);
+                                shootingSystem.shutDown();
+                            }
+                            shotsLeft--;
                         }
-                        deliveredFirstWobble = true;
                     }
-                    break;
-                case DRIVE_TO_SECOND_WOBBLE_MIDWAY:
+                }
+                break;
+            case RESET_ARM:
+                if (yeetSystem.pickedUp(false)) {
+                    newGameState(GameState.RETURN_TO_NEST);
+                }
+                break;
+            case DRIVE_TO_SECOND_WOBBLE_MIDWAY:
+                if (trajectoryFinished) {
                     newGameState(GameState.DRIVE_TO_SECOND_WOBBLE);
-                case DRIVE_TO_SECOND_WOBBLE:
+                }
+            case DRIVE_TO_SECOND_WOBBLE:
+                if (trajectoryFinished) {
                     if (yeetSystem.placed()) {
                         newGameState(GameState.COLOR_SENSOR_TO_SECOND_WOBBLE);
                     }
-                    break;
-                case COLOR_SENSOR_TO_SECOND_WOBBLE:
-                    Log.d("COLOR", colorSensor.red() + "");
-                    Log.d("COLOR", passedRed + "");
-                    if (!passedRed) {
-                        if (colorSensor.red() > 2000) {
-                            passedRed = true;
-                        }
+                }
+                break;
+            case COLOR_SENSOR_TO_SECOND_WOBBLE:
+                Log.d("COLOR", colorSensor.red() + "");
+                Log.d("COLOR", passedRed + "");
+                if (colorSensor.red() > 2000) {
+                    roadRunnerDriveSystem.cancelFollowing();
+                    newGameState(GameState.PICK_UP_SECOND_WOBBLE);
+                }
+                break;
+            case PICK_UP_SECOND_WOBBLE:
+                if (yeetSystem.pickedUp(true)) {
+                    if (targetRegion == TargetDropBox.BOX_B) {
+                        newGameState(GameState.BOX_B_STRAFE);
                     } else {
-                        if (colorSensor.red() < 2000) {
-                            roadRunnerDriveSystem.cancelFollowing();
-                            newGameState(GameState.PICK_UP_SECOND_WOBBLE);
-                        }
-                    }
-                    break;
-                case PICK_UP_SECOND_WOBBLE:
-                    if (yeetSystem.pickedUp(true)) {
                         newGameState(GameState.DELIVER_WOBBLE);
                     }
-                    break;
-                case DELIVER_WOBBLE:
-                    if (yeetSystem.placed()) {
-                        newGameState(GameState.RESET_ARM);
+                }
+                break;
+            case BOX_B_STRAFE:
+                if (trajectoryFinished) {
+                    newGameState(GameState.DELIVER_WOBBLE);
+                }
+                break;
+            case STRAFE_OUT_FROM_WOBBLE:
+                if (trajectoryFinished) {
+                    if (!deliveredFirstWobble) {
+                        newGameState(GameState.DRIVE_TO_SECOND_WOBBLE_MIDWAY);
+                        deliveredFirstWobble = true;
+                    } else {
+                        newGameState(GameState.RETURN_TO_NEST);
                         elapsedTime.reset();
                     }
-                    break;
-                case RETURN_TO_NEST:
+                }
+                break;
+            case DELIVER_WOBBLE:
+                if (trajectoryFinished) {
+                    if (yeetSystem.placed()) {
+                        newGameState(GameState.STRAFE_OUT_FROM_WOBBLE);
+                        elapsedTime.reset();
+                    }
+                }
+                break;
+            case RETURN_TO_NEST:
+                if (trajectoryFinished) {
                     newGameState(GameState.COMPLETE);
-                    break;
-                case COMPLETE:
+                }
+                break;
+            case COMPLETE:
+                if (pickedUpArm) {
                     stop();
-                    break;
-            }
+                }
+                break;
         }
     }
 

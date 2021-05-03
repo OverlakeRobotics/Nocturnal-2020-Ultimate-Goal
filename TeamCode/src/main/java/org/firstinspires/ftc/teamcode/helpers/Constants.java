@@ -113,13 +113,13 @@ public class Constants {
 
     //YeetSystem
     //TODO Change these numbers
-    public static final double ARM_MOTOR_NUM_REVOLUTIONS = 0.61;
+    public static final double ARM_MOTOR_NUM_REVOLUTIONS = 0.66;
     public static final int ARM_MOTOR_DOWN_POSITION = (int)(Constants.TICKS_PER_REV * ARM_MOTOR_NUM_REVOLUTIONS);
     public static final int ARM_MOTOR_UP_POSITION = 0; // this needs to be changed
-    public static final double ARM_MOTOR_RAW_POWER = 0.6;
-    public static final double LEFT_ARM_SERVO_CLOSED_POSITION = 0.8;
-    public static final double RIGHT_ARM_SERVO_CLOSED_POSITION = 0.0;
-    public static final double LEFT_ARM_SERVO_OPEN_POSITION = 0.16;
-    public static final double RIGHT_ARM_SERVO_OPEN_POSITION = 0.4;
+    public static final double ARM_MOTOR_RAW_POWER = 0.4;
+    public static final double LEFT_ARM_SERVO_CLOSED_POSITION = 1.0;
+    public static final double RIGHT_ARM_SERVO_CLOSED_POSITION = 0.45;
+    public static final double LEFT_ARM_SERVO_OPEN_POSITION = 0.4;
+    public static final double RIGHT_ARM_SERVO_OPEN_POSITION = 0.9;
     public static final int SERVO_WAIT_TIME = 350;
 }

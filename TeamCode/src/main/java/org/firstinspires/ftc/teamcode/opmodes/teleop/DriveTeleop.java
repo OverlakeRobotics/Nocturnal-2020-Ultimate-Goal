@@ -24,6 +24,7 @@ public class DriveTeleop extends BaseOpMode {
         RAISE_ARM,
         RAISE_ARM_AFTER_YEET,
         LOWER_ARM,
+        SHOOT_POWERSHOTS,
         SUCK,
         SHOOT
     }
@@ -86,7 +87,17 @@ public class DriveTeleop extends BaseOpMode {
                         i.remove();
                     }
                     break;
+
+                case SHOOT_POWERSHOTS:
+                    if (roadRunnerDriveSystem.shootPowerShots(shootingSystem)) {
+                        i.remove();
+                    }
+                    break;
             }
+        }
+
+        if (gamepad1.dpad_up) {
+            calledFunctions.add(Functions.SHOOT_POWERSHOTS);
         }
 
         // IntakeSystem
@@ -97,6 +108,14 @@ public class DriveTeleop extends BaseOpMode {
             suckWasPressed = true;
         } else {
             suckWasPressed = false;
+        }
+
+        if (gamepad1.dpad_left) {
+            yeetSystem.setPower(-0.3);
+        }
+
+        if (gamepad1.back) {
+            yeetSystem.reset();
         }
 
         if (gamepad1.x || gamepad1.y) {

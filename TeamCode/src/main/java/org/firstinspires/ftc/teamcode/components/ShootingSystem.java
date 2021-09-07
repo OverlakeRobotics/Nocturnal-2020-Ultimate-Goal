@@ -83,6 +83,10 @@ public class ShootingSystem {
      * Shoots a ring
      */
     public boolean shoot() {
+        return shoot(0);
+    }
+
+    public boolean shoot(int wait) {
         switch (currentShootingState) {
             case IDLE:
                 if (!shooterTimeStarted) {
@@ -93,7 +97,7 @@ public class ShootingSystem {
                 if (targetVelocity == 0) {
                     warmUp(Target.TOWER_GOAL);
                 } else {
-                    if (Math.abs(motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0 - targetVelocity) < 10 || elapsedTime.milliseconds() > 2000) {
+                    if (Math.abs(motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0 - targetVelocity) < 10 && elapsedTime.milliseconds() > wait) {
                         Log.d("SHOOTER", "Velocity: " + (motor.getVelocity() / TICKS_PER_REV_SHOOTER * 60.0));
                         elapsedTime.reset();
                         currentShootingState = ShootingState.SHOOTING;

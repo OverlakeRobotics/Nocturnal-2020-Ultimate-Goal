@@ -5,6 +5,7 @@ import android.util.Log;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 import org.firstinspires.ftc.teamcode.helpers.Constants;
@@ -56,10 +57,12 @@ public class YeetSystem {
      */
     public boolean placed() {
         if (isComplete()) {
-            release();
-            targetPosition = null;
-            currentState = ArmState.IDLE;
-            return true;
+            if (elapsedTime.milliseconds() > 500) {
+                release();
+                targetPosition = null;
+                currentState = ArmState.IDLE;
+                return true;
+            }
         }
 
         switch (currentState) {
@@ -70,6 +73,7 @@ public class YeetSystem {
             case START_ARM:
                 targetPosition = Constants.ARM_MOTOR_DOWN_POSITION;
                 moveArm();
+                elapsedTime.reset();
                 break;
         }
         return false;
@@ -127,6 +131,16 @@ public class YeetSystem {
      */
     public void shutDown() {
         motor.setPower(0.0);
+    }
+
+    public void setPower(double power) {
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setPower(power);
+    }
+
+    public void reset() {
+        motor.setPower(0);
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     /**

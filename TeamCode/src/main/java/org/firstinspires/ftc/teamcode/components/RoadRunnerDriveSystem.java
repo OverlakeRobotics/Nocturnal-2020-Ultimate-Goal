@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.helpers.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.helpers.Target;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +57,13 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         FOLLOW_TRAJECTORY
     }
 
+    private enum ShootingMode {
+        IDLE,
+        MIDDLE,
+        LEFT,
+        RIGHT
+    }
+
     private NanoClock clock;
 
     public Mode mode;
@@ -63,6 +71,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     private final PIDFController turnController;
     private MotionProfile turnProfile;
     private double turnStart;
+    private ShootingMode shootingMode;
 
     private static DriveConstraints constraints;
     private final TrajectoryFollower follower;
@@ -89,6 +98,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
 
         clock = NanoClock.system();
 
+        shootingMode = ShootingMode.IDLE;
         mode = Mode.IDLE;
 
         turnController = new PIDFController(HEADING_PID);
@@ -195,6 +205,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     public void cancelFollowing() {
         mode = Mode.IDLE;
         mPathComplete = true;
+        setDriveSignal(new DriveSignal());
     }
 
     /**
@@ -499,5 +510,46 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     private double getDrivePower( double motorPower) {
         return Range.clip(mSlowDrive ?
                 SLOW_DRIVE_COEFF * motorPower : motorPower, -1, 1);
+    }
+
+    boolean completePath = false;
+    public boolean shootPowerShots(ShootingSystem shootingSystem) {
+        if (update()) {
+            completePath = true;
+        }
+
+        switch (shootingMode) {
+            case IDLE:
+                shootingSystem.warmUp(Target.POWER_SHOT);
+                completePath = false;
+                shootingMode = ShootingMode.MIDDLE;
+                break;
+            case MIDDLE:
+                if (shootingSystem.shoot(2000)) {
+                    turnAsync(0.1);
+                    shootingMode = ShootingMode.LEFT;
+                }
+                break;
+            case LEFT:
+                if (completePath) {
+                    if (shootingSystem.shoot()) {
+                        completePath = false;
+                        turnAsync(0.08);
+                        shootingMode = ShootingMode.RIGHT;
+                    }
+                }
+                break;
+            case RIGHT:
+                if (completePath) {
+                    if (shootingSystem.shoot()) {
+                        completePath = false;
+                        shootingMode = ShootingMode.IDLE;
+                        return true;
+                    }
+                }
+                break;
+        }
+
+        return false;
     }
 }

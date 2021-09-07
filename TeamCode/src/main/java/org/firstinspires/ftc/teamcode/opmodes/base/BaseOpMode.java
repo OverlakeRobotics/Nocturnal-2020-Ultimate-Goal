@@ -4,11 +4,13 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.RoadRunnerDriveSystem;
 import org.firstinspires.ftc.teamcode.components.ShootingSystem;
 import org.firstinspires.ftc.teamcode.components.VuforiaSystem;
@@ -34,6 +36,7 @@ public abstract class BaseOpMode extends OpMode {
     protected ShootingSystem shootingSystem;
     protected YeetSystem yeetSystem;
     protected ColorSensor colorSensor;
+    protected IntakeSystem intakeSystem;
 
     @Override
     public void init() {
@@ -47,6 +50,7 @@ public abstract class BaseOpMode extends OpMode {
 
         // Systems
         vuforia = VuforiaSystem.getInstance();
+        intakeSystem = new IntakeSystem(hardwareMap.get(DcMotor.class, "IntakeSystem"));
         roadRunnerDriveSystem = new RoadRunnerDriveSystem(hardwareMap);
         roadRunnerDriveSystem.setPoseEstimate(currentPosition);
         shootingSystem = new ShootingSystem(hardwareMap.get(DcMotorEx.class, "ShootingSystem"), hardwareMap.get(Servo.class, "ShootingSystemServo"));

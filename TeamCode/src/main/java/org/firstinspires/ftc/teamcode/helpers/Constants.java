@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.helpers;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+//import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 
 /**
  *
@@ -68,10 +68,10 @@ public class Constants {
      * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
      * forces acceleration-limited profiling). All distance units are inches.
      */
-    public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
+    /*public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
             45, 30, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
-    );
+    );*/
 
 
     public static double encoderTicksToInches(double ticks) {

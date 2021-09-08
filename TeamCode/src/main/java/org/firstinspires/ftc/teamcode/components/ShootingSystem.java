@@ -133,6 +133,7 @@ public class ShootingSystem {
      */
     private void setMotorRpm(double rpm) {
         targetVelocity = rpm;
+        //motor.setPower()
         motor.setVelocity(rpm / 60.0 * TICKS_PER_REV_SHOOTER);
     }
 

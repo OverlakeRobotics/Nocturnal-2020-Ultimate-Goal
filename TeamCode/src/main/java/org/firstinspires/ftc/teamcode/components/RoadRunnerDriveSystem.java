@@ -12,8 +12,8 @@ import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
+//import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+//import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.helpers.Constants.BASE_CONSTRAINTS;
+//import static org.firstinspires.ftc.teamcode.helpers.Constants.BASE_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.MOTOR_VELO_PID;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.helpers.Constants.TRACK_WIDTH;
@@ -73,7 +73,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
     private double turnStart;
     private ShootingMode shootingMode;
 
-    private static DriveConstraints constraints;
+    //private static DriveConstraints constraints;
     private final TrajectoryFollower follower;
 
     private final DcMotorEx leftFront, leftRear, rightRear, rightFront;
@@ -104,7 +104,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
 
-        constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
+        //constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
@@ -178,9 +178,9 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
      * @param startPose
      * @return
      */
-    public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
+    /*public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, constraints);
-    }
+    }*/
 
     /**
      *
@@ -188,9 +188,9 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
      * @param reversed
      * @return
      */
-    public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
+    /*public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
         return new TrajectoryBuilder(startPose, reversed, constraints);
-    }
+    }*/
 
     /**
      *
@@ -198,9 +198,9 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
      * @param startHeading
      * @return
      */
-    public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
+    /*public static TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
         return new TrajectoryBuilder(startPose, startHeading, constraints);
-    }
+    }*/
 
     public void cancelFollowing() {
         mode = Mode.IDLE;
@@ -212,7 +212,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
      *
      * @param angle
      */
-    public void turnAsync(double angle) {
+    /*public void turnAsync(double angle) {
         double heading = getPoseEstimate().getHeading();
 
         lastPoseOnTurn = getPoseEstimate();
@@ -228,16 +228,16 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
         turnStart = clock.seconds();
         mode = Mode.TURN;
         mPathComplete = false;
-    }
+    }*/
 
     /**
      *
      * @param angle
      */
-    public void turn(double angle) {
+    /*public void turn(double angle) {
         turnAsync(angle);
         waitForIdle();
-    }
+    }*/
 
     /**
      *
@@ -526,7 +526,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
                 break;
             case MIDDLE:
                 if (shootingSystem.shoot(2000)) {
-                    turnAsync(0.1);
+                    //turnAsync(0.1);
                     shootingMode = ShootingMode.LEFT;
                 }
                 break;
@@ -534,7 +534,7 @@ public class RoadRunnerDriveSystem extends MecanumDrive {
                 if (completePath) {
                     if (shootingSystem.shoot()) {
                         completePath = false;
-                        turnAsync(0.08);
+                        //turnAsync(0.08);
                         shootingMode = ShootingMode.RIGHT;
                     }
                 }

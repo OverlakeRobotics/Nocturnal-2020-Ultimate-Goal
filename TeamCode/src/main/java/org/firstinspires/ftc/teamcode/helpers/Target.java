@@ -4,8 +4,8 @@ package org.firstinspires.ftc.teamcode.helpers;
  *
  */
 public enum Target {
-    POWER_SHOT (1090),
-    TOWER_GOAL (1140);
+    POWER_SHOT (2090),
+    TOWER_GOAL (2140);
 
     private final double rpm;
     Target(double rpm) {
